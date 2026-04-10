@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Lock down the 'subscribers' collection specifically
+    match /subscribers/{docId} {
+
+      // ALLOW: Anyone can create a document IF it meets our criteria
+      allow create: if
+        // Ensure the email is actually a string and follows a basic pattern
+        request.resource.data.email is string &&
+        request.resource.data.email.matches('.*@.*') &&
+
+        // Ensure they aren't trying to inject extra fields (like 'isAdmin: true')
+        request.resource.data.keys().hasOnly(['email', 'subscribedAt', 'source', 'honeyPot']) &&
+
+        // Ensure the timestamp is actually "now" (prevents back-dating or future-dating)
+        request.resource.data.subscribedAt == request.time &&
+
+        // Honeypot must be empty (bots auto-fill hidden fields)
+        request.resource.data.honeyPot == '';
+
+      // BLOCK: No one can read, list, update, or delete via the client SDK
+      allow read, update, delete: if false;
+    }
+
+    // 2. Global Safety: Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "virtmcu.com",
+  "version": "1.0.0",
+  "description": "Website for virtmcu project.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RefractSystems/virtmcu.com.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RefractSystems/virtmcu.com/issues"
+  },
+  "homepage": "https://github.com/RefractSystems/virtmcu.com#readme",
+  "dependencies": {
+    "client-only": "^0.0.1",
+    "clsx": "^2.1.1",
+    "firebase": "^12.10.0",
+    "firebase-admin": "^13.7.0",
+    "next": "^16.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.1",
+    "prettier": "^3.8.1",
+    "serve": "^14.2.4",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.57.2"
+  }
+}

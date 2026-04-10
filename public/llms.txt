@@ -1,0 +1,31 @@
+# Virtmcu — High-Performance Embedded Simulation
+
+> The high-performance bridge between Renode flexibility and QEMU speed. Built for modern digital twins, firmware development, and deterministic simulation.
+
+Virtmcu is a specialized project designed to bridge the gap between QEMU (a high-performance emulator) and Renode (a flexible embedded systems simulator). It enables embedded systems engineers to run Renode platform descriptions (.repl) on QEMU with native performance and deterministic clock synchronization.
+
+## Core Features
+
+- **Dynamic Hardware Modeling:** Instantiates full ARM machines from Device Tree Blobs (DTB) at runtime, eliminating the need to recompile the emulator for hardware changes.
+- **Renode Parity:** Provides a repl2qemu translation layer that converts Renode .repl files into QEMU-compatible hardware descriptions.
+- **Digital Twin Synchronization:** Uses the Zenoh protocol for lockstep clock synchronization between QEMU and external physics engines (e.g., MuJoCo).
+- **Native QOM Plugins:** Supports custom peripheral models written in C or Rust, integrated directly into the QEMU Object Model (QOM) for maximum performance.
+- **Test Compatibility:** Maintains full compatibility with Robot Framework and pytest, allowing Renode-style tests to run on QEMU.
+
+## Technical Details
+
+- **Base:** QEMU 11.0.0-rc3 with arm-generic-fdt patches.
+- **Tooling:** Python (repl2qemu), Zenoh (Sync), C/Rust (Peripheral Models).
+- **Integration:** Robot Framework, Pytest.
+- **License:** GPL-2.0 (matching QEMU).
+
+## Project Ecosystem
+
+- **virtmcu:** The core QEMU-based simulation engine, plugins, and repl2qemu tool.
+- **FirmwareStudio:** The comprehensive digital twin platform that integrates Virtmcu with physics engines and cloud-based CI/CD.
+
+## Links
+
+- Website: https://virtmcu.com
+- Core Engine Repository: https://github.com/RefractSystems/virtmcu
+- Architecture Docs: https://github.com/RefractSystems/virtmcu/blob/main/docs/ARCHITECTURE.md
