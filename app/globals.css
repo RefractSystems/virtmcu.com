@@ -42,15 +42,6 @@ html {
 body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  /* Animated Tech Texture Background */
-  background-image: radial-gradient(var(--border-primary) 1px, transparent 1px);
-  background-size: 32px 32px;
-  animation: moveGrid 120s linear infinite;
-}
-
-@keyframes moveGrid {
-  from { background-position: 0 0; }
-  to { background-position: 100% 100%; }
 }
 
 h1, h2, h3, h4 {

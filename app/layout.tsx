@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import FirebaseAnalyticsInit from '@/components/FirebaseAnalyticsInit';
+import PremiumBackground from '@/components/PremiumBackground';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <FirebaseAnalyticsInit />
+        <PremiumBackground />
         {children}
       </body>
     </html>
