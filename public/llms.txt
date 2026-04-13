@@ -29,3 +29,4 @@ Virtmcu is a specialized project designed to bridge the gap between QEMU (a high
 - Website: https://virtmcu.com
 - Core Engine Repository: https://github.com/RefractSystems/virtmcu
 - Architecture Docs: https://github.com/RefractSystems/virtmcu/blob/main/docs/ARCHITECTURE.md
+- Author: https://marcin.phd

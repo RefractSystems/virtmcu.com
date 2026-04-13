@@ -8,26 +8,22 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 const TERMINAL_SEQUENCE = [
-  { delay: 600, type: 'cmd', text: '> ./repl2qemu.py platforms/stm32f4.repl' },
-  { delay: 400, type: 'info', text: '⏺ Parsing Renode platform description...' },
-  { delay: 300, type: 'info', text: '⏺ Generating Device Tree Source (DTS)...' },
-  { delay: 500, type: 'success', text: '✓ DTS generated: build/stm32f4.dts' },
-  { delay: 400, type: 'cmd', text: '> dtc -I dts -O dtb build/stm32f4.dts -o build/stm32f4.dtb' },
-  { delay: 300, type: 'info', text: '⏺ Compiling Device Tree Blob...' },
-  { delay: 700, type: 'success', text: '✓ DTB compiled: build/stm32f4.dtb' },
-  { delay: 800, type: 'sep', text: ' ' },
-  { delay: 400, type: 'cmd', text: '> qemu-system-arm -machine virtmcu,fdt=build/stm32f4.dtb -nographic' },
-  { delay: 200, type: 'info', text: '⏺ Initializing Virtmcu machine...' },
-  { delay: 100, type: 'detail', text: '  CPU: Cortex-M4 @ 168MHz' },
-  { delay: 100, type: 'detail', text: '  Memory: 1MB Flash, 192KB SRAM' },
-  { delay: 100, type: 'info', text: '⏺ Hot-plugging Zenoh Time Master...' },
-  { delay: 400, type: 'success', text: '⏺ Clock synchronized with MuJoCo (Physics: 1.0x RT)' },
+  { delay: 600, type: 'cmd', text: '> ./scripts/run.sh --repl test/phase3/test_board.repl --kernel firmware.elf' },
+  { delay: 400, type: 'info', text: '⏺ Parsing Renode platform description (.repl -> .dtb)...' },
+  { delay: 300, type: 'info', text: '⏺ Applying YAML OpenUSD platform alignment...' },
+  { delay: 500, type: 'success', text: '✓ Device Tree Blob generated: build/board.dtb' },
+  { delay: 400, type: 'cmd', text: '> qemu-system-arm -machine arm-generic-fdt -hw-dtb build/board.dtb -nographic' },
+  { delay: 300, type: 'info', text: '⏺ Initializing virtmcu QOM plugins...' },
+  { delay: 100, type: 'detail', text: '  Module: hw-virtmcu-zenoh.so loaded' },
+  { delay: 100, type: 'detail', text: '  Module: hw-virtmcu-sal-aal.so loaded' },
+  { delay: 100, type: 'info', text: '⏺ Connecting to Zenoh Federation Bus (tcp/localhost:7447)...' },
+  { delay: 400, type: 'success', text: '⏺ Clock Slaved: suspend mode (Physics Master: MuJoCo)' },
   { delay: 700, type: 'sep', text: ' ' },
   { delay: 200, type: 'info', text: '⏺ Booting firmware...' },
-  { delay: 100, type: 'detail', text: '  [UART0] Hello, Virtmcu World!' },
-  { delay: 100, type: 'detail', text: '  [UART0] Initializing Zenoh networking...' },
-  { delay: 100, type: 'detail', text: '  [UART0] Waiting for lockstep sync...' },
-  { delay: 400, type: 'success', text: '✓ Lockstep active. Simulation running.' },
+  { delay: 100, type: 'detail', text: '  [UART0] virtmcu: starting multi-node mesh' },
+  { delay: 100, type: 'detail', text: '  [UART0] eth0: deterministic delivery active' },
+  { delay: 100, type: 'detail', text: '  [UART0] Waiting for global T=0 boundary...' },
+  { delay: 400, type: 'success', text: '✓ Lockstep active. Deterministic simulation running.' },
   { delay: 4000, type: 'reset', text: '' },
 ];
 
@@ -117,8 +113,27 @@ function AnimatedTerminal({
 
 const features = [
   {
-    title: 'Dynamic Hardware Modeling',
-    desc: 'Load full hardware descriptions from Device Tree Blobs at runtime. No re-compilation required for peripheral changes.',
+    title: 'Deterministic Multi-Node',
+    desc: 'Virtual-timestamped Ethernet and UART delivery ensures reproducible results across distributed QEMU instances, immune to host jitter.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Cooperative Time Slaving',
+    desc: 'QEMU acts as a time-slave to physics engines like MuJoCo or NVIDIA Omniverse, advancing only when granted time quanta by the master clock.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Dynamic QOM Plugins',
+    desc: 'Compile peripherals in C or Rust as shared libraries. Load at runtime with -device — no QEMU recompilation required.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="2" y="2" width="20" height="8" rx="2" />
@@ -128,27 +143,8 @@ const features = [
     ),
   },
   {
-    title: 'Renode Parity',
-    desc: 'Run your existing Renode .repl platform files on QEMU. Benefit from Renode\'s flexibility and QEMU\'s native execution speed.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Digital Twin Sync',
-    desc: 'Deterministic lockstep synchronization with external physics engines like MuJoCo using the Zenoh protocol.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Native Performance',
-    desc: 'High-performance peripheral models written in C or Rust. Integrated directly into the QEMU Object Model (QOM).',
+    title: 'SAL/AAL Boundary',
+    desc: 'Sensor and Actuator Abstraction Layers translate raw MMIO registers into continuous physical properties (force, torque, acceleration).',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -216,20 +212,20 @@ export default function Home() {
         {/* ── Hero ───────────────────────────────────────── */}
         <section className="hero">
           <div className="hero-eyebrow reveal" ref={addToRefs}>
-            [ HIGH-PERFORMANCE FIRMWARE SIMULATION ]
+            [ DETERMINISTIC MULTI-NODE FIRMWARE SIMULATION ]
           </div>
           <h1 className="reveal" ref={addToRefs}>
-            Bridge the Gap Between Flexibility and Performance.
+            Digital Twins for the Real World.
           </h1>
           <p className="reveal" ref={addToRefs}>
-            Virtmcu enables embedded systems engineers to run Renode platforms on QEMU with native speed and deterministic Digital Twin synchronization.
+            virtmcu is a high-performance simulation framework built on QEMU 11.0.0-rc3, designed to run distributed firmware in lockstep with continuous physics engines.
           </p>
           <div className="hero-btns reveal" ref={addToRefs}>
             <Link href="https://github.com/RefractSystems/virtmcu" className="btn btn-cta">
-              View on GitHub &rarr;
+              Get Started &rarr;
             </Link>
-            <Link href="https://github.com/RefractSystems/virtmcu/blob/main/docs/ARCHITECTURE.md" className="btn btn-outline">
-              Read Architecture
+            <Link href="/docs" className="btn btn-outline">
+              Read Documentation
             </Link>
           </div>
 
@@ -239,8 +235,8 @@ export default function Home() {
         {/* ── Features ───────────────────────────────────── */}
         <section id="features" className="section-container">
           <div className="section-header reveal" ref={addToRefs}>
-            <span className="section-label">CORE CAPABILITIES</span>
-            <h2>Designed for Modern Embedded Workflows</h2>
+            <span className="section-label">THE FIVE PILLARS</span>
+            <h2>Architected for Absolute Determinism</h2>
           </div>
           <div className="grid-features">
             {features.map((feature, i) => (
@@ -257,16 +253,16 @@ export default function Home() {
         <section className="stats-band">
           <div className="stats-grid">
             <div className="stat-item">
-              <div className="stat-val">10x</div>
-              <div className="stat-label">Faster than Interpreted Models</div>
+              <div className="stat-val">600+</div>
+              <div className="stat-label">MIPS TCG Throughput</div>
             </div>
             <div className="stat-item">
-              <div className="stat-val">100%</div>
-              <div className="stat-label">Deterministic Sync</div>
+              <div className="stat-val">0ns</div>
+              <div className="stat-label">Inter-node Timing Jitter</div>
             </div>
             <div className="stat-item">
-              <div className="stat-val">GPL</div>
-              <div className="stat-label">Open Source Core</div>
+              <div className="stat-val">Open</div>
+              <div className="stat-label">Zenoh Federation Bus</div>
             </div>
           </div>
         </section>
