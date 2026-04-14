@@ -48,6 +48,18 @@ npm install
 npm run dev
 ```
 
+### 4. Deploy Firestore Rules
+
+To secure the Firestore database (e.g., locking down the waitlist/subscribers collection), you must deploy the security rules. Ensure you are authenticated with Firebase first:
+
+```bash
+# Login to Firebase (if not already logged in)
+npx firebase login
+
+# Deploy the rules
+npm run deploy:rules
+```
+
 ## 🔗 PROJECT ECOSYSTEM
 
 Virtmcu is part of a broader ecosystem for firmware simulation:
