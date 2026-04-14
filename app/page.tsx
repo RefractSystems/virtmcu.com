@@ -349,7 +349,7 @@ export default function Home() {
 
               {subscribeStatus === 'success' && (
                 <p style={{ color: '#7ee787', fontSize: '14px', marginTop: '1rem' }}>
-                  System verified. You&apos;re officially on the list for early access.
+                  System verified. You&apos;re on the list for major updates.
                 </p>
               )}
 
