@@ -349,7 +349,7 @@ export default function Home() {
 
               {subscribeStatus === 'success' && (
                 <p style={{ color: '#7ee787', fontSize: '14px', marginTop: '1rem' }}>
-                  System verified. You&apos;re on the list for major updates.
+                  You&apos;re in! Will keep you posted on major updates.
                 </p>
               )}
 
