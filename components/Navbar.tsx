@@ -22,7 +22,7 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
     <nav className={`main-navbar ${scrolled ? 'scrolled' : ''}`.trim()}>
       <div className="nav-container">
         <Link href="/" className="logo" onClick={closeMenu}>
-          <Image src="/logo-transparent.png" alt="Virtmcu Logo" width={28} height={28} className="logo-icon" unoptimized />
+          <Image src="/logo.svg" alt="Virtmcu Logo" width={28} height={28} className="logo-icon" unoptimized />
           VIRTMCU
         </Link>
 

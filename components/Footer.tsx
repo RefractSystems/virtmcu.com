@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="footer-grid">
         <div className="footer-brand">
           <Link href="/" className="logo">
-            <Image src="/logo-transparent.png" alt="Virtmcu Logo" width={28} height={28} className="logo-icon" unoptimized />
+            <Image src="/logo.svg" alt="Virtmcu Logo" width={28} height={28} className="logo-icon" unoptimized />
             VIRTMCU
           </Link>
           <p>The high-performance bridge between Renode flexibility and QEMU speed. Built for modern digital twins.</p>
