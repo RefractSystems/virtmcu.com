@@ -12,17 +12,35 @@ import { getFirestore, Firestore } from 'firebase/firestore';
 let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
 
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+};
+
 if (getApps().length === 0) {
+  // Try automatic initialization first (Firebase App Hosting)
   try {
-    // 1. Firebase App Hosting Automatic Initialization
     app = initializeApp();
     console.log('🔥 Initialized Firebase with App Hosting automatic configuration.');
-  } catch {
-    // Instead of throwing, we warn. This allows the build to proceed even if
-    // automatic initialization is not available (e.g., in local development without full setup).
-    console.warn(
-      '⚠️ Firebase automatic initialization failed. This is expected if not running in Firebase App Hosting.',
-    );
+  } catch (autoErr) {
+    // If automatic fails, try manual config from environment variables
+    if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+      try {
+        app = initializeApp(firebaseConfig);
+        console.log('🔥 Initialized Firebase with manual environment configuration.');
+      } catch (manualErr) {
+        console.error('❌ Failed to initialize Firebase with manual config:', manualErr);
+      }
+    } else {
+      console.warn(
+        '⚠️ Firebase automatic initialization failed and no environment variables found.',
+      );
+    }
   }
 } else {
   // Reuse existing app instance (for hot-reloading)

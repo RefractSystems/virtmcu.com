@@ -231,6 +231,7 @@ export default function Home() {
         email,
         subscribedAt: serverTimestamp(),
         source: 'virtmcu_homepage',
+        honeyPot: honeyPot,
       });
       setSubscribeStatus('success');
       setEmail('');
