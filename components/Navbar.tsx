@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar({ activeSection }: { activeSection?: string }) {
   const [scrolled, setScrolled] = useState(false);
@@ -21,9 +22,7 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
     <nav className={`main-navbar ${scrolled ? 'scrolled' : ''}`.trim()}>
       <div className="nav-container">
         <Link href="/" className="logo" onClick={closeMenu}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="logo-icon">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
+          <Image src="/logo-transparent.png" alt="Virtmcu Logo" width={28} height={28} className="logo-icon" unoptimized />
           VIRTMCU
         </Link>
 
