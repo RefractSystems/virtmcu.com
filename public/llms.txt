@@ -15,9 +15,17 @@ Virtmcu is a specialized project designed to bridge the gap between QEMU (a high
 ## Technical Details
 
 - **Base:** QEMU 11.0.0-rc3 with arm-generic-fdt patches.
+- **Architecture Pillars:** Cooperative Time Slaving, Deterministic Communication, SAL/AAL Boundary, Dynamic QOM Plugins, Co-Simulation Models.
 - **Tooling:** Python (repl2qemu), Zenoh (Sync), C/Rust (Peripheral Models).
 - **Integration:** Robot Framework, Pytest.
 - **License:** GPL-2.0 (matching QEMU).
+
+## FAQ
+
+- **How should I approach learning the system?**: Start with the tutorials in the `tutorial/` folder. Lessons 1 & 2 cover QEMU internals, 5 & 9 cover SystemC, and 7 covers the Zenoh message bus.
+- **Why no Python in the simulation loop?**: Python's GIL and garbage collector introduce milliseconds of latency. Native C plugins (.so files) are used to achieve near-native performance.
+- **Why Zenoh instead of sockets?**: Standard sockets ruin determinism because the host OS network stack introduces random latency. Zenoh provides virtual-timestamped delivery across nodes.
+- **How do I add a new peripheral?**: Start with `hw/dummy/dummy.c` as a learning template.
 
 ## Project Ecosystem
 
