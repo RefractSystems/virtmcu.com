@@ -163,6 +163,31 @@ const features = [
       </svg>
     ),
   },
+  {
+    title: 'Co-Simulation Models',
+    desc: 'SystemC TLM-2.0 integration for co-simulation with external Verilated models and FPGA hardware over UDP.',
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
+        <rect x="9" y="9" width="6" height="6" />
+        <line x1="9" y1="1" x2="9" y2="4" />
+        <line x1="15" y1="1" x2="15" y2="4" />
+        <line x1="9" y1="20" x2="9" y2="23" />
+        <line x1="15" y1="20" x2="15" y2="23" />
+        <line x1="20" y1="9" x2="23" y2="9" />
+        <line x1="20" y1="14" x2="23" y2="14" />
+        <line x1="1" y1="9" x2="4" y2="9" />
+        <line x1="1" y1="14" x2="4" y2="14" />
+      </svg>
+    ),
+  },
 ];
 
 export default function Home() {
@@ -281,7 +306,7 @@ export default function Home() {
         <section id="updates" className="section-container">
           <div className="newsletter-wrapper reveal" ref={addToRefs}>
             <span className="section-label">STAY INFORMED</span>
-            <h2>Get the Latest Updates on Virtmcu</h2>
+            <h2>Get the Latest Updates on VirtMCU</h2>
             <p>
               Join our mailing list to receive technical updates on new peripheral models and
               synchronization features.
