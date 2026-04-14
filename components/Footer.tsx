@@ -20,7 +20,7 @@ export default function Footer() {
             VIRTMCU
           </Link>
           <p>
-            The high-performance bridge between Renode flexibility and QEMU speed. Built for modern
+            The high-performance multi-node embedded system simulation. Built for deterministic
             digital twins.
           </p>
         </div>
