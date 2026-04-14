@@ -346,6 +346,13 @@ export default function Home() {
                       : 'Subscribe →'}
                 </button>
               </div>
+
+              {subscribeStatus === 'success' && (
+                <p style={{ color: '#7ee787', fontSize: '14px', marginTop: '1rem' }}>
+                  System verified. You&apos;re officially on the list for early access.
+                </p>
+              )}
+
               {subscribeStatus === 'error' && (
                 <p style={{ color: 'red', fontSize: '14px', marginTop: '1rem' }}>
                   Connection failed. Please try again.
