@@ -18,7 +18,7 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <nav className={scrolled ? 'scrolled' : ''}>
+    <nav className={`main-navbar ${scrolled ? 'scrolled' : ''}`.trim()}>
       <div className="nav-container">
         <Link href="/" className="logo" onClick={closeMenu}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="logo-icon">
