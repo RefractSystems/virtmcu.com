@@ -24,23 +24,38 @@ export default function PrivacyPage() {
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
               We only collect information necessary to provide updates about the Virtmcu project:
             </p>
-            <ul style={{ color: 'var(--text-secondary)', paddingLeft: '24px', lineHeight: '1.8', listStyle: 'disc' }}>
-              <li><strong>Identification:</strong> Your email address, provided voluntarily for project updates.</li>
-              <li><strong>Analytics:</strong> Aggregate, non-identifiable usage patterns to improve the website experience.</li>
+            <ul
+              style={{
+                color: 'var(--text-secondary)',
+                paddingLeft: '24px',
+                lineHeight: '1.8',
+                listStyle: 'disc',
+              }}
+            >
+              <li>
+                <strong>Identification:</strong> Your email address, provided voluntarily for
+                project updates.
+              </li>
+              <li>
+                <strong>Analytics:</strong> Aggregate, non-identifiable usage patterns to improve
+                the website experience.
+              </li>
             </ul>
           </div>
 
           <div className="doc-section" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>2. Service Providers</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
-              We use <strong>Google Firebase</strong> for infrastructure and database services. Your data is stored on secure servers and is never sold or traded to third parties.
+              We use <strong>Google Firebase</strong> for infrastructure and database services. Your
+              data is stored on secure servers and is never sold or traded to third parties.
             </p>
           </div>
 
           <div className="doc-section" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>3. Your Rights</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
-              You may request access to, correction of, or deletion of your personal data at any time by contacting <strong>legal@refractsystems.com</strong>.
+              You may request access to, correction of, or deletion of your personal data at any
+              time by contacting <strong>legal@refractsystems.com</strong>.
             </p>
           </div>
         </article>

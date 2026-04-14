@@ -8,15 +8,27 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 const TERMINAL_SEQUENCE = [
-  { delay: 600, type: 'cmd', text: '> ./scripts/run.sh --repl test/phase3/test_board.repl --kernel firmware.elf' },
+  {
+    delay: 600,
+    type: 'cmd',
+    text: '> ./scripts/run.sh --repl test/phase3/test_board.repl --kernel firmware.elf',
+  },
   { delay: 400, type: 'info', text: '⏺ Parsing Renode platform description (.repl -> .dtb)...' },
   { delay: 300, type: 'info', text: '⏺ Applying YAML OpenUSD platform alignment...' },
   { delay: 500, type: 'success', text: '✓ Device Tree Blob generated: build/board.dtb' },
-  { delay: 400, type: 'cmd', text: '> qemu-system-arm -machine arm-generic-fdt -hw-dtb build/board.dtb -nographic' },
+  {
+    delay: 400,
+    type: 'cmd',
+    text: '> qemu-system-arm -machine arm-generic-fdt -hw-dtb build/board.dtb -nographic',
+  },
   { delay: 300, type: 'info', text: '⏺ Initializing virtmcu QOM plugins...' },
   { delay: 100, type: 'detail', text: '  Module: hw-virtmcu-zenoh.so loaded' },
   { delay: 100, type: 'detail', text: '  Module: hw-virtmcu-sal-aal.so loaded' },
-  { delay: 100, type: 'info', text: '⏺ Connecting to Zenoh Federation Bus (tcp/localhost:7447)...' },
+  {
+    delay: 100,
+    type: 'info',
+    text: '⏺ Connecting to Zenoh Federation Bus (tcp/localhost:7447)...',
+  },
   { delay: 400, type: 'success', text: '⏺ Clock Slaved: suspend mode (Physics Master: MuJoCo)' },
   { delay: 700, type: 'sep', text: ' ' },
   { delay: 200, type: 'info', text: '⏺ Booting firmware...' },
@@ -218,7 +230,8 @@ export default function Home() {
             Digital Twins for the Real World.
           </h1>
           <p className="reveal" ref={addToRefs}>
-            virtmcu is a high-performance simulation framework built on QEMU 11.0.0-rc3, designed to run distributed firmware in lockstep with continuous physics engines.
+            virtmcu is a high-performance simulation framework built on QEMU 9.2.0, designed to
+            run distributed firmware in lockstep with continuous physics engines.
           </p>
           <div className="hero-btns reveal" ref={addToRefs}>
             <Link href="https://github.com/RefractSystems/virtmcu" className="btn btn-cta">
@@ -230,10 +243,10 @@ export default function Home() {
           </div>
 
           <AnimatedTerminal sequence={TERMINAL_SEQUENCE} title="virtmcu — simulation-log" />
-        </section>
+          </section>
 
-        {/* ── Features ───────────────────────────────────── */}
-        <section id="features" className="section-container">
+          {/* ── Features ───────────────────────────────────── */}
+          <section id="features" className="section-container">
           <div className="section-header reveal" ref={addToRefs}>
             <span className="section-label">THE FIVE PILLARS</span>
             <h2>Architected for Absolute Determinism</h2>
@@ -247,10 +260,10 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </section>
+          </section>
 
-        {/* ── Stats ───────────────────────────────────────── */}
-        <section className="stats-band">
+          {/* ── Stats ───────────────────────────────────────── */}
+          <section className="stats-band">
           <div className="stats-grid">
             <div className="stat-item">
               <div className="stat-val">600+</div>
@@ -265,16 +278,19 @@ export default function Home() {
               <div className="stat-label">Zenoh Federation Bus</div>
             </div>
           </div>
-        </section>
+          </section>
 
-        {/* ── CTA / Newsletter ────────────────────────────── */}
-        <section id="updates" className="section-container">
+          {/* ── CTA / Newsletter ────────────────────────────── */}
+          <section id="updates" className="section-container">
           <div className="newsletter-wrapper reveal" ref={addToRefs}>
             <span className="section-label">STAY INFORMED</span>
             <h2>Get the Latest Updates on Virtmcu</h2>
-            <p>Join our mailing list to receive technical updates on new peripheral models and synchronization features.</p>
+            <p>
+              Join our mailing list to receive technical updates on new peripheral models and
+              synchronization features.
+            </p>
 
-            <form className="slop-free-form" onSubmit={handleSubscribe}>
+            <form className="newsletter-form" onSubmit={handleSubscribe}>
               <input
                 type="text"
                 name="company_url"

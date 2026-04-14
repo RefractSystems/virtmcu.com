@@ -34,9 +34,7 @@ export const metadata: Metadata = {
     images: ['https://virtmcu.com/og-image.jpg'],
   },
   icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-    ],
+    icon: [{ url: '/favicon.ico', sizes: 'any' }],
   },
 };
 
