@@ -27,7 +27,7 @@ if (getApps().length === 0) {
   try {
     app = initializeApp();
     console.log('🔥 Initialized Firebase with App Hosting automatic configuration.');
-  } catch (autoErr) {
+  } catch {
     // If automatic fails, try manual config from environment variables
     if (firebaseConfig.apiKey && firebaseConfig.projectId) {
       try {
