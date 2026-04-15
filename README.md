@@ -65,7 +65,7 @@ npm run deploy:rules
 Virtmcu is part of a broader ecosystem for firmware simulation:
 
 - **[virtmcu](https://github.com/RefractSystems/virtmcu):** The core QEMU-based simulation engine, plugins, and `repl2qemu` tool.
-- **[FirmwareStudio](https://firmwarestudio.com):** The comprehensive digital twin platform that integrates Virtmcu with physics engines and cloud-based CI/CD.
+- **[FirmwareStudio](https://firmware.studio):** The comprehensive digital twin platform that integrates Virtmcu with physics engines and cloud-based CI/CD.
 
 ## 🤝 CONTRIBUTING
 

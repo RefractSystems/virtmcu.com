@@ -58,7 +58,7 @@ export default function Footer() {
               <Link href="https://refractsystems.com">Refract Systems</Link>
             </li>
             <li>
-              <Link href="https://firmwarestudio.com">FirmwareStudio</Link>
+              <Link href="https://firmware.studio">FirmwareStudio</Link>
             </li>
           </ul>
         </div>
