@@ -5,21 +5,21 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://virtmcu.com'),
-  title: 'Virtmcu | High-Performance Embedded Simulation',
+  title: 'VirtMCU | High-Performance Embedded Simulation',
   description:
     'The high-performance bridge between Renode flexibility and QEMU speed. Built for modern digital twins, firmware development, and deterministic simulation.',
   openGraph: {
-    title: 'Virtmcu: High-Performance Embedded Simulation',
+    title: 'VirtMCU: High-Performance Embedded Simulation',
     description:
       'The high-performance bridge between Renode flexibility and QEMU speed. Built for modern digital twins, firmware development, and deterministic simulation.',
     url: 'https://virtmcu.com',
-    siteName: 'Virtmcu',
+    siteName: 'VirtMCU',
     images: [
       {
         url: 'https://virtmcu.com/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Virtmcu — High-Performance Embedded Simulation',
+        alt: 'VirtMCU — High-Performance Embedded Simulation',
       },
     ],
     locale: 'en_US',
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Virtmcu: High-Performance Embedded Simulation',
+    title: 'VirtMCU: High-Performance Embedded Simulation',
     description:
       'The high-performance bridge between Renode flexibility and QEMU speed. Built for modern digital twins, firmware development, and deterministic simulation.',
     creator: '@RefractSystems',

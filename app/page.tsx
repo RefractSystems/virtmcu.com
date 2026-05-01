@@ -125,17 +125,8 @@ function AnimatedTerminal({
 
 const features = [
   {
-    title: 'Deterministic Multi-Node',
-    desc: 'Virtual-timestamped Ethernet and UART delivery ensures reproducible results across distributed QEMU instances, immune to host jitter.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Cooperative Time Slaving',
-    desc: 'QEMU acts as a time-slave to physics engines like MuJoCo or NVIDIA Omniverse, advancing only when granted time quanta by the master clock.',
+    title: 'Zero-Jitter Execution Engine',
+    desc: 'The core TCG loop runs decoupled from wall-clock time. Host OS preemption and thread pausing have absolutely zero impact on the simulated progression of time.',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" />
@@ -144,37 +135,10 @@ const features = [
     ),
   },
   {
-    title: 'Dynamic QOM Plugins',
-    desc: 'Compile peripherals in C or Rust as shared libraries. Load at runtime with -device — no QEMU recompilation required.',
+    title: 'SystemC TLM-2.0 Integration',
+    desc: 'Bring your Verilated hardware and FPGA IP directly into the simulation mesh over a high-throughput, low-latency UDP data plane.',
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="2" y="2" width="20" height="8" rx="2" />
-        <rect x="2" y="14" width="20" height="8" rx="2" />
-        <path d="M6 6h.01M6 18h.01" />
-      </svg>
-    ),
-  },
-  {
-    title: 'SAL/AAL Boundary',
-    desc: 'Sensor and Actuator Abstraction Layers translate raw MMIO registers into continuous physical properties (force, torque, acceleration).',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Co-Simulation Models',
-    desc: 'SystemC TLM-2.0 integration for co-simulation with external Verilated models and FPGA hardware over UDP.',
-    icon: (
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
         <rect x="9" y="9" width="6" height="6" />
         <line x1="9" y1="1" x2="9" y2="4" />
@@ -185,6 +149,26 @@ const features = [
         <line x1="20" y1="14" x2="23" y2="14" />
         <line x1="1" y1="9" x2="4" y2="9" />
         <line x1="1" y1="14" x2="4" y2="14" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Rust-Native Extensibility',
+    desc: 'Write peripheral models in memory-safe Rust. Dynamic plugins load instantly via FFI boundaries without forcing you to recompile the QEMU core.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="2" y="2" width="20" height="8" rx="2" />
+        <rect x="2" y="14" width="20" height="8" rx="2" />
+        <path d="M6 6h.01M6 18h.01" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Cyber-Physical Boundaries',
+    desc: 'Translate virtual MMIO register writes directly into simulated physical torque, force, and acceleration within MuJoCo or NVIDIA Omniverse.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
       </svg>
     ),
   },
@@ -250,28 +234,51 @@ export default function Home() {
         {/* ── Hero ───────────────────────────────────────── */}
         <section className="hero">
           <h1 className="reveal" ref={addToRefs}>
-            Deterministic multi-node simulation for firmware development and testing.
+            The Matrix for Microcontrollers.
           </h1>
-          <p className="reveal" ref={addToRefs}>
-            virtmcu is a high-performance simulation framework built on QEMU, designed to run
-            distributed firmware in lockstep with continuous physics engines.
+          <p className="reveal" ref={addToRefs} style={{ fontSize: '1.25rem', maxWidth: '900px', margin: '0 auto 2rem' }}>
+            Globally deterministic, lockstep simulation at scale. Boot thousands of microcontrollers, wire them via virtual buses, and synchronize them with 3D physics engines. Run the exact same firmware binaries you deploy to real hardware. Zero jitter. Bit-for-bit reproducible.
           </p>
           <div className="hero-btns reveal" ref={addToRefs}>
             <Link href="https://github.com/RefractSystems/virtmcu" className="btn btn-cta">
               Get Started &rarr;
             </Link>
             <Link href="/docs" className="btn btn-outline">
-              Read Documentation
+              Read The Masterclass
             </Link>
           </div>
 
           <AnimatedTerminal sequence={TERMINAL_SEQUENCE} title="virtmcu — simulation-log" />
         </section>
 
+        {/* ── The Problem / The VirtMCU Way ──────────────── */}
+        <section className="section-container promise-section" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="reveal" ref={addToRefs}>
+            <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '4rem 0' }}>
+              <span className="section-label" style={{ display: 'block', textAlign: 'center' }}>WHY VIRTMCU?</span>
+              <h2 style={{ marginBottom: '4rem', fontSize: '2.5rem', textAlign: 'center' }}>Escape the Simulation Trap.</h2>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', textAlign: 'left' }}>
+                <div style={{ background: 'var(--surface-card)', padding: '2.5rem', borderRadius: '12px', border: '1px solid var(--border-primary)', boxShadow: 'var(--shadow-sm)' }}>
+                  <h3 style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>The Old Way</h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: '1.8' }}>
+                    Physical testbenches are slow and expensive. Traditional emulators force a compromise between <strong>speed</strong> and <strong>flexibility</strong>. When you introduce physics engines, synchronization breaks down completely—spawning "ghost bugs" that are impossible to reproduce.
+                  </p>
+                </div>
+                <div style={{ background: 'var(--accent-blue)', padding: '2.5rem', borderRadius: '12px', border: '1px solid var(--accent-blue)', boxShadow: 'var(--shadow-lg)' }}>
+                  <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '1px' }}>The VirtMCU Way</h3>
+                  <p style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1.1rem', lineHeight: '1.8' }}>
+                    <strong>Absolute Determinism.</strong> Every network packet, CPU cycle, and physics frame advances in perfect lockstep. If your firmware runs today, it runs exactly the same tomorrow. Bit-for-bit reproduction, guaranteed.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Features ───────────────────────────────────── */}
-        <section id="features" className="section-container">
+        <section id="features" className="section-container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="section-header reveal" ref={addToRefs}>
-            <span className="section-label">THE FIVE PILLARS</span>
             <h2>Architected for Absolute Determinism</h2>
           </div>
           <div className="grid-features">
@@ -290,15 +297,15 @@ export default function Home() {
           <div className="stats-grid">
             <div className="stat-item">
               <div className="stat-val">600+</div>
-              <div className="stat-label">MIPS TCG Throughput</div>
+              <div className="stat-label">TCG Throughput (MIPS)</div>
             </div>
             <div className="stat-item">
               <div className="stat-val">0ns</div>
-              <div className="stat-label">Inter-node Timing Jitter</div>
+              <div className="stat-label">Inter-Node Jitter</div>
             </div>
             <div className="stat-item">
-              <div className="stat-val">Open</div>
-              <div className="stat-label">Zenoh Federation Bus</div>
+              <div className="stat-val">&lt; 1ms</div>
+              <div className="stat-label">Physics Latency</div>
             </div>
           </div>
         </section>
@@ -306,11 +313,10 @@ export default function Home() {
         {/* ── CTA / Newsletter ────────────────────────────── */}
         <section id="updates" className="section-container">
           <div className="newsletter-wrapper reveal" ref={addToRefs}>
-            <span className="section-label">STAY INFORMED</span>
-            <h2>Get the Latest Updates on VirtMCU</h2>
+            <span className="section-label">JOIN THE MASTERCLASS</span>
+            <h2>Master the Future of Hardware-in-the-Loop</h2>
             <p>
-              Join our mailing list to receive technical updates on new peripheral models and
-              synchronization features.
+              Join our mailing list to receive our curriculum in deep systems engineering, covering PDES, QEMU internals, and safe Rust FFIs.
             </p>
 
             <form className="newsletter-form" onSubmit={handleSubscribe}>

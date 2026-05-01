@@ -2,8 +2,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'Terms of Service | Virtmcu',
-  description: 'Terms of service for the Virtmcu high-performance simulation platform.',
+  title: 'Terms of Service | VirtMCU',
+  description: 'Terms of service for the VirtMCU high-performance simulation platform.',
 };
 
 export default function TermsPage() {
@@ -22,7 +22,7 @@ export default function TermsPage() {
           <div className="doc-section" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>1. Usage</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
-              Virtmcu is an open-source project. Usage of the software is governed by the{' '}
+              VirtMCU is an open-source project. Usage of the software is governed by the{' '}
               <strong>GPL-2.0 License</strong>. The website and its contents are provided "AS-IS"
               for informational purposes.
             </p>
@@ -31,7 +31,7 @@ export default function TermsPage() {
           <div className="doc-section" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>2. Limitation of Liability</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
-              Refract Systems and the Virtmcu contributors are not liable for any damages arising
+              Refract Systems and the VirtMCU contributors are not liable for any damages arising
               from the use of the simulation tools or the information provided on this site.
             </p>
           </div>
@@ -39,7 +39,7 @@ export default function TermsPage() {
           <div className="doc-section" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>3. Intellectual Property</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
-              The Virtmcu name and branding are properties of Refract Systems. The simulation engine
+              The VirtMCU name and branding are properties of Refract Systems. The simulation engine
               code is available under the GPL-2.0 License.
             </p>
           </div>

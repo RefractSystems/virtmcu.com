@@ -11,7 +11,7 @@ export default function Footer() {
           <Link href="/" className="logo">
             <Image
               src="/logo.svg"
-              alt="Virtmcu Logo"
+              alt="VirtMCU Logo"
               width={28}
               height={28}
               className="logo-icon"

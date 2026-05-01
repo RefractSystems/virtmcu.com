@@ -2,8 +2,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'Privacy Policy | Virtmcu',
-  description: 'How Virtmcu handles your data. Professional, secure, and transparent.',
+  title: 'Privacy Policy | VirtMCU',
+  description: 'How VirtMCU handles your data. Professional, secure, and transparent.',
 };
 
 export default function PrivacyPage() {
@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           <div className="doc-section" style={{ marginBottom: '40px' }}>
             <h2 style={{ fontSize: '24px', marginBottom: '16px' }}>1. Data Collection</h2>
             <p style={{ color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.8' }}>
-              We only collect information necessary to provide updates about the Virtmcu project:
+              We only collect information necessary to provide updates about the VirtMCU project:
             </p>
             <ul
               style={{

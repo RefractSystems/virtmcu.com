@@ -1,16 +1,16 @@
-# Virtmcu.com
+# VirtMCU.com
 
 > **The High-Performance Bridge Between QEMU and Renode.**
 
-This repository contains the source code for [virtmcu.com](https://virtmcu.com), the official landing page and documentation portal for the **Virtmcu** project.
+This repository contains the source code for [virtmcu.com](https://virtmcu.com), the official landing page and documentation portal for the **VirtMCU** project.
 
 ## 📡 THE MISSION
 
-Virtmcu enables embedded systems engineers to run Renode platform descriptions (`.repl`) on QEMU with native performance and deterministic clock synchronization. It is a core component of the **FirmwareStudio** digital twin platform.
+VirtMCU enables embedded systems engineers to run Renode platform descriptions (`.repl`) on QEMU with native performance and deterministic clock synchronization. It is a core component of the **FirmwareStudio** digital twin platform.
 
 ## 🏗️ SITE ARCHITECTURE
 
-This is a professional, high-performance web interface built to showcase Virtmcu's technical capabilities.
+This is a professional, high-performance web interface built to showcase VirtMCU's technical capabilities.
 
 - **Framework:** Next.js 15 (App Router)
 - **Styling:** Vanilla CSS (Modern, High-Tech Theme)
@@ -62,14 +62,14 @@ npm run deploy:rules
 
 ## 🔗 PROJECT ECOSYSTEM
 
-Virtmcu is part of a broader ecosystem for firmware simulation:
+VirtMCU is part of a broader ecosystem for firmware simulation:
 
 - **[virtmcu](https://github.com/RefractSystems/virtmcu):** The core QEMU-based simulation engine, plugins, and `repl2qemu` tool.
-- **[FirmwareStudio](https://firmware.studio):** The comprehensive digital twin platform that integrates Virtmcu with physics engines and cloud-based CI/CD.
+- **[FirmwareStudio](https://firmware.studio):** The comprehensive digital twin platform that integrates VirtMCU with physics engines and cloud-based CI/CD.
 
 ## 🤝 CONTRIBUTING
 
-We welcome contributions to the landing page and documentation. For core engine changes, please visit the [Virtmcu Engine Repository](https://github.com/RefractSystems/virtmcu).
+We welcome contributions to the landing page and documentation. For core engine changes, please visit the [VirtMCU Engine Repository](https://github.com/RefractSystems/virtmcu).
 
 ---
 

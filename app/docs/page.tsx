@@ -10,6 +10,7 @@ const NAV_SECTIONS = [
   { id: 'architecture', label: 'Architecture' },
   { id: 'usage', label: 'Usage' },
   { id: 'sync', label: 'Synchronization' },
+  { id: 'curriculum', label: 'Masterclass Curriculum' },
   { id: 'faq', label: 'FAQ' },
 ];
 
@@ -59,7 +60,7 @@ export default function Docs() {
       >
         <div className="docs-hero-inner" style={{ maxWidth: '800px', margin: '0 auto' }}>
           <div className="hero-eyebrow">[ DOCUMENTATION ]</div>
-          <h1 style={{ fontSize: '48px', marginBottom: '24px' }}>Virtmcu Reference</h1>
+          <h1 style={{ fontSize: '48px', marginBottom: '24px' }}>VirtMCU Reference</h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '18px' }}>
             Technical documentation for the high-performance QEMU/Renode bridge.
           </p>
@@ -89,16 +90,11 @@ export default function Docs() {
             <section id="overview" className="doc-section reveal" ref={addToRefs}>
               <h2>Overview</h2>
               <p>
-                Virtmcu is a **deterministic multi-node firmware simulation framework** built on
-                QEMU 9.2.0. It acts as the QEMU layer of the **FirmwareStudio** digital twin
-                platform, where a physics engine (MuJoCo) drives the master clock and QEMU runs
-                firmware in lockstep with the physical world.
+                VirtMCU is **The Matrix for Microcontrollers**—a globally deterministic, lockstep simulation framework built on
+                QEMU 9.2.0. It allows you to boot thousands of microcontrollers, wire them via virtual buses, and synchronize them with 3D physics engines like MuJoCo or NVIDIA Omniverse.
               </p>
               <p>
-                Traditional emulators suffer from wall-clock scheduling jitter. Virtmcu solves this
-                using **cooperative time slaving** and **virtual-timestamped message delivery** over
-                the Zenoh federation bus, ensuring that multi-node interactions are 100%
-                reproducible.
+                Unlike traditional emulators that suffer from wall-clock scheduling jitter, VirtMCU guarantees **zero-jitter execution** and **bit-for-bit reproducibility** across all nodes using the Zenoh federation bus. You run the exact same firmware binaries you deploy to real hardware.
               </p>
             </section>
 
@@ -131,30 +127,25 @@ export default function Docs() {
             <section id="architecture" className="doc-section reveal" ref={addToRefs}>
               <h2>Architecture</h2>
               <p>
-                Virtmcu is built on five architectural pillars designed to provide a deterministic
-                boundary between firmware and physics.
+                VirtMCU is engineered for absolute determinism, enabling you to escape the simulation trap and eradicate ghost bugs.
               </p>
               <div className="docs-features-grid">
                 {[
                   {
-                    title: 'Cooperative Time Slaving',
-                    desc: 'Hooks the TCG loop to block execution at quantum boundaries, waiting for external time grants via Zenoh.',
+                    title: 'Zero-Jitter Execution Engine',
+                    desc: 'The core TCG loop runs decoupled from wall-clock time. Host OS preemption and thread pausing have zero impact on the simulated progression of time.',
                   },
                   {
-                    title: 'Deterministic Communication',
-                    desc: 'Virtual-timestamped delivery for Ethernet and UART, ensuring causal ordering across nodes without wall-clock scheduling.',
+                    title: 'SystemC TLM-2.0 Integration',
+                    desc: 'Bring your Verilated hardware and FPGA IP directly into the simulation mesh over a high-throughput, low-latency UDP data plane.',
                   },
                   {
-                    title: 'SAL/AAL Boundary',
-                    desc: 'Bridging firmware and physics. Translates raw MMIO register values into continuous physical properties like force and torque.',
+                    title: 'Rust-Native Extensibility',
+                    desc: 'Write peripheral models in memory-safe Rust. Dynamic plugins load instantly via FFI boundaries without recompiling the QEMU core.',
                   },
                   {
-                    title: 'Dynamic QOM Plugins',
-                    desc: 'Eliminates recompiling QEMU. Peripherals compile to .so modules and are auto-discovered at runtime.',
-                  },
-                  {
-                    title: 'Co-Simulation Models',
-                    desc: 'SystemC TLM-2.0 integration for co-simulation with external Verilated models and FPGA hardware over UDP.',
+                    title: 'Cyber-Physical Boundaries',
+                    desc: 'Translate virtual MMIO register writes directly into simulated physical torque, force, and acceleration within physics engines.',
                   },
                 ].map((item, i) => (
                   <div key={i} className="docs-feature-item">
@@ -184,7 +175,7 @@ export default function Docs() {
             <section id="sync" className="doc-section reveal" ref={addToRefs}>
               <h2>Synchronization</h2>
               <p>
-                Virtmcu supports three distinct clock modes to balance performance and precision:
+                VirtMCU supports three distinct clock modes to balance performance and precision:
               </p>
               <div className="docs-sync-box">
                 <ul>
@@ -204,25 +195,53 @@ export default function Docs() {
               </div>
             </section>
 
+            <section id="curriculum" className="doc-section reveal" ref={addToRefs}>
+              <h2>The Masterclass Curriculum</h2>
+              <p>
+                The VirtMCU documentation is structured as a comprehensive Masterclass to take you from firmware basics to advanced distributed systems.
+              </p>
+              <div className="docs-features-grid">
+                {[
+                  {
+                    title: 'Part I: Fundamentals',
+                    desc: 'Deep dive into SoC Anatomy, MMIO, QEMU Architecture, the Object Model (QOM), and Parallel Discrete Event Simulation (PDES).',
+                  },
+                  {
+                    title: 'Part IV: Practical Mastery',
+                    desc: 'Interactive lessons on Dynamic Machines, Rust Migration, and parsing .repl to Device Trees (DTB).',
+                  },
+                  {
+                    title: 'Part V: Distributed Systems',
+                    desc: 'Master the Zenoh Clock, Co-Simulation, SystemC CAN bus integration, and Interactive UART across nodes.',
+                  },
+                  {
+                    title: 'Part VIII: War Stories',
+                    desc: 'Real-world debugging postmortems, including the FlexRay SIGSEGV, CI ASan Failures, and QEMU Plugin Visibility.',
+                  },
+                ].map((item, i) => (
+                  <div key={i} className="docs-feature-item" style={{ borderLeft: '4px solid var(--accent-blue)' }}>
+                    <h4>{item.title}</h4>
+                    <p>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
             <section id="faq" className="doc-section reveal" ref={addToRefs}>
-              <h2>FAQ & Learning Path</h2>
+              <h2>FAQ</h2>
               <div className="docs-features-grid">
                 {[
                   {
                     q: 'How should I approach learning the system?',
-                    a: 'Start with the tutorials in the `tutorial/` folder. Lessons 1 & 2 cover QEMU internals, 5 & 9 cover SystemC, and 7 covers the Zenoh message bus.',
+                    a: 'Follow the Masterclass Curriculum in order. Start with Part I to build fundamental intuition before writing code in Part IV.',
                   },
                   {
                     q: 'Why no Python in the simulation loop?',
-                    a: "Python's GIL and garbage collector introduce milliseconds of latency. We write native C plugins (.so files) that achieve near-native performance for MMIO. Python is strictly reserved for offline tooling.",
+                    a: "Python's GIL and garbage collector introduce milliseconds of latency. We write native Rust plugins or C (.so) files that achieve near-native performance for MMIO.",
                   },
                   {
-                    q: 'Why Zenoh instead of sockets?',
-                    a: 'Standard sockets ruin determinism because the host OS network stack introduces random latency. Zenoh provides virtual-timestamped delivery across nodes, guaranteeing causal ordering.',
-                  },
-                  {
-                    q: 'How do I add a new peripheral?',
-                    a: 'Start with `hw/dummy/dummy.c` as a learning template. Do not copy-paste complex upstream QEMU peripheral code without understanding it; start simple and build up.',
+                    q: 'Why Zenoh instead of standard UDP sockets?',
+                    a: 'Standard sockets ruin determinism because the host OS network stack introduces random latency. Zenoh provides virtual-timestamped delivery across nodes, guaranteeing exact causal ordering.',
                   },
                 ].map((faq, i) => (
                   <div key={`faq-${i}`} className="docs-feature-item">
