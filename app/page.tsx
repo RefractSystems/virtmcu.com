@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/client/firebase';
+
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -175,11 +174,6 @@ const features = [
 ];
 
 export default function Home() {
-  const [email, setEmail] = useState('');
-  const [honeyPot, setHoneyPot] = useState('');
-  const [subscribeStatus, setSubscribeStatus] = useState<'idle' | 'loading' | 'success' | 'error'>(
-    'idle',
-  );
 
   const revealRefs = useRef<(HTMLElement | null)[]>([]);
 
@@ -201,30 +195,7 @@ export default function Home() {
     if (el && !revealRefs.current.includes(el)) revealRefs.current.push(el);
   }, []);
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (honeyPot) {
-      setSubscribeStatus('success');
-      setEmail('');
-      return;
-    }
-    setSubscribeStatus('loading');
-    try {
-      if (!db) throw new Error('Firestore not initialized');
-      await addDoc(collection(db, 'subscribers'), {
-        email,
-        subscribedAt: serverTimestamp(),
-        source: 'virtmcu_homepage',
-        honeyPot: honeyPot,
-      });
-      setSubscribeStatus('success');
-      setEmail('');
-      setTimeout(() => setSubscribeStatus('idle'), 3000);
-    } catch (error) {
-      console.error('Error adding document: ', error);
-      setSubscribeStatus('error');
-    }
-  };
+
 
   return (
     <>
@@ -281,12 +252,14 @@ export default function Home() {
           <div className="section-header reveal" ref={addToRefs}>
             <h2>Architected for Absolute Determinism</h2>
           </div>
-          <div className="grid-features">
+          <div className="bento-grid">
             {features.map((feature, i) => (
-              <div key={i} className="feature-card reveal" ref={addToRefs}>
+              <div key={i} className={`feature-card reveal ${i === 0 || i === 3 ? 'wide' : ''}`} ref={addToRefs}>
                 <div className="feature-icon">{feature.icon}</div>
-                <h3>{feature.title}</h3>
-                <p>{feature.desc}</p>
+                <div className="feature-content">
+                  <h3>{feature.title}</h3>
+                  <p>{feature.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -294,16 +267,23 @@ export default function Home() {
 
         {/* ── Stats ───────────────────────────────────────── */}
         <section className="stats-band">
+          <div className="section-container" style={{ paddingTop: '0', paddingBottom: '3rem', textAlign: 'center' }}>
+            <span className="section-label">PERFORMANCE THAT SCALES</span>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Zero Compromise on Speed.</h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
+              Run thousands of nodes faster than real-time without sacrificing an ounce of deterministic precision.
+            </p>
+          </div>
           <div className="stats-grid">
-            <div className="stat-item">
+            <div className="stat-item reveal" ref={addToRefs}>
               <div className="stat-val">600+</div>
               <div className="stat-label">TCG Throughput (MIPS)</div>
             </div>
-            <div className="stat-item">
+            <div className="stat-item reveal" ref={addToRefs}>
               <div className="stat-val">0ns</div>
               <div className="stat-label">Inter-Node Jitter</div>
             </div>
-            <div className="stat-item">
+            <div className="stat-item reveal" ref={addToRefs}>
               <div className="stat-val">&lt; 1ms</div>
               <div className="stat-label">Physics Latency</div>
             </div>
@@ -319,52 +299,16 @@ export default function Home() {
               Join our mailing list to receive our curriculum in deep systems engineering, covering PDES, QEMU internals, and safe Rust FFIs.
             </p>
 
-            <form className="newsletter-form" onSubmit={handleSubscribe}>
-              <input
-                type="text"
-                name="company_url"
-                value={honeyPot}
-                onChange={(e) => setHoneyPot(e.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden="true"
-                style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }}
-              />
-              <div className="form-input-group">
-                <input
-                  type="email"
-                  placeholder="Enter your email address..."
-                  required
-                  className="input-terminal"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
-                />
-                <button
-                  type="submit"
-                  className="btn btn-cta"
-                  disabled={subscribeStatus === 'loading' || subscribeStatus === 'success'}
-                >
-                  {subscribeStatus === 'loading'
-                    ? 'Connecting...'
-                    : subscribeStatus === 'success'
-                      ? '✓ Subscribed'
-                      : 'Subscribe →'}
-                </button>
-              </div>
-
-              {subscribeStatus === 'success' && (
-                <p style={{ color: '#7ee787', fontSize: '14px', marginTop: '1rem' }}>
-                  You&apos;re in! Will keep you posted on major updates.
-                </p>
-              )}
-
-              {subscribeStatus === 'error' && (
-                <p style={{ color: 'red', fontSize: '14px', marginTop: '1rem' }}>
-                  Connection failed. Please try again.
-                </p>
-              )}
-            </form>
+            <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
+              <iframe
+                src="https://virtmcu.substack.com/embed"
+                width="480"
+                height="320"
+                style={{ border: '1px solid #EEE', background: 'white', borderRadius: '12px' }}
+                frameBorder="0"
+                scrolling="no"
+              ></iframe>
+            </div>
           </div>
         </section>
       </main>

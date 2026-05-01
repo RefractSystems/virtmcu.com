@@ -167,7 +167,7 @@ button,
 
 .btn-cta {
   background: var(--accent-blue);
-  color: white;
+  color: white !important;
   padding: 10px 20px;
   font-size: 14px;
   box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
@@ -336,9 +336,9 @@ button,
   font-size: clamp(32px, 4.5vw, 44px);
 }
 
-.grid-features {
+.bento-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
 }
 
@@ -349,31 +349,73 @@ button,
   border: 1px solid var(--border-primary);
   box-shadow: var(--shadow-sm);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
 }
 
 .feature-card:hover {
   transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 10px 40px -10px rgba(37, 99, 235, 0.15);
   border-color: var(--border-accent);
 }
 
-.feature-icon {
+.bento-grid .feature-icon {
+  flex-shrink: 0;
   width: 48px;
   height: 48px;
   color: var(--accent-blue);
   margin-bottom: 32px;
 }
 
-.feature-card h3 {
+.feature-content h3 {
   font-size: 22px;
   margin-bottom: 16px;
   font-weight: 700;
 }
 
-.feature-card p {
+.feature-content p {
   color: var(--text-secondary);
   font-size: 16px;
   line-height: 1.7;
+}
+
+/* Wide Cards */
+.feature-card.wide {
+  grid-column: span 2;
+}
+
+@media (min-width: 1024px) {
+  .feature-card.wide {
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+  }
+  .feature-card.wide .feature-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 0;
+  }
+  .feature-card.wide .feature-content {
+    flex: 1;
+  }
+}
+
+@media (max-width: 1023px) {
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .feature-card.wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  .feature-card.wide {
+    grid-column: span 1;
+  }
 }
 
 /* ── Stats ───────────────────────────────────── */

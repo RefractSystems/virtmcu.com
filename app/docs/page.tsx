@@ -91,7 +91,7 @@ export default function Docs() {
               <h2>Overview</h2>
               <p>
                 VirtMCU is **The Matrix for Microcontrollers**—a globally deterministic, lockstep simulation framework built on
-                QEMU 9.2.0. It allows you to boot thousands of microcontrollers, wire them via virtual buses, and synchronize them with 3D physics engines like MuJoCo or NVIDIA Omniverse.
+                QEMU 11.0.0. It allows you to boot thousands of microcontrollers, wire them via virtual buses, and synchronize them with 3D physics engines like MuJoCo or NVIDIA Omniverse.
               </p>
               <p>
                 Unlike traditional emulators that suffer from wall-clock scheduling jitter, VirtMCU guarantees **zero-jitter execution** and **bit-for-bit reproducibility** across all nodes using the Zenoh federation bus. You run the exact same firmware binaries you deploy to real hardware.
