@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Chapter 3: Instruction Set Architecture (ISA) and ARM AArch64 - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+        <title>Chapter 3: Moving Data: Interconnects, AMBA AXI, and DMA - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a94af807.js";
+            window.path_to_searchindex_js = "searchindex-b5759738.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-86b32607.js"></script>
+        <script src="toc-70de4e68.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,54 +177,139 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="chapter-3-the-instruction-set-architecture-isa---arm-aarch64"><a class="header" href="#chapter-3-the-instruction-set-architecture-isa---arm-aarch64">Chapter 3: The Instruction Set Architecture (ISA) - ARM AArch64</a></h1>
-<h2 id="31-introduction-the-hardware-software-interface"><a class="header" href="#31-introduction-the-hardware-software-interface">3.1 Introduction: The Hardware-Software Interface</a></h2>
-<p>In the previous chapters, we examined the digital logic that physically processes binary signals. We now move up the hierarchy to the <strong>Instruction Set Architecture (ISA) level</strong>. The ISA is the formal boundary between the hardware and the software. It encompasses the complete set of machine instructions, the programmer-visible register set, the memory addressing modes, and the data types understood by a specific microprocessor. For software engineers and compiler writers, the ISA level is what is typically thought of as “machine language”.</p>
-<p>An architecture is completely defined by its instruction set and architectural state. While different microarchitectural implementations can vary wildly in cost, performance, and complexity (e.g., adding deeper pipelines or out-of-order execution), they must all successfully execute the same binary programs if they share the same ISA. In this chapter, we will explore the 64-bit ARM architecture (AArch64) as our primary educational ISA and introduce the fundamentals of assembly language programming.</p>
-<h2 id="32-instruction-set-design-risc-vs-cisc"><a class="header" href="#32-instruction-set-design-risc-vs-cisc">3.2 Instruction Set Design: RISC vs. CISC</a></h2>
-<p>When designing an instruction set, computer architects must decide how to encode the operations (opcodes) and their operands. Architectures generally fall into two broad philosophies: Complex Instruction Set Computers (CISC) and Reduced Instruction Set Computers (RISC).</p>
-<p>CISC processors, such as the Intel x86 family, provide highly complex instructions that can span varying lengths (up to 17 bytes) and can often perform arithmetic operations directly on memory addresses. RISC processors, such as ARM and MIPS, prioritize simplicity and regularity. To simplify hardware decoding, RISC architectures typically encode all instructions in a fixed 32-bit width format.</p>
-<p>A defining feature of RISC architectures like the ARM is their use of a <strong>load/store architecture</strong>. All computational activity strictly takes place within the processor’s general-purpose registers; the only instructions permitted to interact directly with main memory are those that explicitly load a value from memory or store a value into memory. Furthermore, RISC processors typically employ a three-address machine format for data processing, where an arithmetic instruction explicitly specifies two source registers and one destination register.</p>
-<h2 id="33-the-aarch64-programmers-model"><a class="header" href="#33-the-aarch64-programmers-model">3.3 The AArch64 Programmer’s Model</a></h2>
-<p>To write assembly language for the ARM processor, a programmer must understand its architectural state. The 64-bit ARM architecture (AArch64) provides many general-purpose registers for data manipulation. These registers are 64 bits wide and are named <strong>X0</strong> through <strong>X30</strong>. The lower 32 bits of these registers can be accessed independently using the names <strong>W0</strong> through <strong>W30</strong>.</p>
-<p>While the CPU hardware treats most of these registers as functionally interchangeable, the software Application Binary Interface (ABI) imposes strict rules on how they are used. Certain registers are dedicated to special purposes:</p>
+                        <h1 id="chapter-3-moving-data-interconnects-amba-axi-and-dma"><a class="header" href="#chapter-3-moving-data-interconnects-amba-axi-and-dma">Chapter 3: Moving Data: Interconnects, AMBA AXI, and DMA</a></h1>
+<h2 id="31-the-myth-of-the-bus"><a class="header" href="#31-the-myth-of-the-bus">3.1 The Myth of the Bus</a></h2>
+<p>If you look at the motherboard of a vintage 1990s PC, you can literally see the “bus”—thick parallel traces of copper running from the CPU slot to the memory and expansion cards. It was a shared electrical pathway. If the CPU was reading a file from the hard drive, it seized the bus, and every other device had to politely wait its turn.</p>
+<p>When we talk about computer architecture today, we still use the word “bus.” We talk about the memory bus, the peripheral bus, and the system bus. But if you are building a modern Cyber-Physical System (CPS) on a System-on-Chip (SoC), <strong>the bus is a lie</strong>.</p>
+<p>As SoCs grew to encompass multiple processor cores, GPU accelerators, and dozens of high-bandwidth peripherals, the concept of a single shared electrical bus collapsed under its own weight. If a shared bus has multiple initiators (like a CPU and a DMA controller), they must constantly arbitrate for access. Only one requestor-completer pair can communicate at any given time, forcing high-speed devices to stall and waste precious clock cycles while low-speed devices finish their transfers.</p>
+<p>To solve this contention, engineers moved to <strong>Full Crossbar Switch Architectures</strong>. A crossbar layers a physical switch in front of every completer (target) in the system. Instead of sharing one set of wires, a crossbar provides a matrix of connections, allowing multiple requestors to talk to multiple completers simultaneously. If Core 0 wants to talk to the memory controller while the DMA engine talks to the UART, a crossbar allows both transactions to happen at the exact same time.</p>
+<p>However, crossbars scale quadratically. If you have 64 requestors and 64 completers, you need 4,096 switching nodes. In a modern SoC, that consumes a massive amount of physical silicon area and creates impossibly dense wiring congestion.</p>
+<h3 id="welcome-to-the-network-on-chip-noc"><a class="header" href="#welcome-to-the-network-on-chip-noc">Welcome to the Network-on-Chip (NoC)</a></h3>
+<p>To escape the physical limits of crossbar wiring, modern high-performance SoCs use a <strong>Network-on-Chip (NoC)</strong>.</p>
+<p>Rather than holding open a dedicated electrical circuit between the CPU and the memory, a NoC operates exactly like a miniature Internet. It is a packet-switched network right on the silicon. When your processor writes a value to a memory-mapped peripheral, that write command is digitized into a packet, broken down into smaller flow-control units called <em>flits</em>, and routed through a mesh of microscopic switching elements (routers).</p>
+<p>The NoC multiplexes all forms of data—memory reads, peripheral writes, and cache coherency messages—onto a shared network fabric. This yields massive bandwidth, but introduces a new reality for the software engineer: <strong>latency is no longer deterministic</strong>. Just like pinging a remote server on the Internet, a memory read on a NoC might arrive instantly, or it might be delayed because the network routers are congested with other traffic.</p>
+<blockquote>
+<p><strong>WAR STORY: The Hidden Cost of the NoC</strong>
+In a shared bus, if you trigger a peripheral write, it happens sequentially. On a NoC, if you fire off a write to a motor controller, and immediately fire a write to a brake controller, those two packets might take different physical routes through the chip’s switching fabric. If the motor’s route is clear but the brake’s route is congested, they might arrive out of order. This is why you must explicitly use memory barrier (fence) instructions when the sequence of hardware events is critical.</p>
+</blockquote>
+<h2 id="32-inside-amba-axi"><a class="header" href="#32-inside-amba-axi">3.2 Inside AMBA AXI</a></h2>
+<p>To standardize how IP blocks communicate over these complex fabrics, ARM introduced the Advanced Microcontroller Bus Architecture (AMBA). While early versions like AHB (Advanced High-performance Bus) still relied on older shared-bus paradigms, the need for extreme performance led to the creation of the <strong>AXI (Advanced eXtensible Interface)</strong> protocol.</p>
+<p>AXI is the de facto standard for high-performance SoC design. If you are configuring a custom FPGA or programming a high-end ARM Cortex-A processor, your data is moving over AXI.</p>
+<p>AXI completely abandons the idea of a single set of shared wires. Instead, it breaks every connection into <strong>five independent, unidirectional channels</strong>.</p>
+<ol>
+<li><strong>Write Address Channel (AW):</strong> The manager sends the target memory address and control information.</li>
+<li><strong>Write Data Channel (W):</strong> The manager sends the actual payload data.</li>
+<li><strong>Write Response Channel (B):</strong> The subordinate confirms if the write succeeded or failed.</li>
+<li><strong>Read Address Channel (AR):</strong> The manager sends the target memory address to read from.</li>
+<li><strong>Read Data Channel (R):</strong> The subordinate sends the requested data (and status) back to the manager.</li>
+</ol>
+<p>Why five channels? Because decoupling the addresses from the data allows the hardware to pipeline transactions. A CPU doesn’t have to wait for a write to finish before starting a read. It can blast out ten write addresses on the AW channel, simultaneously accept read data on the R channel, and eventually push the write payloads down the W channel. Furthermore, because data flows in only one direction per channel, hardware engineers can easily insert pipeline registers to hit massive clock frequencies.</p>
+<p><em>(Note: You might wonder why there are three channels for writing but only two for reading. In a read, data flows from the subordinate to the manager, so the status response simply piggybacks on the Read Data channel. In a write, data flows from the manager to the subordinate, so a dedicated reverse channel is needed just to send the success/fail response back.)</em></p>
+<h3 id="the-validready-handshake"><a class="header" href="#the-validready-handshake">The VALID/READY Handshake</a></h3>
+<p>At the absolute core of AXI is the flow-control mechanism used independently on all five channels: the <strong>VALID/READY handshake</strong>.</p>
+<p>Because AXI connects devices operating at vastly different speeds, the protocol must support strict backpressure to prevent fast devices from overwhelming slow devices.</p>
 <ul>
-<li><strong>The Link Register (LR / X30):</strong> The ARM processor reserves this register to hold the return address during subroutine and function calls. When a program executes a branch and link (<code>bl</code>) instruction, the CPU automatically saves the address of the next sequential instruction into the LR.</li>
-<li><strong>The Stack Pointer (SP):</strong> Used to maintain the call stack in memory, the SP points to the current top of the stack and is heavily utilized for pushing and popping variables, preserving volatile registers, and saving return addresses during nested function calls,.</li>
-<li><strong>The Program Counter (PC):</strong> The PC maintains the memory address of the instruction currently being executed by the processor.</li>
+<li>The sender (source) drives the data lines and asserts the <strong>VALID</strong> signal when the data is legitimate.</li>
+<li>The receiver (destination) asserts the <strong>READY</strong> signal when it has the buffer space to accept new data.</li>
 </ul>
-<h2 id="34-memory-addressing-and-endianness"><a class="header" href="#34-memory-addressing-and-endianness">3.4 Memory Addressing and Endianness</a></h2>
-<p>Modern processors utilize byte-addressable memory, meaning each byte in memory is assigned a unique address. When the CPU needs to access a multibyte data type (such as a 32-bit word or a 64-bit doubleword), it must be aware of the system’s <strong>endianness</strong>.</p>
-<p>In a <strong>little-endian</strong> memory organization, the lowest-order byte of a multibyte value is stored at the lowest memory address,. Conversely, a <strong>big-endian</strong> architecture stores the highest-order byte at the lowest memory address. The ARM architecture actually supports selecting between big- or little-endian modes under software control—a feature known as bi-endianness—though most modern operating systems execute in little-endian mode by default.</p>
-<h3 id="341-addressing-modes"><a class="header" href="#341-addressing-modes">3.4.1 Addressing Modes</a></h3>
-<p>To load data from memory into a register (or store data from a register to memory), the processor must compute the target memory address. ARM supports several addressing modes:</p>
+<p>A successful transfer <em>only</em> occurs on the rising edge of the clock cycle where <strong>both VALID and READY are HIGH</strong>.</p>
+<p>Let’s look at a text-based timing diagram of an AXI Write Data transfer where the subordinate is applying backpressure:</p>
+<pre><code class="language-text">Clock Cycle:      |   T1   |   T2   |   T3   |   T4   |   T5   |
+                  |        |        |        |        |        |
+Manager WDATA:    |  0xAA  |  0xBB  |  0xBB  |  0xBB  |  0xCC  |
+Manager WVALID:   |  HIGH  |  HIGH  |  HIGH  |  HIGH  |  HIGH  |
+Subord. WREADY:   |  HIGH  |  LOW   |  LOW   |  HIGH  |  HIGH  |
+                  |        |        |        |        |        |
+Transfer Occurs?  |  YES   |  NO    |  NO    |  YES   |  YES   |
+</code></pre>
+<p><strong>What happened here?</strong></p>
 <ul>
-<li><strong>PC-Relative:</strong> Computes the address as an offset relative to the current Program Counter. The <code>adr</code> and <code>adrp</code> instructions use this mode to securely obtain the address of labels and constants located nearby in the program’s code section.</li>
-<li><strong>Register Indirect:</strong> The memory address is provided directly inside a base register (e.g., <code>ldr r0, [r1]</code>).</li>
-<li><strong>Register Indirect with Offset:</strong> An offset is added to the base register to compute the address. This offset can be an immediate numerical constant (e.g., <code>ldr r0, [r1, #32]</code>) or the value of another register.</li>
-<li><strong>Pre-increment and Post-increment:</strong> These modes automatically update the base register after computing the address, making them exceptionally useful for iterating through arrays or implementing push and pop stack operations,. For example, <code>ldr x0, [sp], #16</code> pops data off the stack and subsequently adds 16 to the stack pointer. Conversely, <code>str lr, [sp, #-16]!</code> pushes data by first subtracting 16 from the stack pointer and then storing the Link Register at that new address.</li>
+<li><strong>T1:</strong> The Manager places <code>0xAA</code> on the bus and yells <code>VALID</code>. The Subordinate is <code>READY</code>. The clock ticks, and the data is successfully transferred.</li>
+<li><strong>T2:</strong> The Manager wants to send the next byte, <code>0xBB</code>. It asserts <code>VALID</code>. But the Subordinate’s internal FIFO is full, so it drops <code>READY</code> to <code>LOW</code>. The clock ticks, but <em>no transfer occurs</em>.</li>
+<li><strong>T3:</strong> The Subordinate is still choking. The Manager <em>must</em> hold <code>0xBB</code> on the data bus and keep <code>VALID</code> asserted. It cannot cancel the transaction or change the data.</li>
+<li><strong>T4:</strong> The Subordinate clears its buffer and raises <code>READY</code>. Because <code>VALID</code> is still high, the clock ticks and <code>0xBB</code> is finally transferred.</li>
+<li><strong>T5:</strong> The Manager immediately pushes <code>0xCC</code>, the Subordinate is still <code>READY</code>, and the transfer continues seamlessly.</li>
 </ul>
-<h2 id="35-arm-assembly-language-basics"><a class="header" href="#35-arm-assembly-language-basics">3.5 ARM Assembly Language Basics</a></h2>
-<p>Assembly language programs use <strong>directives</strong> (or pseudo-instructions) to instruct the assembler on how to organize the program in memory. A typical program is divided into multiple distinct sections:</p>
-<ul>
-<li><strong>The <code>.text</code> section:</strong> This section contains the actual executable machine instructions. For security, operating systems typically map the <code>.text</code> section into memory pages that are marked as read-only and executable, meaning any attempt to store data here will result in a segmentation fault,.</li>
-<li><strong>The <code>.data</code> section:</strong> Used to declare initialized static variables and embed lists of data.</li>
-<li><strong>The <code>.rodata</code> section:</strong> Used specifically for read-only constant data, such as fixed string sequences.</li>
-<li><strong>The <code>.bss</code> section:</strong> Reserved for uninitialized global variables. Variables placed in the <code>.bss</code> section are zeroed out at startup and consume very little disk space within the compiled executable file.</li>
-</ul>
-<p>Because the Memory Management Unit (MMU) controls access permissions (like read/write vs. read-only) with page-level granularity, the linker ensures that each of these sections begins on a new MMU page boundary.</p>
-<p>Data processing in AArch64 centers around a core group of instructions. Data is transferred between registers and memory using <code>ldr</code> (load register) and <code>str</code> (store register), or between registers using <code>mov</code>,. Basic arithmetic is handled by instructions such as <code>add</code>, <code>sub</code>, and <code>mul</code>,. Bitwise logical instructions, including <code>and</code>, <code>orr</code> (OR), and <code>eor</code> (Exclusive-OR), are provided to manipulate specific bits within a word.</p>
-<h2 id="36-low-level-control-flow"><a class="header" href="#36-low-level-control-flow">3.6 Low-Level Control Flow</a></h2>
-<p>To emulate the control flow structures found in High-Level Languages (HLLs)—such as <code>if...then...else</code> blocks, <code>switch</code> statements, and <code>while</code> loops—assembly language relies heavily on conditional branches and indirect jumps.</p>
-<p>This process begins with the <strong>compare instruction (<code>cmp</code>)</strong>. The <code>cmp</code> instruction evaluates two operands by effectively subtracting the second operand from the first. However, rather than saving the mathematical result into a destination register, it uses the result solely to update the processor’s status flags. These flags record whether the result was Zero, whether it generated a Carry, whether it was Negative, or whether it caused an Overflow.</p>
-<p>Once the flags are updated, a <strong>conditional branch instruction</strong> is used to transfer control depending on the specific states of those flags.</p>
-<ul>
-<li><code>beq</code> (Branch if Equal) and <code>bne</code> (Branch if Not Equal) evaluate the Zero flag to jump if the operands were identical or different.</li>
-<li><code>blo</code> (Branch if Lower) and <code>bhi</code> (Branch if Higher) are used to branch based on unsigned magnitude comparisons.</li>
-</ul>
-<p>To emulate an <code>if...then...else...endif</code> statement in assembly language, the programmer uses a <code>cmp</code> instruction followed by a conditional branch that evaluates the <em>opposite</em> of the high-level condition. If the condition evaluates to false, the CPU branches <em>over</em> the <code>then</code> block instructions directly into the <code>else</code> block. An unconditional branch (<code>b</code> or <code>b.al</code>) is placed at the end of the <code>then</code> block to jump over the <code>else</code> statements so that both blocks are not executed sequentially,.</p>
-<p>For <code>switch...case</code> statements with many potential paths, assembly programmers often use <strong>jump tables</strong>. Instead of writing a long chain of <code>cmp</code> and <code>beq</code> instructions, the program calculates an index, loads an execution address from an array of addresses in memory, and uses an indirect branch (like <code>br</code>) to jump instantly to the appropriate case handler.</p>
-<p>Finally, for transferring control to a subroutine or function, the CPU uses the <strong><code>bl</code> (Branch and Link)</strong> instruction, which jumps to the target label while simultaneously saving the return address into the Link Register (LR). When the subroutine finishes its execution, it issues a <strong><code>ret</code> (Return)</strong> instruction, which unconditionally copies the address held in the LR back into the Program Counter, safely returning control to the caller,.</p>
+<blockquote>
+<p><strong>TIP: Debugging AXI Hangs</strong>
+If you are writing a bare-metal driver or integrating custom FPGA logic, the most common hardware bug is a system lockup caused by a botched AXI handshake. If your CPU writes to a peripheral address and the whole system freezes, it almost always means the processor asserted <code>WVALID</code>, but the peripheral’s state machine crashed and never asserted <code>WREADY</code>. The CPU will wait until the end of time for that handshake to complete. When debugging with a logic analyzer or simulation trace, always look for unmatched <code>VALID</code> signals!</p>
+</blockquote>
+<h2 id="33-direct-memory-access-dma"><a class="header" href="#33-direct-memory-access-dma">3.3 Direct Memory Access (DMA)</a></h2>
+<blockquote>
+<p><strong>WARNING: Polling Burns CPU Cycles and Batteries</strong>
+If you take away only one lesson from this chapter, let it be this: never use the CPU to babysit a peripheral. If you write a <code>while(1)</code> loop that constantly polls a UART’s “TX Ready” bit just to send the next byte of an array, you are keeping the processor pipeline running at full throttle. On a battery-powered device, this continuous switching activity burns maximum dynamic power and will drain your battery in hours. On a thermally constrained system, it generates waste heat for absolutely no computational gain. Stop stuffing envelopes yourself. Let the hardware do the work.</p>
+</blockquote>
+<p>In a traditional fetch-decode-execute cycle, moving a block of data from memory to an I/O device requires the processor to execute a load instruction, followed by a store instruction, over and over again. If you have a 4-kilobyte audio buffer that needs to be sent to a Digital-to-Analog Converter (DAC), having the CPU execute a loop of 4,096 loads and stores is a massive waste of cycles.</p>
+<p>To solve this, SoC architects include a dedicated hardware block known as a <strong>Direct Memory Access (DMA) controller</strong>. You can think of the DMA as a tiny, highly specialized co-processor whose only job in life is to copy data from point A to point B over the system interconnect without any CPU intervention. Once you configure it and pull the trigger, the CPU can either go do crunch some heavy math, or completely power down its instruction pipeline and go to sleep.</p>
+<h3 id="331-the-dma-register-interface"><a class="header" href="#331-the-dma-register-interface">3.3.1 The DMA Register Interface</a></h3>
+<p>At the hardware level, a single-channel DMA controller is usually controlled by four fundamental Memory-Mapped I/O (MMIO) registers:</p>
+<ol>
+<li><strong>Source Pointer Register:</strong> The physical address where the data originates.</li>
+<li><strong>Destination Pointer Register:</strong> The physical address where the data is going.</li>
+<li><strong>Length Register:</strong> The number of bytes or words to transfer.</li>
+<li><strong>Control/Status Register:</strong> Used to configure the transfer parameters (like whether to increment the pointers) and to start the transfer.</li>
+</ol>
+<p>Let’s look at how we configure this in C. Suppose we have a sensor reading array that we need to blast out over a serial port. We want the DMA to handle the transfer, and we want the CPU to drop into a deep sleep until the transfer is entirely finished.</p>
+<h3 id="332-blasting-data-with-c"><a class="header" href="#332-blasting-data-with-c">3.3.2 Blasting Data with C</a></h3>
+<p>Here is the comprehensive, bare-metal C code to configure the DMA controller, kick off the transfer, and put the processor to sleep:</p>
+<pre><code class="language-c">#include &lt;stdint.h&gt;
+
+// 1. Define the MMIO addresses for our DMA Controller based on the datasheet
+#define DMA_BASE_ADDR   0x40020000
+#define DMA_SRC_REG     (*(volatile uint32_t*) (DMA_BASE_ADDR + 0x00))
+#define DMA_DEST_REG    (*(volatile uint32_t*) (DMA_BASE_ADDR + 0x04))
+#define DMA_LEN_REG     (*(volatile uint32_t*) (DMA_BASE_ADDR + 0x08))
+#define DMA_CTRL_REG    (*(volatile uint32_t*) (DMA_BASE_ADDR + 0x0C))
+
+// Define the MMIO address for the target peripheral (e.g., UART TX FIFO)
+#define UART0_TX_REG    (*(volatile uint32_t*) 0x40001000)
+
+// 2. Define bit-masks for the DMA Control Register
+#define DMA_ENABLE           (1 &lt;&lt; 0)  // Start the transfer
+#define DMA_INT_ENABLE       (1 &lt;&lt; 1)  // Fire an interrupt when finished
+#define DMA_SRC_INCREMENT    (1 &lt;&lt; 2)  // Increment source address after each read
+#define DMA_DEST_INCREMENT   (1 &lt;&lt; 3)  // Increment destination address after each write
+
+void send_data_via_dma(uint32_t* data_array, uint32_t element_count) {
+    
+    // 3. Set the source address to the beginning of our array in RAM
+    // We must cast the pointer to a raw 32-bit integer for the hardware register
+    DMA_SRC_REG = (uint32_t) data_array;
+    
+    // 4. Set the destination address to the UART Transmit Register
+    DMA_DEST_REG = (uint32_t) &amp;UART0_TX_REG;
+    
+    // 5. Tell the DMA how many elements to transfer
+    DMA_LEN_REG = element_count;
+    
+    // 6. Configure the behavior and pull the trigger!
+    // - We want the source address to increment so we march through the array.
+    // - We DO NOT increment the destination address (all data goes to the same UART FIFO).
+    // - We enable the completion interrupt to wake up the CPU.
+    // - We enable the DMA to start immediately.
+    DMA_CTRL_REG = DMA_SRC_INCREMENT | DMA_INT_ENABLE | DMA_ENABLE;
+    
+    // 7. The DMA is now running. Put the CPU to sleep to save battery.
+    // The processor pipeline halts here until a hardware interrupt fires.
+    __asm__ volatile ("wfi"); 
+    
+    // 8. When we reach this line, the DMA has finished and the interrupt woke us up.
+}
+</code></pre>
+<h3 id="333-line-by-line-walkthrough"><a class="header" href="#333-line-by-line-walkthrough">3.3.3 Line-by-Line Walkthrough</a></h3>
+<p>Let’s break down exactly what is happening between the software and the silicon here.</p>
+<p><strong>Steps 1 &amp; 2: The MMIO Definitions</strong>
+We map the four registers of the DMA controller by casting hardcoded physical addresses into <code>volatile uint32_t</code> pointers, just as we did in Chapter 1. We also define bit-masks that match the layout of the Control Register in the hardware’s datasheet.</p>
+<p><strong>Steps 3, 4 &amp; 5: Loading the Pointers</strong>
+We load the <code>DMA_SRC_REG</code> with the physical address of <code>data_array</code>. Because the DMA hardware bypasses the CPU pipeline, it doesn’t understand C pointers—it only understands raw bus addresses. We load <code>DMA_DEST_REG</code> with the address of the UART’s transmit register, and set the length.</p>
+<p><strong>Step 6: The Increment Trap</strong>
+This is a classic embedded systems gotcha. When you copy an array from one part of RAM to another, you want <em>both</em> the source and destination addresses to increment after every byte. However, when streaming data to a peripheral, the peripheral’s data register is a fixed address representing a hardware FIFO.</p>
+<p>If we accidentally set the <code>DMA_DEST_INCREMENT</code> bit here, the DMA would write the first byte to <code>0x40001000</code> (the UART), the second byte to <code>0x40001004</code> (some random hardware configuration register), the third byte to <code>0x40001008</code> (perhaps disabling the UART entirely), and then crash the system. By leaving <code>DMA_DEST_INCREMENT</code> cleared, the DMA intelligently reads <code>data_array</code>, <code>data_array</code>, <code>data_array</code>, but blasts every single read into the exact same destination address: the UART TX FIFO.</p>
+<p><strong>Step 7: Going Dark</strong>
+The moment we write <code>DMA_ENABLE</code> to the control register, the DMA controller asserts its bus mastery. Behind the scenes, it negotiates with the AXI interconnect, stealing unused bus cycles or bursting data over its own dedicated channel.</p>
+<p>Meanwhile, the CPU executes the <code>wfi</code> (Wait For Interrupt) instruction. The processor’s clock gating kicks in, the instruction pipeline freezes, and dynamic power consumption plummets to near zero.</p>
+<p>The DMA silently marches through the <code>data_array</code> in SRAM. For each element, it reads the data across the bus, then writes it directly to the UART, decrementing its internal length counter.</p>
+<p>When the length counter hits zero, the DMA hardware pulls the interrupt line high. The processor’s Nested Vectored Interrupt Controller (NVIC) detects the signal, wakes the CPU from its deep sleep, and instruction execution resumes exactly where it left off. You successfully moved a massive block of data with almost zero CPU overhead.</p>
 
                     </main>
 

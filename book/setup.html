@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Bibliography / Further Reading - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+        <title>Setup - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a94af807.js";
+            window.path_to_searchindex_js = "searchindex-b5759738.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-86b32607.js"></script>
+        <script src="toc-70de4e68.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,34 +177,77 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="bibliography--further-reading"><a class="header" href="#bibliography--further-reading">Bibliography / Further Reading</a></h1>
-<p>Feng, C., et al. <em>Cyber-Physical Virtual Power Plants: Modeling, Operation, and Control</em>. IEEE / Springer, 2025.</p>
-<p>Arm Limited. <em>Fundamentals of System-on-Chip Design on Arm Cortex-M Microcontrollers</em>. Arm Education Media, 2021.</p>
-<p><em>VirtMCU FirmwareStudio</em>. RefractSystems / GitHub Repository. https://github.com/RefractSystems/virtmcu</p>
-<p>Große, D., and Drechsler, R. <em>Quality-Driven SystemC Design</em>. Springer Science+Business Media, 2010.</p>
-<p>Harris, D. M., and Harris, S. L. <em>Digital Design and Computer Architecture</em>, 2nd Edition. Morgan Kaufmann / Elsevier, 2013.</p>
-<p>Hennessy, J. L., and Patterson, D. A. <em>Computer Architecture: A Quantitative Approach</em>, 7th Edition. Morgan Kaufmann / Elsevier, 2026.</p>
-<p>Hyde, R. <em>The Art of ARM Assembly Vol 1: 64-Bit ARM Machine Organization and Programming</em>. No Starch Press, 2025.</p>
-<p>Jha, A., et al. <em>Cyber Physical System 2.0: Communication and Computational Technologies</em>. 2025.</p>
-<p>Ledin, J. <em>Modern Computer Architecture and Organization</em>, 3rd Edition. Packt Publishing, 2026.</p>
-<p>Lyshevski, S. E. <em>Design and Control of Physical and Cyber-Physical Systems</em>. 2026.</p>
-<p>Greaves, D. J. <em>Modern System-on-Chip Design on Arm</em>. Arm Education Media, 2021.</p>
-<p>Patel, H. D., and Shukla, S. K. <em>SystemC Kernel Extensions for Heterogeneous System Modeling: A Framework for Multi-MoC Modeling &amp; Simulation</em>. Kluwer Academic Publishers, 2005.</p>
-<p>Plantz, R. G. <em>Introduction to Computer Organization: ARM Edition</em>. No Starch Press, 2025.</p>
-<p>Poonia, R. C., et al. <em>Smart Cyber-Physical Systems: Innovations and Real-World Implications</em>. 2025.</p>
-<p>Soldatos, J., et al. <em>Cyber-Physical Threat Intelligence for Critical Infrastructures Security</em>. Now Publishers, 2020.</p>
-<p>Tanenbaum, A. S., and Austin, T. <em>Structured Computer Organization</em>, 6th Edition. Pearson, 2016.</p>
-<p>Yan, J., et al. <em>Secure Detection and Control in Cyber-Physical Systems</em>. Taylor &amp; Francis, 2026.</p>
+                        <h1 id="setting-up-the-sandbox"><a class="header" href="#setting-up-the-sandbox">Setting Up the Sandbox</a></h1>
+<p>To follow along with this book, you need a reproducible development environment. Embedded development is notorious for “it works on my machine” compiler mismatches. To fix this, we are going to use Docker to containerize our entire toolchain.</p>
+<p>Our sandbox requires GCC cross-compilers (because your x86 or Apple Silicon laptop needs to generate binaries for raw ARM64 and RISC-V targets), <strong>QEMU 11.0.0</strong>, the <strong>VirtMCU</strong> framework, and the <strong>MuJoCo</strong> physics engine. We use a specially augmented version of QEMU 11.0.0 containing the <code>arm-generic-fdt</code> patch series, which allows us to dynamically instantiate ARM and RISC-V machines from a Device Tree at runtime without relying on hardcoded C machine structs,.</p>
+<p>While the absolute easiest way to get started is to open the VirtMCU repository in VS Code and accept the “Reopen in Container” prompt, here is the exact <code>Dockerfile</code> so you can see the magic happening under the hood:</p>
+<pre><code class="language-dockerfile"># Use a stable Ubuntu base image
+FROM ubuntu:22.04
+
+# Prevent interactive prompts during apt installations
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies, Python, Git, and essential tools
+RUN apt-get update &amp;&amp; apt-get install -y \
+    build-essential \
+    git \
+    python3 \
+    python3-pip \
+    wget \
+    curl \
+    pkg-config \
+    libglib2.0-dev \
+    libpixman-1-dev \
+    ninja-build \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Install GCC Cross-Compilers for our target ISAs
+RUN apt-get update &amp;&amp; apt-get install -y \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu \
+    gcc-riscv64-unknown-elf \
+    g++-riscv64-unknown-elf
+
+# Install Rust (Required for VirtMCU QOM plugins)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.js | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Setup MuJoCo Physics Engine
+RUN wget https://github.com/deepmind/mujoco/releases/download/2.3.0/mujoco-2.3.0-linux-x86_64.tar.gz \
+    &amp;&amp; tar -xzf mujoco-2.3.0-linux-x86_64.tar.gz -C /opt \
+    &amp;&amp; rm mujoco-2.3.0-linux-x86_64.tar.gz
+ENV MUJOCO_DIR="/opt/mujoco-2.3.0"
+
+# Set up the working directory
+WORKDIR /workspace
+</code></pre>
+<h3 id="spinning-up-the-environment"><a class="header" href="#spinning-up-the-environment">Spinning Up the Environment</a></h3>
+<p>Once you have your Docker container running, drop into your bash terminal. We need to pull down the VirtMCU framework, which contains the deterministic network transports (like Zenoh and Unix Domain Sockets) and the QOM plugins that handle cooperative time slaving,.</p>
+<p>Execute the following commands in your terminal to fetch the repository and build the custom emulator:</p>
+<pre><code class="language-bash"># 1. Clone the VirtMCU repository 
+$ git clone https://github.com/RefractSystems/virtmcu.git
+$ cd virtmcu
+
+# 2. Build the VirtMCU framework and patched QEMU
+# This will compile the Rust peripheral models as shared libraries (.so)
+# that QEMU can dynamically load via its module system.
+$ make build
+
+# 3. Verify the build
+$ ./build/qemu-system-aarch64 --version
+</code></pre>
+<p><strong>Welcome to the Sandbox.</strong> With VirtMCU compiled, your custom peripheral models will be auto-discovered via QEMU’s <code>--enable-modules</code> system without requiring you to recompile the entire emulator every time you write a new device,.</p>
+<p>Now that your tools are sharp, turn the page. We have a bare-metal memory map to explore.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="chapter_18.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="about.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="chapter_20.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="chapter_01.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -214,11 +257,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="chapter_18.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="about.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="chapter_20.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="chapter_01.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

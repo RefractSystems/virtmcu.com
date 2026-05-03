@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Preface: How to Use This Book - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+        <title>Foreword - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a94af807.js";
+            window.path_to_searchindex_js = "searchindex-b5759738.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-86b32607.js"></script>
+        <script src="toc-70de4e68.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,46 +177,22 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="preface-how-to-use-this-book"><a class="header" href="#preface-how-to-use-this-book">Preface: How to Use This Book</a></h1>
-<p>The exponential increase in computing power and the pervasive integration of digital systems into the physical world have fundamentally transformed engineering. We are no longer simply designing isolated embedded systems; we are engineering <strong>Cyber-Physical Systems (CPS 2.0)</strong> that require a deep, integrated understanding of both hardware microarchitecture and continuous-time physical dynamics.</p>
-<p>This textbook was written to bridge the gap between traditional computer architecture and modern cyber-physical system design. It is designed to take students on a journey from the fundamental digital logic that makes up a processor, through the operating systems that schedule its tasks, and finally to the distributed networks, deterministic co-simulations, and domain-specific architectures that define the modern computing landscape.</p>
-<h3 id="target-audience-and-prerequisites"><a class="header" href="#target-audience-and-prerequisites">Target Audience and Prerequisites</a></h3>
-<p>This book is intended for senior undergraduate and graduate students in computer engineering, electrical engineering, and computer science. Because modern CPS design sits at the intersection of hardware and software, the text assumes readers are familiar with the basics of computer science and have completed a first programming course in C or C++. Furthermore, since we explore how hardware controls physical actuators, a basic understanding of continuous-time mathematics and introductory electronics will be highly beneficial.</p>
-<h3 id="organization-of-the-book"><a class="header" href="#organization-of-the-book">Organization of the Book</a></h3>
-<p>The material is systematically divided into distinct parts to manage the complexity of the subject matter:</p>
-<ul>
-<li><strong>Part I: Machine Organization and Microarchitecture (Chapters 1–6)</strong> builds the foundation. It covers digital logic, the ARM AArch64 Instruction Set Architecture (ISA), pipelined microarchitecture, the memory hierarchy, and System-on-Chip (SoC) interconnects.</li>
-<li><strong>Part II: The Hardware-Software Interface (Chapters 7–8)</strong> crosses the boundary into software, focusing on bare-metal execution, exceptions, interrupts, and the critical scheduling algorithms of Real-Time Operating Systems (RTOS).</li>
-<li><strong>Part III: Cyber-Physical Systems and Co-Simulation (Chapters 9–11)</strong> introduces the CPS 2.0 paradigm. It explores the 3Cs (Computation, Communication, and Control), the necessity of deterministic virtual time, and the Sensor/Actuator Abstraction Layers (SAL/AAL) required to couple discrete-event cyber simulators with continuous-time physics engines.</li>
-<li><strong>Part IV: Advanced Architectures and Security (Chapters 12–14)</strong> looks to the future, examining the open-source RISC-V architecture, cyber-physical threat intelligence and resilience, and Domain-Specific Architectures (DSAs) that accelerate AI at the edge and in the cloud.</li>
-</ul>
-<h3 id="using-this-book-in-a-course"><a class="header" href="#using-this-book-in-a-course">Using This Book in a Course</a></h3>
-<p>This book contains enough material for a rigorous, rapid-paced, single-semester introduction to computer architecture and CPS, or it can be expanded into a two-semester sequence to allow students more time to experiment in the lab.</p>
-<p><strong>For a Single-Semester Course (14-15 Weeks):</strong></p>
-<ul>
-<li><strong>Weeks 1–5:</strong> Focus heavily on <strong>Chapters 1 through 5</strong> to establish a strong hardware and microarchitecture foundation.</li>
-<li><strong>Weeks 6–8:</strong> Transition to software with <strong>Chapters 6 through 8</strong>, emphasizing interrupts, memory-mapped I/O, and RTOS determinism.</li>
-<li><strong>Weeks 9–12:</strong> Introduce the CPS paradigm using <strong>Chapters 9 through 11</strong>. This is a great time to introduce mid-term laboratory projects involving co-simulation.</li>
-<li><strong>Weeks 13–15:</strong> Conclude with advanced topics based on instructor interest. An instructor focused on hardware design might prioritize <strong>Chapter 12 (RISC-V)</strong> and <strong>Chapter 14 (DSAs)</strong>, while an instructor focused on networks and infrastructure might focus on <strong>Chapter 13 (Security and Resilience)</strong>.</li>
-</ul>
-<p><strong>For a Two-Semester Sequence:</strong></p>
-<ul>
-<li><strong>Semester 1 (Computer Architecture):</strong> Dedicate the entire first term to <strong>Chapters 1 through 8</strong>, allowing students to deeply digest the instruction set principles, pipelining, and memory hierarchies. The labs can focus on translating C code to ARM assembly, observing cache hits/misses, and writing bare-metal device drivers.</li>
-<li><strong>Semester 2 (Cyber-Physical Systems):</strong> Dedicate the second term to <strong>Chapters 9 through 14</strong>. This allows for a much deeper exploration of control algorithms, distributed optimal power flow, and modifying the RISC-V instruction set.</li>
-</ul>
-<h3 id="laboratory-and-software-tools"><a class="header" href="#laboratory-and-software-tools">Laboratory and Software Tools</a></h3>
-<p>The best way to learn digital design and system architecture is to do it. However, verifying hard real-time CPS constraints on standard operating systems is often frustrated by wall-clock scheduling jitter. To resolve this, this book includes companion homework assignments designed around the <strong>VirtMCU FirmwareStudio</strong>.</p>
-<p>Detailed instructions on how to use the software tools in a course are provided alongside the text. The VirtMCU framework allows students to execute ARM and RISC-V binaries in a deterministic, <code>slaved-icount</code> mode. By pairing VirtMCU with external physics engines (such as MuJoCo) via zero-copy shared memory, students can gain hands-on experience balancing an inverted pendulum or stabilizing a drone using the precise cycle-accurate timings required in the real world.</p>
+                        <h1 id="foreword-welcome-to-the-edge"><a class="header" href="#foreword-welcome-to-the-edge">Foreword: Welcome to the Edge</a></h1>
+<p>If you have spent your career building web applications, enterprise backends, or mobile apps, you are used to the operating system handling the messy details of reality. If a network packet is delayed by 50 milliseconds because the Linux kernel decided to flush a disk cache, a video might buffer for a split second. The user barely notices.</p>
+<p>In a Cyber-Physical System (CPS), time is a metric of absolute correctness. <strong>If your autonomous drone’s flight controller delays a motor actuation packet by 50 milliseconds, the drone doesn’t buffer—it crashes.</strong></p>
+<p>We are entering the era of <strong>CPS 2.0</strong>. We are no longer just building isolated embedded microcontrollers that blink LEDs; we are designing distributed, intelligent metasystems that merge Operational Technology (OT), Information Technology (IT), and Artificial Intelligence (AI) to control critical physical infrastructure. This book is your survival guide to the hardware-software interface. We are going to strip away the comfortable abstractions of virtual memory and general-purpose desktop operating systems. You are going to learn how to write C, Rust, and assembly code that commands the bare metal of 64-bit ARM and RISC-V processors,. You will learn how to configure a Direct Memory Access (DMA) controller, write a bulletproof Interrupt Service Routine (ISR), and implement the core of a Real-Time Operating System (RTOS). Finally, you will learn how to deploy AI models directly to the edge, running inference on custom domain-specific silicon.</p>
+<p>However, embedded firmware does not run in isolation; it interacts with sensors, actuators, and other microcontrollers, all governed by physics that unfolds in continuous time. To ensure you can actually test these hard real-time concepts without the chaotic wall-clock scheduling jitter of a standard desktop OS, you will use the <strong>VirtMCU FirmwareStudio</strong>. VirtMCU is a deterministic multi-node simulation framework that lock-steps the execution of your firmware with a continuous-time physics engine. By using cooperative time slaving modes like <code>slaved-icount</code> and <code>slaved-suspend</code>, it ensures that QEMU’s virtual clock never free-runs, meaning your simulated drone flies (or crashes) exactly the same way on every single simulation run.</p>
+<p>Put away the theoretical textbooks. Fire up your terminal. Let’s talk to the silicon.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="cover.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="chapter_01.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="about.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -226,11 +202,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="cover.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="chapter_01.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="about.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Chapter 6: SoC Interconnects and Peripherals - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+        <title>Chapter 6: Real-Time Operating Systems (RTOS) Under the Hood - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a94af807.js";
+            window.path_to_searchindex_js = "searchindex-b5759738.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-86b32607.js"></script>
+        <script src="toc-70de4e68.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,122 +177,151 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="chapter-6-soc-interconnects-and-peripherals"><a class="header" href="#chapter-6-soc-interconnects-and-peripherals">Chapter 6: SoC Interconnects and Peripherals</a></h1>
-<h2 id="61-introduction-breaking-out-of-the-core"><a class="header" href="#61-introduction-breaking-out-of-the-core">6.1 Introduction: Breaking Out of the Core</a></h2>
-<p>Welcome back. In our previous chapters, we constructed the processor pipeline and designed a deep memory hierarchy to keep the execution units fed with instructions and data. However, a processor that only talks to its own memory is effectively a brain in a jar; it can compute, but it cannot interact with the universe. For a Cyber-Physical System (CPS), interaction is the entire point. The system must sense physical properties, process them, and actuate mechanical responses.</p>
-<p>To bridge this gap, modern microprocessors are integrated with numerous communication interfaces and hardware controllers onto a single silicon die, creating a System-on-Chip (SoC). A SoC is not merely a collection of isolated parts; it is a complex, distributed network of functional blocks. These blocks, ranging from low-speed sensors to high-speed graphics accelerators, must all communicate flawlessly.</p>
-<p>In this chapter, we explore how data physically moves across the silicon. We will abandon the simplified abstraction of a monolithic “system bus” and dive into the mechanics of modern SoC interconnects. We will examine the Advanced Microcontroller Bus Architecture (AMBA), detailing the APB, AHB-Lite, and AXI protocols. Next, we will transition to the hardware-software interface, explaining how your C code interacts with these hardware peripherals through Memory-Mapped I/O (MMIO), interrupts, and Direct Memory Access (DMA). Finally, we will look at the Universal Asynchronous Receiver-Transmitter (UART) as a fundamental case study for external serial communication.</p>
-<h2 id="62-the-principles-of-soc-interconnects"><a class="header" href="#62-the-principles-of-soc-interconnects">6.2 The Principles of SoC Interconnects</a></h2>
-<p>Historically, computer components were distributed across multiple chips on a printed circuit board and connected via shared, parallel copper wires—a traditional “bus”. In a classic shared bus, multiple devices physically share the same wires. To prevent electrical short circuits (a “bus fight”), devices use tri-state logic gates to disconnect themselves from the wires when not transmitting. However, shared buses suffer from severe physical and performance limitations. Only one device can transmit at a time, meaning bandwidth is inherently limited. Furthermore, as clock frequencies increase, the capacitance and physical length of shared wires cause signal degradation and propagation delays that cap the maximum speed.</p>
-<p>In a modern SoC, the “bus” is no longer a single set of shared wires; it is an active <strong>interconnect fabric</strong>. The interconnect fabric multiplexes and routes transactions between components using dedicated, unidirectional point-to-point wiring.</p>
-<h3 id="621-initiators-and-targets"><a class="header" href="#621-initiators-and-targets">6.2.1 Initiators and Targets</a></h3>
-<p>Communication across an interconnect always involves two roles:</p>
-<ul>
-<li><strong>Initiator (or Manager / Requester):</strong> The device that starts a transaction by supplying an address and command. The CPU core and the DMA controller are the most common initiators.</li>
-<li><strong>Target (or Subordinate / Completer):</strong> The device that responds to the transaction. Memory controllers, UART peripherals, and timers are common targets.</li>
-</ul>
-<p>The interconnect fabric sits between the initiators and the targets. It intercepts all transactions issued by the initiators and routes them to the appropriate target based on the address.</p>
-<h3 id="622-address-decoding-and-routing"><a class="header" href="#622-address-decoding-and-routing">6.2.2 Address Decoding and Routing</a></h3>
-<p>Every target connected to the fabric is assigned a specific range of addresses, defining the system’s <strong>memory map</strong>. When an initiator issues a transaction, it drives the target address onto the interconnect.</p>
-<p>The fabric contains an internal <strong>address decoder</strong>. The decoder compares the high-order bits of the requested address against a routing table to determine which target the initiator is trying to reach. For example, if a SoC places a UART controller at address <code>0x4000_0000</code>, any read or write starting with <code>0x40</code> will be routed specifically to the UART’s hardware port.</p>
-<p>Once the target is identified, the interconnect fabric uses multiplexers to physically connect the initiator’s data and control lines to the target’s receiving lines. To avoid complex hardware subtractors in the decoding logic, SoC memory maps generally place peripherals at boundaries that are multiples of powers of two. This allows the interconnect to route traffic simply by looking at a specific prefix of the address bits, functioning much like an IP subnet mask in computer networking.</p>
-<h3 id="623-backpressure-and-flow-control"><a class="header" href="#623-backpressure-and-flow-control">6.2.3 Backpressure and Flow Control</a></h3>
-<p>In a heterogeneous SoC, an initiator running at 1 GHz may attempt to send data to a peripheral running at 10 MHz. If the initiator sends data faster than the target can process it, data will be lost. To prevent this, interconnect protocols implement <strong>backpressure</strong>.</p>
-<p>Backpressure allows a slower component to stall a faster component. This is universally handled using a “ready-valid” handshake mechanism. The initiator asserts a <code>VALID</code> signal when its data and address are stable. The target asserts a <code>READY</code> signal when it is capable of accepting the data. The transaction only completes on the exact clock edge where both <code>VALID</code> and <code>READY</code> are asserted simultaneously. If the target is busy, it deasserts <code>READY</code>, forcing the initiator to hold its data on the lines and wait, effectively stalling the initiator’s pipeline.</p>
-<h2 id="63-the-amba-interconnect-protocols"><a class="header" href="#63-the-amba-interconnect-protocols">6.3 The AMBA Interconnect Protocols</a></h2>
-<p>To allow intellectual property (IP) blocks from different vendors (e.g., an ARM CPU, a Synopsys memory controller, and a custom accelerator) to communicate, the semiconductor industry relies on standardized interconnect protocols. The most ubiquitous standard is ARM’s <strong>Advanced Microcontroller Bus Architecture (AMBA)</strong>. AMBA is not a single bus; it is a family of protocols designed for different performance, power, and area trade-offs. We will examine three critical AMBA protocols: APB, AHB-Lite, and AXI.</p>
-<h3 id="631-apb-the-advanced-peripheral-bus"><a class="header" href="#631-apb-the-advanced-peripheral-bus">6.3.1 APB: The Advanced Peripheral Bus</a></h3>
-<p>Not all peripherals require high-bandwidth communication. Devices like timers, GPIO controllers, and UARTs have very low data throughput requirements. Providing these slow devices with complex, high-speed interconnect logic would waste precious silicon area and increase static power consumption.</p>
-<p>The <strong>Advanced Peripheral Bus (APB)</strong> is designed specifically for these low-bandwidth control interfaces. APB is a non-pipelined, state-machine-based protocol. Every transaction takes a minimum of two clock cycles to complete.</p>
-<p>The APB protocol utilizes a strict three-state machine: <code>IDLE</code>, <code>SETUP</code>, and <code>ACCESS</code>:</p>
+                        <h1 id="chapter-6-real-time-operating-systems-rtos-under-the-hood"><a class="header" href="#chapter-6-real-time-operating-systems-rtos-under-the-hood">Chapter 6: Real-Time Operating Systems (RTOS) Under the Hood</a></h1>
+<p>If you are building a system that balances an inverted pendulum, flies a quadcopter, or controls a robotic arm, writing a massive <code>while(1)</code> super-loop quickly becomes a nightmare. If the routine that reads the gyroscope takes slightly too long, the routine that updates the motor speeds runs late, and your quadcopter flips upside down.</p>
+<p>To fix this, we introduce the <strong>Real-Time Operating System (RTOS)</strong>. An RTOS allows you to split your monolithic firmware into smaller, independent threads (or tasks). The RTOS kernel manages the CPU, transparently pausing and resuming tasks to ensure that every hard deadline is met,.</p>
+<p>But an RTOS is not black magic. It is just software. In this chapter, we are going to look under the hood to see exactly how a CPU physically swaps between tasks, and how we can mathematically prove that our tasks will always hit their deadlines.</p>
+<h2 id="61-task-control-blocks-tcb--context-switching"><a class="header" href="#61-task-control-blocks-tcb--context-switching">6.1 Task Control Blocks (TCB) &amp; Context Switching</a></h2>
+<p>In a single-CPU system, only one task can physically be in the “Running” state at any exact nanosecond. All other tasks are either “Ready” (waiting for their turn), “Waiting” (blocked on a resource or delay), or “Terminated”.</p>
+<p>To manage these tasks, the RTOS creates a data structure in RAM for every single task, known as the <strong>Task Control Block (TCB)</strong>,. The TCB is the task’s identity. At an absolute minimum, it contains:</p>
 <ol>
-<li><strong>IDLE:</strong> The bus is inactive.</li>
-<li><strong>SETUP:</strong> When a transaction begins, the requester asserts a select signal (<code>PSEL</code>) for the target peripheral, along with the address (<code>PADDR</code>) and a read/write control signal (<code>PWRITE</code>). The bus remains in this state for exactly one clock cycle, giving the target peripheral time to wake up and prepare its internal logic.</li>
-<li><strong>ACCESS:</strong> On the next clock edge, the requester asserts the enable signal (<code>PENABLE</code>). If it is a write, the data is driven onto <code>PWDATA</code>. The target evaluates the request. If the target needs more time, it holds its <code>PREADY</code> signal low, extending the <code>ACCESS</code> state and applying backpressure. Once the target is finished, it drives <code>PREADY</code> high (and supplies read data on <code>PRDATA</code> if applicable). The transaction completes, and the bus returns to <code>IDLE</code> or begins a new <code>SETUP</code> phase.</li>
+<li><strong>Task Stack Pointer:</strong> The memory address of the current top of the task’s private stack.</li>
+<li><strong>Task State:</strong> Whether the task is Running, Ready, or Blocked.</li>
+<li><strong>Task Priority:</strong> How important the task is relative to others.</li>
 </ol>
-<p>By guaranteeing that signals remain completely stable during the <code>SETUP</code> to <code>ACCESS</code> transition, APB eliminates unwanted circuit switching (glitches), significantly reducing dynamic power consumption.</p>
-<h3 id="632-ahb-lite-the-advanced-high-performance-bus"><a class="header" href="#632-ahb-lite-the-advanced-high-performance-bus">6.3.2 AHB-Lite: The Advanced High-performance Bus</a></h3>
-<p>While APB is excellent for slow peripherals, it is far too slow for main memory or high-speed DMA transfers. For high-bandwidth components, designers use the <strong>Advanced High-performance Bus (AHB-Lite)</strong>.</p>
-<p>AHB-Lite achieves high throughput by abandoning the slow state-machine approach of APB in favor of a strictly <strong>pipelined</strong> architecture. In AHB-Lite, every transaction is split into two distinct phases: an <strong>Address Phase</strong> and a <strong>Data Phase</strong>.</p>
-<ul>
-<li><strong>Address Phase:</strong> Lasts exactly one clock cycle. The manager drives the address (<code>HADDR</code>), the transfer direction (<code>HWRITE</code>), and the size of the transfer (<code>HSIZE</code>).</li>
-<li><strong>Data Phase:</strong> Begins immediately after the Address Phase. The manager drives write data (<code>HWDATA</code>), or the subordinate provides read data (<code>HRDATA</code>).</li>
-</ul>
-<p>Because of the pipelining, the <em>Data Phase of the current transaction overlaps exactly with the Address Phase of the next transaction</em>. This means that while the memory is fetching data for address $A$, the manager is already transmitting address $A+4$ on the bus. This overlapping allows AHB-Lite to achieve 100% bus utilization during sequential reads or writes, effectively transferring one word per clock cycle.</p>
-<p>To apply backpressure, an AHB-Lite subordinate pulls the <code>HREADY</code> signal low during the Data Phase. Because the pipeline is locked together, stalling the Data Phase of the current transaction inherently forces the Address Phase of the subsequent transaction to stall as well.</p>
-<p>AHB-Lite also supports <strong>Bursts</strong> (<code>HBURST</code>). A burst allows a manager to inform the subordinate that it plans to perform a sequence of 4, 8, or 16 consecutive transfers. This allows advanced memory controllers, like SDRAM, to optimize their internal row-buffer accesses before the subsequent addresses are even placed on the bus.</p>
-<h3 id="633-axi-the-advanced-extensible-interface"><a class="header" href="#633-axi-the-advanced-extensible-interface">6.3.3 AXI: The Advanced eXtensible Interface</a></h3>
-<p>As processor speeds pushed into the gigahertz range and multi-core SoCs emerged, even the pipelined AHB-Lite protocol became a bottleneck. In AHB-Lite, the Address and Data phases are rigidly locked together; if a memory read stalls, the entire bus pipeline is blocked, preventing any other transactions from occurring. Furthermore, AHB-Lite uses a single set of shared control signals for both reading and writing, meaning a system cannot read and write simultaneously (half-duplex).</p>
-<p>To solve this, ARM introduced the <strong>Advanced eXtensible Interface (AXI)</strong>. AXI is a radical departure from traditional bus architectures. Instead of a single monolithic bus, AXI defines <strong>five completely independent, unidirectional channels</strong> between a manager and a subordinate:</p>
-<ol>
-<li><strong>Read Address Channel (AR):</strong> Carries the address and control info for a read.</li>
-<li><strong>Read Data Channel (R):</strong> Carries the requested data from the subordinate back to the manager.</li>
-<li><strong>Write Address Channel (AW):</strong> Carries the address and control info for a write.</li>
-<li><strong>Write Data Channel (W):</strong> Carries the payload data from the manager to the subordinate.</li>
-<li><strong>Write Response Channel (B):</strong> Carries a success/failure acknowledgment from the subordinate back to the manager.</li>
-</ol>
-<p>Each of these five channels operates completely independently, using its own <code>VALID</code> and <code>READY</code> handshake signals. This physical decoupling yields immense performance benefits.</p>
-<p>First, it enables <strong>Full-Duplex</strong> operation; a DMA controller can write data on the W channel at the exact same time it is receiving completely unrelated read data on the R channel, doubling peak throughput.</p>
-<p>Second, AXI supports <strong>Outstanding Transactions</strong> and <strong>Out-of-Order Completion</strong>. A CPU can blast five different read addresses down the AR channel without waiting for the data to return. The memory controller receives all five addresses and can reorder the reads based on which physical DRAM banks are currently open. When the memory controller finds the data, it sends it back on the R channel. Because the data might return out of order, every transaction is tagged with a unique Transaction ID (<code>ARID</code> / <code>RID</code>). The CPU matches the incoming data to the original request using this ID, much like a restaurant patron matching their receipt number to an order.</p>
-<p>Because AXI is complex, ARM also provides <strong>AXI-Lite</strong>, a stripped-down version that removes burst capabilities and IDs. AXI-Lite provides AXI’s channel decoupling but is simple enough to interface with standard registers.</p>
-<h2 id="64-the-hardware-software-interface"><a class="header" href="#64-the-hardware-software-interface">6.4 The Hardware-Software Interface</a></h2>
-<p>Having established how data traverses the silicon via interconnects like AXI and APB, we must examine how the software engineer actually commands this hardware. In high-level languages like C, we manipulate variables in memory. But how do we tell a physical UART peripheral to transmit a byte?</p>
-<h3 id="641-memory-mapped-io-mmio-vs-port-mapped-io"><a class="header" href="#641-memory-mapped-io-mmio-vs-port-mapped-io">6.4.1 Memory-Mapped I/O (MMIO) vs. Port-Mapped I/O</a></h3>
-<p>There are two architectural paradigms for interacting with peripherals: Port-Mapped I/O and Memory-Mapped I/O.</p>
-<p>In older architectures like the Intel x86, peripheral devices exist in a completely separate, isolated address space. To access them, the CPU provides special, dedicated assembly instructions like <code>IN</code> and <code>OUT</code>. When the CPU executes an <code>OUT</code> instruction, it asserts a specific physical pin on the processor (the <code>M/IO</code> pin) to tell the hardware, “I am talking to a peripheral, not main memory”. This is known as <strong>Port-Mapped I/O</strong>.</p>
-<p>The ARM architecture (and almost all modern RISC designs) abandons this approach in favor of <strong>Memory-Mapped I/O (MMIO)</strong>. In MMIO, there are no special I/O instructions. The peripheral’s control and data registers are mapped directly into the standard, unified physical memory address space. From the CPU’s perspective, a peripheral register is indistinguishable from a standard RAM location. To send data to a peripheral, the software simply executes a standard assembly <code>STR</code> (Store Register) instruction targeting the specific memory address assigned to that device.</p>
-<p>This allows the C programmer to interact with hardware simply by casting an integer address to a volatile pointer:</p>
-<pre><code class="language-c">#define UART_TX_REG  (*(volatile uint32_t*) 0x40001000)
-UART_TX_REG = 'A'; // Hardware automatically routes this to the UART
+<p>When the RTOS decides it is time to stop running Task A and start running Task B, it performs a <strong>context switch</strong>. A context switch is the process of pausing a task, saving its exact CPU state (the context), and restoring the previously saved CPU state of another task.</p>
+<blockquote>
+<p><strong>NOTE: The C Compiler Cannot Help You Here</strong>
+Because a context switch involves forcibly ripping the CPU registers away from one task and giving them to another, this process cannot be written in standard C. It must be written in pure, low-level assembly language.</p>
+</blockquote>
+<h3 id="611-the-aarch64-context-switch"><a class="header" href="#611-the-aarch64-context-switch">6.1.1 The AArch64 Context Switch</a></h3>
+<p>Let’s look at the actual AArch64 assembly code for an RTOS context switch. This code is typically triggered by a hardware timer interrupt (like the SysTick timer) that fires every millisecond to give the RTOS kernel control of the CPU.</p>
+<p>When the timer interrupt fires, the CPU automatically saves the Program Counter (PC) and PSTATE, but we have to manually save the 32 general-purpose registers (X0-X31) onto Task A’s stack. Then, we save Task A’s stack pointer into its TCB, load Task B’s stack pointer from its TCB, and pop Task B’s registers off its stack.</p>
+<pre><code class="language-assembly">// rtos_context_switch.S
+.global rtos_context_switch
+.extern current_tcb    // Pointer to the TCB of the task being suspended
+.extern next_tcb       // Pointer to the TCB of the task being resumed
+
+rtos_context_switch:
+    // ---------------------------------------------------------
+    // STEP 1: Save the context of Task A
+    // ---------------------------------------------------------
+    // Push all 32 general-purpose registers onto Task A's stack
+    stp x0, x1, [sp, #-16]!
+    stp x2, x3, [sp, #-16]!
+    stp x4, x5, [sp, #-16]!
+    // ... (omitting X6-X27 for brevity) ...
+    stp x28, x29, [sp, #-16]!
+    
+    // Push the Link Register (X30). We don't push the SP directly; 
+    // we manipulate the actual SP register.
+    str x30, [sp, #-16]!
+
+    // ---------------------------------------------------------
+    // STEP 2: Save Task A's Stack Pointer to its TCB
+    // ---------------------------------------------------------
+    ldr x0, =current_tcb    // Load the address of the pointer current_tcb
+    ldr x1, [x0]            // Dereference to get the actual TCB address
+    mov x2, sp              // Copy the current hardware SP into X2
+    str x2, [x1]            // Store the SP into the first field of Task A's TCB
+
+    // ---------------------------------------------------------
+    // STEP 3: Load Task B's Stack Pointer from its TCB
+    // ---------------------------------------------------------
+    ldr x0, =next_tcb       // Load the address of the pointer next_tcb
+    ldr x1, [x0]            // Dereference to get the actual TCB address
+    ldr x2, [x1]            // Load Task B's saved SP from the first field of its TCB
+    mov sp, x2              // Overwrite the hardware SP with Task B's SP!
+                            // WE ARE NOW ON TASK B'S STACK.
+
+    // Update current_tcb to point to next_tcb
+    ldr x0, =current_tcb
+    str x1, [x0]
+
+    // ---------------------------------------------------------
+    // STEP 4: Restore the context of Task B
+    // ---------------------------------------------------------
+    // Pop the Link Register
+    ldr x30, [sp], #16
+    
+    // Pop all general-purpose registers off Task B's stack
+    ldp x28, x29, [sp], #16
+    // ... (omitting X6-X27) ...
+    ldp x4, x5, [sp], #16
+    ldp x2, x3, [sp], #16
+    ldp x0, x1, [sp], #16
+
+    // Return from the timer interrupt.
+    // The CPU will automatically pop the PC and PSTATE from the 
+    // exception registers, instantly resuming Task B where it left off.
+    eret
 </code></pre>
-<p>The <code>volatile</code> keyword is critical here. It explicitly commands the C compiler <em>never</em> to optimize away the memory access or cache the value in a CPU register, guaranteeing that every read or write genuinely reaches the hardware. Furthermore, MMIO regions are explicitly marked as “Device Memory” in the MMU page tables, bypassing the L1/L2 caches to ensure immediate, strongly-ordered electrical delivery to the peripheral.</p>
-<h3 id="642-programmed-io-polling"><a class="header" href="#642-programmed-io-polling">6.4.2 Programmed I/O (Polling)</a></h3>
-<p>The simplest method to manage a peripheral is <strong>Programmed I/O</strong> (often called polling). In this approach, the CPU executes a continuous loop, reading the peripheral’s status register until a specific bit indicates the device is ready.</p>
-<p>For example, to receive a byte from a UART, the CPU repeatedly reads the UART’s line status register checking the <code>Data Ready</code> flag. Once the flag becomes <code>1</code>, the CPU reads the data register to retrieve the byte.
-While trivial to program, polling is highly inefficient. The CPU wastes thousands or millions of clock cycles spinning in a tight loop, unable to perform useful computation or enter low-power sleep states. In modern, multitasking operating systems, polling is strictly avoided for routine operations.</p>
-<h3 id="643-interrupt-driven-io"><a class="header" href="#643-interrupt-driven-io">6.4.3 Interrupt-Driven I/O</a></h3>
-<p>To eliminate the massive waste of CPU cycles caused by polling, systems rely on <strong>Interrupt-Driven I/O</strong>. Instead of the CPU constantly asking the peripheral if it is ready, the peripheral notifies the CPU when an event occurs.</p>
-<p>Peripherals are wired directly to the CPU’s <strong>Nested Vector Interrupt Controller (NVIC)</strong>. When a UART receives a byte, its hardware asserts an interrupt request (IRQ) line. The NVIC detects this, immediately pauses the CPU’s current execution thread, pushes the CPU state to the stack, and forces the Program Counter to jump to an <strong>Interrupt Service Routine (ISR)</strong>. The ISR reads the byte from the UART’s data register, places it into an operating system queue, clears the hardware interrupt flag, and returns execution to the original thread.</p>
-<p>Interrupt-driven I/O allows the CPU to execute completely unrelated applications, or drop into deep sleep modes, waking only for a few microseconds when a physical event requires attention.</p>
-<h3 id="644-direct-memory-access-dma"><a class="header" href="#644-direct-memory-access-dma">6.4.4 Direct Memory Access (DMA)</a></h3>
-<p>While interrupts solve the problem of polling, they are still too slow for massive data transfers. If a gigabit Ethernet controller receives a 1,500-byte packet, generating 1,500 individual CPU interrupts to copy the data byte-by-byte into RAM would overwhelm the processor, a problem known as “interrupt storming”.</p>
-<p>To handle bulk data, SoCs utilize a <strong>Direct Memory Access (DMA) Controller</strong>. A DMA controller is an independent hardware engine that sits on the interconnect (typically as an AXI Manager) capable of generating its own read and write transactions.</p>
-<p>When the CPU needs to transfer data, it configures the DMA controller’s MMIO registers, providing a source address, a destination address, and a block size. The CPU then goes back to its normal tasks. The DMA controller autonomously arbitrates for interconnect bandwidth and transfers the data directly between the peripheral and main memory, completely bypassing the CPU execution pipeline. Because the DMA controller shares the memory interconnect, it performs <strong>cycle stealing</strong>, slipping its transactions onto the bus during cycles when the CPU is idle or accessing L1 cache. Once the entire multi-kilobyte block is successfully transferred, the DMA controller fires a single interrupt to notify the CPU that the memory buffer is ready for software processing.</p>
-<h2 id="65-core-soc-peripherals"><a class="header" href="#65-core-soc-peripherals">6.5 Core SoC Peripherals</a></h2>
-<p>With an understanding of how they connect to the system, we can briefly examine the internal architecture of the most ubiquitous CPS peripherals.</p>
-<h3 id="651-general-purpose-inputoutput-gpio"><a class="header" href="#651-general-purpose-inputoutput-gpio">6.5.1 General-Purpose Input/Output (GPIO)</a></h3>
-<p>The most fundamental interface is the <strong>GPIO</strong> controller. GPIOs allow software to directly manipulate the physical voltage levels on the external pins of the SoC chip. A GPIO block contains several MMIO registers:</p>
+<p>The magic happens right in the middle at <code>mov sp, x2</code>. In a single clock cycle, the entire local memory landscape of the processor changes. The CPU forgets Task A ever existed and begins looking at the history of Task B.</p>
+<h2 id="62-scheduling-for-deadlines"><a class="header" href="#62-scheduling-for-deadlines">6.2 Scheduling for Deadlines</a></h2>
+<p>Now that the RTOS can swap tasks, we have a new problem: <em>Which</em> task should it run next?</p>
+<p>An RTOS determines the next task using a scheduling algorithm. In hard real-time systems, we cannot just guess priorities and hope everything runs fast enough. We need mathematical proof that no task will ever miss its execution deadline,.</p>
+<p>The most common static-priority scheduling algorithm used in the industry is <strong>Rate Monotonic Scheduling (RMS)</strong>.</p>
+<h3 id="621-rate-monotonic-scheduling-rms"><a class="header" href="#621-rate-monotonic-scheduling-rms">6.2.1 Rate Monotonic Scheduling (RMS)</a></h3>
+<p>RMS assigns priorities to tasks using a simple, immutable rule: <strong>the shorter the execution period of the task, the higher its priority</strong>.</p>
+<p>If you have a Motor Control task that must run every 5 milliseconds, and a Sensor Logging task that runs every 10 milliseconds, the Motor Control task is mathematically forced to have a higher priority. It doesn’t matter if you <em>feel</em> the sensor data is more important; under RMS, frequency dictates priority.</p>
+<h3 id="622-the-utilization-formula"><a class="header" href="#622-the-utilization-formula">6.2.2 The Utilization Formula</a></h3>
+<p>How do we prove that a set of tasks running under RMS will meet all deadlines? We calculate the total CPU utilization factor.</p>
+<p>Every task $i$ has two parameters:</p>
 <ul>
-<li><strong>Direction Register:</strong> Sets each pin as an input (read sensor) or output (drive actuator).</li>
-<li><strong>Data Register:</strong> If configured as an output, writing a 1 or 0 physically drives the pin to $V_{DD}$ or GND. If configured as an input, reading this register samples the current digital voltage on the pin.</li>
-<li><strong>Pull-up/Pull-down Configuration:</strong> Activates internal resistors to prevent “floating” inputs that could cause CMOS shoot-through current.</li>
+<li>$C_i$: The worst-case execution time (how long it takes the CPU to run the task).</li>
+<li>$T_i$: The execution period (the deadline by which the task must finish).</li>
 </ul>
-<h3 id="652-the-universal-asynchronous-receiver-transmitter-uart"><a class="header" href="#652-the-universal-asynchronous-receiver-transmitter-uart">6.5.2 The Universal Asynchronous Receiver-Transmitter (UART)</a></h3>
-<p>While GPIO is useful for simple logic, exchanging complex data with external microcontrollers or diagnostic terminals requires serial communication. The <strong>UART</strong> is a ubiquitous, legacy protocol that transmits data sequentially over a single wire without a shared clock signal.</p>
-<p>Because there is no clock wire to synchronize the sender and receiver, a UART relies on strict timing agreements. Both ends must be configured to the exact same <strong>baud rate</strong> (symbols per second).</p>
-<p>A standard UART transmission frame operates as follows:</p>
-<ol>
-<li><strong>Idle State:</strong> The line is held at logic HIGH (1).</li>
-<li><strong>Start Bit:</strong> The transmitter pulls the line LOW (0) for exactly one baud period. This alerts the receiver that a frame is beginning, allowing it to synchronize its internal clock timers.</li>
-<li><strong>Data Bits:</strong> The transmitter sends 5 to 8 bits of payload data, usually Least Significant Bit (LSB) first.</li>
-<li><strong>Parity Bit (Optional):</strong> A hardware-generated bit used for basic error detection (e.g., ensuring the total number of 1s is even).</li>
-<li><strong>Stop Bit:</strong> The line is driven HIGH (1) to return to the idle state and guarantee a clear transition for the next start bit.</li>
-</ol>
-<p>Because modern CPUs run billions of times faster than standard UART baud rates (e.g., 115,200 bps), UART IP blocks incorporate hardware <strong>FIFO (First-In, First-Out) buffers</strong>. When the CPU wishes to print a string, it blasts the entire string into the UART’s TX FIFO using MMIO in just a few nanoseconds. The hardware state machine then sequentially shifts the bits out over the physical wire at the slow baud rate, eventually raising an interrupt when the FIFO is empty and ready for more data.</p>
-<h3 id="653-synchronous-serial-spi-and-i2c"><a class="header" href="#653-synchronous-serial-spi-and-i2c">6.5.3 Synchronous Serial: SPI and I2C</a></h3>
-<p>While UART is asynchronous, faster peripheral communication is achieved using synchronous protocols that include a dedicated clock wire.</p>
+<p>The CPU utilization for a single task is simply $U_i = \frac{C_i}{T_i}$. The total utilization for $n$ tasks is the sum of all individual utilizations.</p>
+<p>RMS guarantees that all tasks will meet their deadlines if the total CPU utilization satisfies this mathematical bound:</p>
+<p>$$ \sum_{i=1}^{n} \frac{C_i}{T_i} \le n(2^{1/n} - 1) $$</p>
+<p>Let’s look at the math for a system with 3 tasks ($n=3$):
+$3 \times (2^{1/3} - 1) \approx 0.78$,,</p>
+<p>This means that if you have 3 tasks, and their combined CPU utilization is <strong>78% or less</strong>, RMS mathematically guarantees that no task will ever miss a deadline, even in the worst-case alignment where all tasks request the CPU at the exact same millisecond,,.</p>
+<p>Let’s test a hypothetical set of three tasks:</p>
 <ul>
-<li><strong>SPI (Serial Peripheral Interface):</strong> A full-duplex protocol utilizing four wires: Master Out Slave In (MOSI), Master In Slave Out (MISO), Serial Clock (SCK), and Chip Select (CS). Because the master explicitly drives the clock, SPI can easily run at tens of megahertz, making it ideal for interfacing with external flash memory or LCD screens.</li>
-<li><strong>I2C (Inter-Integrated Circuit):</strong> A half-duplex, multi-master protocol utilizing only two wires: Serial Data (SDA) and Serial Clock (SCL). I2C uses open-drain signaling with pull-up resistors and requires devices to broadcast target addresses over the bus before data transfer. It is slower than SPI but drastically reduces pin count, making it standard for reading low-speed sensor arrays (e.g., accelerometers, temperature probes).</li>
+<li><strong>Task 1 (Motor):</strong> Runs for 2ms, every 6ms ($C_1=2, T_1=6$).</li>
+<li><strong>Task 2 (Sensors):</strong> Runs for 1ms, every 5ms ($C_2=1, T_2=5$).</li>
+<li><strong>Task 3 (Display):</strong> Runs for 2ms, every 12ms ($C_3=2, T_3=12$).</li>
 </ul>
-<h2 id="66-virtmcu-homework-building-a-deterministic-uart-driver"><a class="header" href="#66-virtmcu-homework-building-a-deterministic-uart-driver">6.6 VirtMCU Homework: Building a Deterministic UART Driver</a></h2>
-<p>In traditional embedded systems education, writing a bare-metal UART driver introduces students to the harsh realities of physical timing. If your C code relies on polling, and the host operating system scheduling your emulator preempts your thread for a few milliseconds, the simulated UART peripheral will drop characters, leading to corrupted strings and immense frustration. Standard virtual machines fail to replicate the strict, continuous-time relationships required for asynchronous serial communication.</p>
-<p>To resolve this, this chapter’s homework relies on the <strong>VirtMCU</strong> framework. Because VirtMCU utilizes a dynamic QOM plugin architecture to enforce deterministic virtual time via the <code>hw/rust/backbone/clock</code> module, time <em>stops</em> for the simulated SoC when the simulator pauses.</p>
-<ol>
-<li><strong>Memory Map Investigation:</strong> You will inspect the VirtMCU hardware definition files to locate the base address of the APB-attached UART peripheral.</li>
-<li><strong>MMIO Driver Implementation:</strong> You will write a C driver utilizing volatile pointers to interact with the UART’s memory-mapped control, status, and data registers. First, you will implement a polled transmission function, writing a string to the TX register and spinning until the <code>TX_EMPTY</code> flag is asserted.</li>
-<li><strong>Deterministic Evaluation:</strong> You will launch the VirtMCU instance and connect a simulated serial terminal to the <code>hw/rust/comms/chardev</code> deterministic backend. Because VirtMCU strictly lock-steps the UART baud-rate generation to the exact number of retired instructions in the <code>slaved-icount</code> mode, you will observe flawless character delivery. You will then intentionally configure a baud rate mismatch between your driver and the terminal to observe framing errors, empirically proving how asynchronous protocols fail without precise timing synchronization.</li>
-</ol>
+<p>Total Utilization $U = \frac{2}{6} + \frac{1}{5} + \frac{2}{12} = 0.33 + 0.20 + 0.17 = 0.70$.</p>
+<p>Because 70% is less than our 78% bound, this system is <strong>schedulable</strong>,. You can flash this firmware to your drone, and you can sleep soundly knowing the RTOS will never drop a motor control packet.</p>
+<blockquote>
+<p><strong>WARNING: The 78% Threshold</strong>
+What happens to the remaining 22% of the CPU’s time? It is essentially wasted. If you try to add a 4th task that pushes the total utilization to 85%, the static-priority RMS math breaks down. The system <em>might</em> still work, but you can no longer mathematically guarantee it,. If you absolutely must push your CPU utilization to 99%, you have to abandon RMS and use a more complex, dynamic-priority algorithm like Earliest Deadline First (EDF).</p>
+</blockquote>
+<h2 id="63-concurrency-hazards"><a class="header" href="#63-concurrency-hazards">6.3 Concurrency Hazards</a></h2>
+<p>By splitting our monolithic super-loop into multiple independent threads, we have gained the ability to guarantee hard real-time deadlines. But this power comes with a sharp edge. When multiple threads share the same physical memory space and hardware peripherals, they inevitably have to share resources. We use synchronization primitives like mutexes and semaphores to protect these critical sections, but if you aren’t careful, the very mechanisms designed to protect your system will bring it crashing down.</p>
+<p>In a Cyber-Physical System, concurrency hazards don’t just throw an exception on a screen—they lock up flight controllers and drop drones out of the sky. The two most notorious hazards you will face are deadlocks and priority inversion.</p>
+<h3 id="631-deadlocks"><a class="header" href="#631-deadlocks">6.3.1 Deadlocks</a></h3>
+<p>A deadlock is a specific condition in which two or more tasks are simultaneously waiting for resources held by one another, leaving all involved threads in a wait state indefinitely.</p>
+<p>Deadlocks most commonly occur when multiple threads attempt to lock multiple mutexes in different sequences. Suppose you have an autonomous rover with two hardware resources: a robotic arm (protected by <code>mutex_arm</code>) and a camera (protected by <code>mutex_camera</code>).</p>
+<p>If <code>Thread 1</code> (the sampling task) locks <code>mutex_arm</code> and then attempts to lock <code>mutex_camera</code>, it will block if the camera is currently in use. Meanwhile, <code>Thread 2</code> (the navigation task) has already locked <code>mutex_camera</code> and suddenly decides it needs to lock <code>mutex_arm</code> to move the arm out of the way.</p>
+<p>Neither task can proceed from this state. <code>Thread 1</code> is waiting on <code>Thread 2</code>, and <code>Thread 2</code> is waiting on <code>Thread 1</code>. The system is deadlocked. The only way to fix this in software is strict discipline: you must architect your code so that all threads acquire multiple mutexes in the exact same predefined hierarchical order. Some sophisticated RTOS implementations can verify mutex ownership during a lock attempt and return an error code rather than freezing the system if a deadlock is imminent, but in simpler kernels, avoiding deadlocks is entirely the developer’s responsibility.</p>
+<h3 id="632-priority-inversion"><a class="header" href="#632-priority-inversion">6.3.2 Priority Inversion</a></h3>
+<p>While deadlocks are usually caused by logical bugs in your locking sequence, <strong>priority inversion</strong> is a far more insidious phenomenon that can occur in real-time kernels even when your locking logic is perfectly sound. It refers to a catastrophic scheduling failure where a lower-priority task inadvertently blocks the execution of a higher-priority task, completely upending the mathematical guarantees of Rate Monotonic Scheduling (RMS).</p>
+<p>To understand how this happens, imagine a system with three threads:</p>
+<ul>
+<li><strong>Thread H</strong> (High Priority)</li>
+<li><strong>Thread M</strong> (Medium Priority)</li>
+<li><strong>Thread L</strong> (Low Priority)</li>
+</ul>
+<p>Suppose <code>Thread L</code> wakes up and acquires a mutex to write data to a shared memory buffer. While <code>Thread L</code> is executing its critical section, <code>Thread H</code> wakes up. Because <code>H</code> has a higher priority, the RTOS preempts <code>L</code> and gives the CPU to <code>H</code>.</p>
+<p>Shortly after, <code>Thread H</code> attempts to acquire the exact same mutex. Because <code>L</code> still holds the mutex, <code>H</code> is immediately placed into the Blocked state, and the RTOS hands the CPU back to <code>L</code> so it can finish its work and release the lock. So far, the system is working exactly as intended.</p>
+<p>But then, disaster strikes. While <code>L</code> is trying to finish its critical section, <code>Thread M</code> becomes ready to run. Because <code>M</code> does not rely on that specific shared resource, it doesn’t need the mutex. Since <code>M</code> has a higher priority than <code>L</code>, the RTOS preempts <code>L</code> and gives the CPU to <code>M</code>.</p>
+<p>Look at the state of our system now: <code>Thread M</code> is happily running, preempting <code>Thread L</code> and preventing it from releasing the resource required by <code>Thread H</code>. In effect, <code>Thread M</code> is indirectly blocking <code>Thread H</code>. The intended priority regime is completely inverted. If <code>Thread M</code> runs for a long time, <code>Thread H</code> will miss its hard real-time deadline.</p>
+<blockquote>
+<p><strong>WAR STORY: Priority Inversion on Mars</strong>
+While the issue of priority inversion might seem like an obscure academic edge case, it arises even in the most carefully designed, multi-million-dollar real-time systems.</p>
+<p>In 1997, shortly after the NASA Mars Pathfinder rover landed on the Red Planet, its main processor began experiencing frequent, unexpected resets. The rover would simply reboot itself in the middle of operations. NASA engineers scrambled to pull the system logs across the solar system and eventually diagnosed the problem: a priority inversion in the VxWorks real-time operating system code.</p>
+<p>An infrequent, low-priority meteorological data-gathering task had acquired a lock on the rover’s shared information bus. A high-priority bus management task tried to access the bus and blocked. Meanwhile, a medium-priority communications task woke up and preempted the low-priority meteorological task. The high-priority task was starved of execution time, triggering a hardware watchdog timer to reset the entire system to save the rover. NASA engineers had to upload a remote software patch to the rover’s RTOS kernel to enable a specific protocol that fixed the scheduling behavior, enabling the mission to proceed.</p>
+</blockquote>
+<h3 id="633-priority-inheritance-protocols-pip"><a class="header" href="#633-priority-inheritance-protocols-pip">6.3.3 Priority Inheritance Protocols (PIP)</a></h3>
+<p>To prevent priority inversion from bringing down your system (or your spacecraft), RTOS developers created a kernel-level mechanism known as <strong>Priority Inheritance</strong>.</p>
+<p>Under a Priority Inheritance Protocol (PIP), the RTOS kernel actively monitors the ownership of mutexes and the queues of threads waiting on them. When a high-priority thread attempts to acquire a mutex that is currently held by a low-priority thread, the RTOS intervenes: it temporarily elevates the priority of the low-priority thread to match the priority of the waiting high-priority thread.</p>
+<p>At the kernel level, this means the RTOS modifies the Task Control Block (TCB) of <code>Thread L</code>, changing its current effective priority to equal that of <code>Thread H</code>.</p>
+<p>With its newly inherited high priority, <code>Thread L</code> resumes execution. If <code>Thread M</code> (the medium-priority task) wakes up now, the RTOS will <em>not</em> let it preempt <code>Thread L</code>, because <code>L</code> is currently executing at <code>H</code>’s priority level. This elegantly eliminates the possibility that a mid-priority thread can delay the low-priority thread holding the lock.</p>
+<p>Once <code>Thread L</code> finally finishes its critical section and releases the mutex, the RTOS immediately restores <code>Thread L</code> to its original, low base priority, and hands the CPU over to <code>Thread H</code>, which now holds the mutex.</p>
+<p>When writing RTOS code, standard semaphores usually <em>do not</em> support priority inheritance because they are designed for generic signaling, not mutual exclusion. If you are protecting a shared resource in a hard real-time environment, you must specifically instantiate a <strong>Mutex</strong> object and ensure that the RTOS’s Priority Inheritance feature is enabled for it.</p>
 
                     </main>
 

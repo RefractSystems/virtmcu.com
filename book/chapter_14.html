@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Chapter 14: Hardware Acceleration and the Future of CPS - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+        <title>Chapter 14: Resilient Control and Byzantine Faults - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a94af807.js";
+            window.path_to_searchindex_js = "searchindex-b5759738.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-86b32607.js"></script>
+        <script src="toc-70de4e68.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,50 +177,98 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="chapter-14-domain-specific-architectures-and-cloudedge-integration"><a class="header" href="#chapter-14-domain-specific-architectures-and-cloudedge-integration">Chapter 14: Domain-Specific Architectures and Cloud/Edge Integration</a></h1>
-<h2 id="141-introduction-the-end-of-moores-law-and-the-rise-of-dsas"><a class="header" href="#141-introduction-the-end-of-moores-law-and-the-rise-of-dsas">14.1 Introduction: The End of Moore’s Law and the Rise of DSAs</a></h2>
-<p>In the preceding chapters, we focused extensively on general-purpose microprocessors and their application in Cyber-Physical Systems (CPS). We explored pipelining, out-of-order execution, memory hierarchies, and the real-time operating systems required to enforce deterministic physical control. However, the computing landscape is undergoing a profound structural shift.</p>
-<p>For decades, software engineers relied on Moore’s Law and Dennard scaling to automatically provide faster, more energy-efficient general-purpose CPUs every two years. Today, this free ride has effectively ended. As Gordon Moore himself noted, “Moore’s Law can’t continue forever. We have another 10–20 years before we reach a fundamental limit”. The cessation of Dennard scaling (the power wall) means that architects can no longer simply increase clock frequencies or pack more active general-purpose cores onto a die without melting the silicon.</p>
-<p>Given the end of Moore’s Law and Dennard scaling, the only path forward for radically improved performance and energy efficiency is the <strong>Domain-Specific Architecture (DSA)</strong>. Unlike general-purpose CPUs, which are designed to run everything from text editors to web browsers reasonably well, DSAs are custom-tailored to accelerate a specific class of applications. By discarding the immense hardware complexity required for general-purpose out-of-order execution, DSAs devote their silicon area entirely to highly efficient, specialized arithmetic and data routing.</p>
-<p>In the context of modern CPS 2.0, the architecture is split across a vast continuum: from ultra-low-power DSAs operating at the physical edge, to massive Warehouse-Scale Computers (WSCs) operating in the cloud. This chapter bridges that divide, examining the hardware architectures that define the modern edge-to-cloud ecosystem.</p>
-<h2 id="142-architecting-for-the-edge-mobile-and-soc-architectures"><a class="header" href="#142-architecting-for-the-edge-mobile-and-soc-architectures">14.2 Architecting for the Edge: Mobile and SoC Architectures</a></h2>
-<p>At the very edge of the CPS network are the personal mobile devices (PMDs) and embedded sensors that directly interact with the physical world. These devices are strictly constrained by battery capacity and thermal dissipation limits.</p>
-<p>To meet these constraints, edge devices utilize <strong>System-on-Chip (SoC)</strong> architectures. Rather than isolating the CPU, graphics, and memory controllers on separate physical chips, an SoC integrates them onto a single die. This minimizes the parasitic capacitance of external wiring, drastically reducing the electrical power required to move data.</p>
-<p>Furthermore, these SoCs are deeply heterogeneous, containing numerous DSAs to offload specific tasks from the main CPU:</p>
-<ul>
-<li><strong>Image Signal Processors (ISPs):</strong> Hardware accelerators designed specifically to process raw pixel data from dual cameras or IR projectors, performing noise reduction, color space conversion, and edge enhancement in real-time.</li>
-<li><strong>Digital Signal Processors (DSPs):</strong> Highly optimized cores for processing continuous analog data, such as audio from microphones or RF signals from cellular modems.</li>
-<li><strong>Touch Controllers:</strong> Dedicated hardware to process capacitive touch sensing. These sensors monitor changes in capacitance caused by the proximity of a conductive object (such as a human finger), allowing the hardware to filter raw measurements and pinpoint multiple simultaneous touchpoints.</li>
-</ul>
-<p>By routing data directly from the physical sensor into a dedicated DSA, the SoC can process real-time events while the main general-purpose CPU remains in a deep, low-power sleep state, maximizing battery life.</p>
-<h2 id="143-warehouse-scale-computing-wsc"><a class="header" href="#143-warehouse-scale-computing-wsc">14.3 Warehouse-Scale Computing (WSC)</a></h2>
-<p>While edge devices collect telemetry and execute local control loops, the heavy computational lifting—such as training global AI models or processing massive distributed databases—is offloaded to the cloud. The infrastructure that powers the cloud is the <strong>Warehouse-Scale Computer (WSC)</strong>.</p>
-<p>It is a misconception to view a modern data center merely as a building full of individual servers. Given the immense processing, networking, and storage capabilities required, it is far more accurate to conceptualize the entire data center as a single, massively parallel computing system. The price-performance and energy efficiency concerns of a single microprocessor apply equally to WSCs, but at a scale where the equipment and the building cost hundreds of millions of dollars.</p>
-<h3 id="1431-wsc-network-topology"><a class="header" href="#1431-wsc-network-topology">14.3.1 WSC Network Topology</a></h3>
-<p>A WSC is organized hierarchically. At the base level, individual servers are mounted in racks. Each server is a reasonably complete computer system containing a processor, RAM, and local storage. These servers operate in a “headless mode,” lacking any direct physical connection to a display or keyboard; all interaction occurs over the network.</p>
-<p>Each server connects to a Top-of-Rack (ToR) network switch, typically using a 10 Gbit/s Ethernet cable. Servers within the same rack can communicate with one another at full speed. However, the racks are then grouped into clusters, sharing a second-level cluster switch. Because it is economically unfeasible to provide full bandwidth between every rack in the facility, the network is often <strong>oversubscribed</strong>. For example, an oversubscription factor of 4 means that the external network capacity leaving the rack is only one-quarter of the peak communication speed available inside the rack. Software architects must carefully place communicating processes within the same rack to avoid saturating the cluster switches.</p>
-<h3 id="1432-hardware-fault-management"><a class="header" href="#1432-hardware-fault-management">14.3.2 Hardware Fault Management</a></h3>
-<p>Because a WSC contains tens of thousands of individual servers, hardware failures are not anomalies; they are continuous, daily occurrences. Even if highly reliable (and expensive) components are used, the sheer scale guarantees component death.</p>
-<p>Therefore, WSC architecture relies on software to mask hardware failures. When a higher-level system dispatches a request (such as an internet search query) to a lower-level index server, it actively monitors the response latency. If the lower-level server becomes persistently unresponsive or returns corrupted data, the requesting system assumes a hardware fault has occurred, abandons the failed node, and immediately resends the request to a redundant backup server. The failed server is taken offline automatically so technicians can repair or replace it without interrupting the global service.</p>
-<h2 id="144-accelerating-ai-gpus-and-neural-processing-units"><a class="header" href="#144-accelerating-ai-gpus-and-neural-processing-units">14.4 Accelerating AI: GPUs and Neural Processing Units</a></h2>
-<p>The most significant driver of Domain-Specific Architectures today is Artificial Intelligence (AI). Historically, computer scientists built AI as a massive set of logical rules; today, it is driven by deep neural networks that learn from data. As it turns out, it is much harder to program a computer to <em>be</em> intelligent than to program it to <em>learn</em> to be intelligent.</p>
-<p>Training and executing Deep Neural Networks (DNNs) requires astonishing amounts of computational power. Because neural networks are fundamentally based on linear algebra (specifically, massive matrix multiplications), they exhibit immense <strong>Data-Level Parallelism (DLP)</strong>. General-purpose CPUs, which are optimized for sequential logic and unpredictable branching, are terrible at this.</p>
-<h3 id="1441-graphics-processing-units-gpus"><a class="header" href="#1441-graphics-processing-units-gpus">14.4.1 Graphics Processing Units (GPUs)</a></h3>
-<p>The first hardware to successfully exploit the DLP of neural networks was the Graphics Processing Unit (GPU), such as the NVIDIA A100 and T4. Originally designed to compute millions of independent pixels for synthetic video scenes, GPUs employ a heavily threaded, Single Instruction, Multiple Data (SIMD) architecture. A modern GPU can execute thousands of floating-point multiply-accumulate (MAC) operations in parallel, making them exceptional AI accelerators.</p>
-<h3 id="1442-tensor-processing-units-tpus-and-rack-scale-accelerators"><a class="header" href="#1442-tensor-processing-units-tpus-and-rack-scale-accelerators">14.4.2 Tensor Processing Units (TPUs) and Rack-Scale Accelerators</a></h3>
-<p>While GPUs are fast, they still retain legacy hardware for graphics rendering (such as texture mapping and rasterization) that is useless for pure AI workloads. To achieve maximum efficiency, companies have developed pure AI DSAs.</p>
-<p>Google’s <strong>Tensor Processing Unit (TPU)</strong> is a custom Application-Specific Integrated Circuit (ASIC) designed exclusively to accelerate DNNs in the data center. The heart of a TPU is a massive systolic array multiplier—a 2D grid of ALUs that passes data directly from one ALU to the next without writing intermediate results back to registers, drastically reducing power consumption while executing tens of thousands of matrix operations per clock cycle.</p>
-<p>Intel has taken a similar architectural leap with <strong>Jaguar Shores</strong>, a next-generation rack-scale AI accelerator platform. Rather than functioning as a standalone chip or PCIe card, Jaguar Shores is designed as an entire rack-based solution, providing a complete AI processing system scaled specifically to meet the extreme memory bandwidth and training demands of modern machine learning.</p>
-<h2 id="145-virtmcu-homework-designing-an-edge-ai-accelerator"><a class="header" href="#145-virtmcu-homework-designing-an-edge-ai-accelerator">14.5 VirtMCU Homework: Designing an Edge AI Accelerator</a></h2>
-<p>In previous chapters, you wrote strict PID control loops for an inverted pendulum and a drone using standard ARM AArch64 assembly. However, in modern CPS, we frequently augment classical control with predictive machine learning models at the edge.</p>
-<p>If you attempt to execute a Deep Neural Network (DNN) inference pass using standard sequential software in your ISR, the matrix multiplications will consume too many clock cycles. You will exceed your $T_s$ (sample time) control deadline, causing the simulated drone to crash.</p>
-<p>To solve this, you will step into the role of a computer architect and design a Domain-Specific Architecture (DSA) within the <strong>VirtMCU FirmwareStudio</strong>.</p>
-<ol>
-<li><strong>Memory-Mapped Accelerator Design:</strong> You will be provided with the C++ source code for the VirtMCU hardware backend. You must design a mock “Tensor Coprocessor” peripheral that attaches to the virtual APB interconnect.</li>
-<li><strong>MMIO Interface:</strong> Design the Memory-Mapped I/O (MMIO) registers for your DSA. You will need a <code>MATRIX_A</code> port, a <code>MATRIX_B</code> port, a <code>START_INFERENCE</code> command register, and a <code>RESULT</code> memory buffer.</li>
-<li><strong>Firmware Integration:</strong> Rewrite your drone flight controller firmware. Instead of performing the neural network matrix multiplication in software, your firmware will use DMA to blast the sensor data into your custom DSA’s MMIO registers, trigger the <code>START</code> command, and yield the CPU.</li>
-<li><strong>Deterministic Benchmarking:</strong> Run the co-simulation in <code>slaved-icount</code> mode. By offloading the DLP workload to your specialized hardware, you will empirically measure the massive reduction in required CPU clock cycles. You must submit a report proving that the introduction of the DSA reduces your Worst-Case Execution Time (WCET) enough to comfortably meet the hard real-time deadlines of the physical control loop.</li>
-</ol>
+                        <h1 id="chapter-14-resilient-control-and-byzantine-faults"><a class="header" href="#chapter-14-resilient-control-and-byzantine-faults">Chapter 14: Resilient Control and Byzantine Faults</a></h1>
+<p>In Chapter 13, we locked down the front door. We implemented Secure Boot, added hardware trust anchors, and encrypted our Over-The-Air firmware updates. But what happens if the attacker doesn’t break into the main CPU? What if, instead, they compromise the sensors feeding data <em>to</em> the CPU?</p>
+<p>If your drone’s flight controller is completely secure, but it receives data telling it the drone is falling out of the sky, the perfectly secure flight controller will confidently and securely drive the motors to maximum throttle, inadvertently launching the drone into the stratosphere.</p>
+<p>In this chapter, we bridge the gap between cybersecurity and control theory. We will explore Cyber-Physical Threat Intelligence, learn how to survive sensors that actively lie to us using resilient consensus algorithms, and write C code to implement an autonomous hardware fallback.</p>
+<h2 id="141-cyber-physical-threat-intelligence-cpti"><a class="header" href="#141-cyber-physical-threat-intelligence-cpti">14.1 Cyber-Physical Threat Intelligence (CPTI)</a></h2>
+<p>Historically, organizations treated physical security and cybersecurity as completely separate silos. If an intruder broke through a fence, the physical security team handled it. If a firewall dropped a malicious packet, the IT team handled it. But in a modern Cyber-Physical System (CPS), this separation is a fatal vulnerability.</p>
+<p>As demonstrated by the Stuxnet worm that destroyed nuclear centrifuges, or the 2015 cyberattacks that caused massive power blackouts in Ukraine, modern adversaries exploit vulnerabilities in the digital realm to attack physical assets. To counter this, security operations must adopt <strong>Cyber-Physical Threat Intelligence (CPTI)</strong>, an integrated approach that models security knowledge holistically, correlating cyber and physical events to understand cascading effects.</p>
+<p>From a control systems perspective, CPTI allows us to categorize attacks based on how they impact the physical plant. As defined by Yan et al., an adversary taking over communication networks can launch a <strong>deception attack</strong> (also known as a false data injection attack). In a deception attack, the adversary maliciously modifies transmitted sensor data. Because the system appears to be operating normally, the receiver is fooled into believing an incorrect version of reality and takes physical actions that benefit the attacker.</p>
+<p>To survive a deception attack, your software cannot simply trust its inputs. It must be mathematically resilient by design.</p>
+<h2 id="142-resilient-consensus-surviving-the-byzantine-generals"><a class="header" href="#142-resilient-consensus-surviving-the-byzantine-generals">14.2 Resilient Consensus: Surviving the Byzantine Generals</a></h2>
+<p>In distributed computing, a <strong>Byzantine fault</strong> is the worst-case scenario: a component doesn’t just fail; it actively and maliciously lies to the rest of the system.</p>
+<p>Suppose you are designing a flight controller for a drone. To ensure reliability, you equip the drone with 5 identical velocity sensors. Under normal conditions, you would read all 5 sensors, add the values together, and divide by 5 to get a smooth, averaged velocity.</p>
+<p>But what happens if a cyber-physical attack successfully compromises 2 out of the 5 sensors?
+If the drone is hovering at 0 m/s, the 3 benign sensors will report <code>0</code>. But the 2 compromised sensors, attempting to crash the drone, report <code>+10,000 m/s</code>. If you use a simple average, the math looks like this:
+<code>(0 + 0 + 0 + 10000 + 10000) / 5 = 4000 m/s</code></p>
+<p>The flight controller averages the data, concludes the drone is ascending at Mach 11, and instantly cuts the motors. The drone drops like a rock.</p>
+<blockquote>
+<p><strong>WARNING: The Average Will Kill You</strong>
+Standard mathematical averaging (or standard least-squares filtering) offers absolutely zero Byzantine fault tolerance. A single compromised sensor capable of reporting an infinitely large value can completely control the output of an arithmetic mean.</p>
+</blockquote>
+<h3 id="the-middle-points-algorithm"><a class="header" href="#the-middle-points-algorithm">The “Middle Points” Algorithm</a></h3>
+<p>To survive malicious nodes in multi-agent systems, we must use a <strong>resilient consensus algorithm</strong>. The goal of resilient consensus is to guarantee that the final agreed-upon value always remains within the <em>convex hull</em> (the safe, bounded range) formed strictly by the benign, uncompromised sensors.</p>
+<p>As detailed in Yan’s research on secure coordination, if you have $m$ sensors and you suspect that up to $f$ of them might be actively malicious, you cannot use an average. Instead, you use a sorting algorithm.</p>
+<p>If we have $m = 5$ sensors, and $f = 2$ are actively lying, the algorithm dictates that the controller must sort the 5 received values from lowest to highest. It then entirely discards the $f$ largest values and the $f$ smallest values. By slicing off the extreme edges of the dataset, the algorithm physically bounds the remaining data. For a 1-dimensional array, discarding the 2 highest and 2 lowest values out of 5 leaves you with exactly one value: the median.</p>
+<p>By utilizing this “middle points” approach, even if the 2 compromised sensors scream <code>+10,000</code> or <code>-10,000</code>, their data is mathematically guaranteed to be discarded. The controller’s chosen value is forced to remain securely within the boundaries of the 3 benign sensors.</p>
+<h2 id="143-reactive-autonomy-and-the-fallback-brake"><a class="header" href="#143-reactive-autonomy-and-the-fallback-brake">14.3 Reactive Autonomy and the Fallback Brake</a></h2>
+<p>What happens when an attack is so severe that it thrusts the system completely outside of its safe operating regime? What if the attacker manages to blind the primary sensors entirely, or bypasses the consensus layer?</p>
+<p>In these high-impact, low-probability adversarial events, standard primary controls are myopic—they cannot see the bigger picture and will fail. To save the physical equipment, the system must trigger <strong>Reactive Autonomy</strong>.</p>
+<p>Reactive autonomous control acts as a minimally invasive add-on layer. It continuously monitors critical system states independently of the primary control loop. If an unforeseen event (like a massive cyberattack) pushes the system state outside of the safe operating limits, the reactive controls immediately hijack the setpoints. The objective of reactive decentralized control is to steer the system back to the safe region, guaranteeing the earliest robust return to safety. Once the system is back within safe bounds, reactive autonomy hands control back over to the primary (proactive) systems.</p>
+<h3 id="implementing-the-resilient-fallback-in-c"><a class="header" href="#implementing-the-resilient-fallback-in-c">Implementing the Resilient Fallback in C</a></h3>
+<p>Let’s put this into practice. We will write a C function for a cyber-physical braking system. It reads our 5 velocity sensors, applies the resilient consensus algorithm to defeat up to 2 Byzantine attackers, and then implements a Reactive Autonomy fallback: if the consensus velocity violates the absolute safety limits (indicating the system has been thrust out of the safe regime), it overrides the primary controller and forcefully applies the emergency brakes.</p>
+<pre><code class="language-c">#include &lt;stdint.h&gt;
+#include &lt;stdbool.h&gt;
+
+// Define hardware memory-mapped registers for the brake actuator
+#define BRAKE_ACTUATOR_REG (*((volatile uint32_t*) 0x40021000))
+#define BRAKE_ENGAGE       0x01
+#define BRAKE_RELEASE      0x00
+
+// Safe operating limits for the physical system
+#define SAFE_VELOCITY_MAX  100.0f 
+
+// Helper function to sort an array of 5 floats (Bubble sort for simplicity)
+void sort_sensors(float* arr, int n) {
+    for (int i = 0; i &lt; n - 1; i++) {
+        for (int j = 0; j &lt; n - i - 1; j++) {
+            if (arr[j] &gt; arr[j + 1]) {
+                float temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+/**
+ * @brief Computes a Byzantine-resilient velocity and enforces Reactive Autonomy.
+ * @param sensor_readings Array of 5 raw velocity sensor readings.
+ * @return The resilient consensus velocity.
+ */
+float compute_resilient_velocity_and_protect(float sensor_readings) {
+    
+    // 1. Sort the readings from lowest to highest
+    sort_sensors(sensor_readings, 5);
+    
+    // 2. Resilient Consensus ("Middle Points" Algorithm)
+    // We assume f = 2 sensors might be Byzantine (maliciously lying).
+    // We discard the f highest (indices 3, 4) and f lowest (indices 0, 1).
+    // This leaves us with the median value at index 2, which is mathematically
+    // guaranteed to be within the convex hull of the benign sensors.
+    float consensus_velocity = sensor_readings;
+
+    // 3. Reactive Autonomy Check
+    // If an unforeseen adversarial event has thrust the system out of the safe 
+    // operating regime, we must hijack the controls to guarantee a robust return 
+    // to the safe region.
+    if (consensus_velocity &gt; SAFE_VELOCITY_MAX) {
+        
+        // The system is moving dangerously fast, overriding primary myopic controls.
+        // We trigger the hardware brake to steer the system back to safety.
+        BRAKE_ACTUATOR_REG = BRAKE_ENGAGE;
+        
+    } else {
+        // We are within the safe operating regime. Proactive autonomy remains in control.
+        BRAKE_ACTUATOR_REG = BRAKE_RELEASE;
+    }
+
+    // Return the safe, filtered velocity to the rest of the RTOS tasks
+    return consensus_velocity;
+}
+</code></pre>
+<p>By layering these concepts—using resilient consensus to discard Byzantine sensor data at the input, and deploying a reactive autonomous safety mechanism at the output—you isolate the physical operation of your system from the chaos of the cyber domain. The software refuses to be fooled, and the hardware refuses to self-destruct.</p>
 
                     </main>
 

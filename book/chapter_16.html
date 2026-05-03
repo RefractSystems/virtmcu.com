@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Appendix A: Instruction Set Architecture (ISA) Reference - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+        <title>Appendix A: Glossary of Acronyms - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a94af807.js";
+            window.path_to_searchindex_js = "searchindex-b5759738.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-86b32607.js"></script>
+        <script src="toc-70de4e68.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -177,47 +177,47 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="appendix-a-instruction-set-architecture-isa-reference"><a class="header" href="#appendix-a-instruction-set-architecture-isa-reference">Appendix A: Instruction Set Architecture (ISA) Reference</a></h1>
-<p>This appendix provides a quick reference for the primary Instruction Set Architectures utilized in this text: ARM AArch64 and RISC-V (RV32I).</p>
-<h2 id="a1-arm-aarch64-a64-instruction-subset"><a class="header" href="#a1-arm-aarch64-a64-instruction-subset">A.1 ARM AArch64 (A64) Instruction Subset</a></h2>
-<p>The ARMv8-A architecture introduced the 64-bit AArch64 execution state.</p>
-<p><strong>Data Transfer (Load/Store)</strong></p>
+                        <h1 id="appendix-a-glossary-of-acronyms"><a class="header" href="#appendix-a-glossary-of-acronyms">Appendix A: Glossary of Acronyms</a></h1>
+<p>As with any specialized engineering discipline, the world of Cyber-Physical Systems and computer architecture is drowning in acronyms. Below is a comprehensive reference guide to the abbreviations used throughout this book, translating the alphabet soup back into plain English.</p>
 <ul>
-<li><code>ldr Xd, [Xn, offset]</code>: Load a 64-bit doubleword from the memory address (<code>Xn</code> + <code>offset</code>) into register <code>Xd</code>.</li>
-<li><code>str Wd, [Xn, offset]</code>: Store a 32-bit word from register <code>Wd</code> into memory.</li>
-<li><code>ldp / stp</code>: Load/Store Pair. Pushes or pops two registers simultaneously, heavily used in stack frame prologues and epilogues (e.g., <code>stp fp, lr, [sp, #-16]!</code>).</li>
-</ul>
-<p><strong>Arithmetic and Logic</strong></p>
-<ul>
-<li><code>add Xd, Xn, Xm</code>: <code>Xd = Xn + Xm</code>. (Use <code>adds</code> to update PSTATE condition flags).</li>
-<li><code>sub Xd, Xn, Xm</code>: <code>Xd = Xn - Xm</code>. (Use <code>subs</code> to update flags).</li>
-<li><code>mul Xd, Xn, Xm</code>: <code>Xd = Xn * Xm</code>.</li>
-<li><code>and / orr / eor</code>: Bitwise AND, OR, and Exclusive-OR.</li>
-</ul>
-<p><strong>Control Flow</strong></p>
-<ul>
-<li><code>cmp Xn, Xm</code>: Compare (implicitly performs <code>subs</code> and updates flags without storing the result).</li>
-<li><code>b label</code>: Unconditional branch to <code>label</code>.</li>
-<li><code>beq / bne / blt / bgt</code>: Conditional branches (Branch if Equal, Not Equal, Less Than, Greater Than).</li>
-<li><code>bl label</code>: Branch with Link. Stores the return address in the Link Register (<code>LR</code>/<code>X30</code>) and jumps to <code>label</code> (used for function calls).</li>
-<li><code>ret</code>: Return from subroutine. Copies <code>LR</code> to the Program Counter (<code>PC</code>).</li>
-</ul>
-<h2 id="a2-risc-v-rv32i-base-instruction-subset"><a class="header" href="#a2-risc-v-rv32i-base-instruction-subset">A.2 RISC-V (RV32I) Base Instruction Subset</a></h2>
-<p>RISC-V is an open-source ISA that heavily utilizes pseudo-instructions to minimize silicon decoder complexity.</p>
-<p><strong>Core Instructions</strong></p>
-<ul>
-<li><code>addi rd, rs1, imm</code>: Add immediate. <code>rd = rs1 + imm</code>.</li>
-<li><code>lui rd, imm</code>: Load Upper Immediate. Places a 20-bit value into the highest 20 bits of <code>rd</code>.</li>
-<li><code>auipc rd, imm</code>: Add Upper Immediate to PC.</li>
-<li><code>jal rd, offset</code>: Jump and Link. Jumps to PC + <code>offset</code> and saves the return address in <code>rd</code> (usually <code>x1</code> / <code>ra</code>).</li>
-<li><code>beq / bne rs1, rs2, offset</code>: Branch if <code>rs1</code> == (or !=) <code>rs2</code>.</li>
-</ul>
-<p><strong>Common Pseudo-Instructions</strong></p>
-<ul>
-<li><code>nop</code>: Translates to <code>addi x0, x0, 0</code>.</li>
-<li><code>mv rd, rs</code>: Translates to <code>addi rd, rs, 0</code>.</li>
-<li><code>not rd, rs</code>: Translates to <code>xori rd, rs, -1</code>.</li>
-<li><code>j offset</code>: Translates to <code>jal x0, offset</code>.</li>
+<li><strong>AAL (Actuator Abstraction Layer):</strong> A software boundary that isolates high-level control algorithms (like a PID loop) from the physical limitations and saturation points of the hardware actuators.</li>
+<li><strong>ADC (Analog-to-Digital Converter):</strong> A hardware peripheral that samples continuous physical voltages and quantizes them into discrete integer values for the CPU.</li>
+<li><strong>AXI (Advanced eXtensible Interface):</strong> A high-performance, multi-channel AMBA interconnect protocol designed by ARM that uses a VALID/READY handshake to pipeline transactions across an SoC.</li>
+<li><strong>CAN (Controller Area Network):</strong> A legacy, unencrypted, serial communication bus standard used extensively in automotive and industrial networks.</li>
+<li><strong>CPS (Cyber-Physical System):</strong> An engineered system that seamlessly integrates computational algorithms, networking, and physical processes.</li>
+<li><strong>CPTI (Cyber-Physical Threat Intelligence):</strong> An integrated security approach that models cyber and physical events holistically to understand how digital attacks (like false data injection) create physical kinetic impacts.</li>
+<li><strong>DER (Distributed Energy Resource):</strong> Small, decentralized energy generation and storage assets, such as rooftop solar panels and electric vehicle batteries.</li>
+<li><strong>DMA (Direct Memory Access):</strong> A specialized hardware co-processor that moves blocks of data between memory and peripherals without burning CPU instruction cycles.</li>
+<li><strong>DSA (Domain-Specific Architecture):</strong> Custom silicon tailored to execute a very narrow set of computational tasks (such as AI matrix multiplication) with massive energy efficiency, completely sacrificing the flexibility of a general-purpose CPU.</li>
+<li><strong>ECU (Electronic Control Unit):</strong> An embedded microcontroller system found inside vehicles responsible for managing specific subsystems like engine timing, braking, or infotainment.</li>
+<li><strong>FL (Federated Learning):</strong> A decentralized machine learning technique where the global model is sent to the edge nodes for local training, rather than sending raw, private sensor data to the cloud.</li>
+<li><strong>FOTA (Firmware Over-The-Air):</strong> The process of wirelessly patching or upgrading the firmware of a remote device, utilizing A/B partitioning and hardware watchdogs to prevent bricking during a failed update.</li>
+<li><strong>HBM (High Bandwidth Memory):</strong> An advanced memory architecture that vertically stacks multiple DRAM dies on top of a logic base and connects them via Through-Silicon Vias (TSVs) to deliver terabytes-per-second bandwidth to GPUs and TPUs.</li>
+<li><strong>HSM (Hardware Security Module):</strong> An isolated, tamper-resistant cryptographic co-processor used to safely store private keys and execute secure boot verifications.</li>
+<li><strong>I2C (Inter-Integrated Circuit):</strong> A half-duplex, two-wire (SCL/SDA) serial protocol that uses open-drain pins and device addresses to allow multiple chips to communicate on a shared bus.</li>
+<li><strong>ISA (Instruction Set Architecture):</strong> The boundary between software and hardware; the specific set of machine instructions, registers, and memory models that a processor understands.</li>
+<li><strong>ISR (Interrupt Service Routine):</strong> A dedicated software function that the CPU vectors to immediately upon receiving a hardware interrupt.</li>
+<li><strong>LLM (Large Language Model):</strong> A massive neural network based on the Transformer architecture (e.g., GPT-4) that relies on billions of parameters and consumes datacenter-scale computing resources.</li>
+<li><strong>LR (Link Register):</strong> A dedicated CPU register (like <code>X30</code> in AArch64 or <code>x1</code> in RISC-V) that stores the return address during a function call, avoiding the latency of pushing the address to memory.</li>
+<li><strong>MAC (Multiply-Accumulate):</strong> The foundational arithmetic operation of digital signal processing and neural networks, combining a multiplication and an addition into a single step.</li>
+<li><strong>MMIO (Memory-Mapped I/O):</strong> An architectural design where peripheral control registers are accessed by the CPU using standard memory load and store instructions to specific physical addresses.</li>
+<li><strong>NVIC (Nested Vectored Interrupt Controller):</strong> An advanced hardware block integrated tightly with ARM Cortex-M cores that autonomously handles interrupt prioritization, preemption, and context saving.</li>
+<li><strong>PID (Proportional-Integral-Derivative):</strong> A continuous feedback control loop algorithm that computes corrective actions based on the present error, the accumulation of past errors, and the predicted future rate of error.</li>
+<li><strong>PIP (Priority Inheritance Protocol):</strong> An RTOS kernel mechanism that temporarily elevates the priority of a low-priority task holding a mutex to prevent priority inversion and unbounded delays.</li>
+<li><strong>PWM (Pulse-Width Modulation):</strong> A digital technique used to approximate an analog output by rapidly switching a signal high and low at varying duty cycles.</li>
+<li><strong>RMS (Rate Monotonic Scheduling):</strong> A static-priority RTOS scheduling algorithm where tasks with shorter execution deadlines are mathematically assigned higher priorities.</li>
+<li><strong>RTOS (Real-Time Operating System):</strong> A specialized operating system kernel designed to guarantee deterministic, hard deadlines for task execution and context switching.</li>
+<li><strong>SAL (Sensor Abstraction Layer):</strong> A software barrier that filters noise and quantization errors out of raw analog hardware readings before they are fed into continuous-time physics equations.</li>
+<li><strong>SDN (Software-Defined Networking):</strong> A network architecture that removes routing logic from physical switches and centralizes it in a programmable software controller to guarantee deterministic Quality of Service (QoS).</li>
+<li><strong>SIMD (Single Instruction, Multiple Data):</strong> An architectural execution model where a single machine instruction applies the exact same operation to multiple data elements simultaneously (e.g., ARM NEON).</li>
+<li><strong>SP (Stack Pointer):</strong> A dedicated CPU register used to track the current top of the call stack in memory.</li>
+<li><strong>TCB (Task Control Block):</strong> A data structure maintained by an RTOS in RAM that holds the identity, state, priority, and saved stack pointer of a specific thread.</li>
+<li><strong>TLB (Translation Lookaside Buffer):</strong> A highly specialized, fast hardware cache inside the Memory Management Unit (MMU) that stores recent virtual-to-physical page address translations.</li>
+<li><strong>TPM (Trusted Platform Module):</strong> A secure hardware trust anchor that ensures system integrity, generates true random numbers, and securely locks cryptographic keys.</li>
+<li><strong>TPU (Tensor Processing Unit):</strong> A custom Domain-Specific Architecture created by Google that uses massive 2D systolic arrays to accelerate deep neural network training and inference.</li>
+<li><strong>UART (Universal Asynchronous Receiver-Transmitter):</strong> A hardware peripheral that transmits and receives serial data asynchronously over independent TX and RX wires, framed by start and stop bits.</li>
+<li><strong>VPP (Virtual Power Plant):</strong> A decentralized network of distributed energy resources (like home batteries and solar panels) aggregated and orchestrated by software to behave like a traditional power plant.</li>
+<li><strong>WSC (Warehouse-Scale Computer):</strong> A datacenter where tens of thousands of servers, storage arrays, and network switches are architected and managed as a single, massive, utility-computing machine.</li>
 </ul>
 
                     </main>
