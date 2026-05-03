@@ -1,5 +1,23 @@
-# Foundations of Computer Architecture and Cyber-Physical Systems
-
 <div align="center">
-  <img src="cover.png" alt="Book Cover" style="max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px;" />
+
+<br><br><br>
+
+# Foundations of Computer Architecture and Cyber-Physical Systems 2.0
+## A Deterministic Approach Using VirtMCU
+
+<br><br><br>
+
+### Refract Systems
+
+<br><br><br><br><br>
+
+*A comprehensive graduate-level text bridging the gap between discrete digital logic and continuous-time physical dynamics.*
+
+<br><br>
+
+---
+
+**Version:** 1.0.0
+**Compiled:** 2026
+
 </div>
