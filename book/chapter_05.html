@@ -1,0 +1,330 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 5: The Memory Hierarchy - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-a4a8c921.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-86b32607.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Foundations of Computer Architecture and Cyber-Physical Systems 2.0</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/RefractSystems/virtmcu.com" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="chapter-5-the-memory-hierarchy"><a class="header" href="#chapter-5-the-memory-hierarchy">Chapter 5: The Memory Hierarchy</a></h1>
+<h2 id="51-introduction-the-memory-wall"><a class="header" href="#51-introduction-the-memory-wall">5.1 Introduction: The Memory Wall</a></h2>
+<p>In the preceding chapter, we examined the internal microarchitecture of the processor, demonstrating how pipelining, superscalar execution, and out-of-order scheduling can dramatically increase the instruction execution rate. However, a processor can only execute instructions as fast as it can be supplied with code and data. Historically, microprocessor speeds have doubled every two years, whereas the access latency of main memory has decreased at only a fraction of that rate. This ever-expanding divergence between CPU execution speed and memory latency is known as the “memory wall”.</p>
+<p>If a modern processor running at 3 GHz (where one clock cycle takes 0.33 nanoseconds) were forced to access main memory directly for every instruction, it would have to wait hundreds of clock cycles for the data to arrive. The execution pipeline would starve, and the massive throughput gains of the microarchitecture would be entirely wasted.</p>
+<p>To overcome this bottleneck, computer architects do not rely on a single, monolithic pool of memory. Instead, they construct a <strong>memory hierarchy</strong>. The hierarchy is organized as a pyramid: at the very top, residing inside the CPU core, are the processor registers, offering instant access. Below the registers is the <strong>cache memory</strong>, which is small but extremely fast, operating at speeds comparable to the processor. Below the cache is the main memory, which is much larger but significantly slower. At the base of the pyramid lies secondary storage (magnetic hard disk drives or solid-state drives), offering vast capacity but agonizingly slow access times measured in milliseconds,. By intelligently migrating data up and down this hierarchy, the memory system provides the software engineer with an illusion: a memory pool that possesses the speed of the fastest cache and the immense capacity of the largest disk,.</p>
+<h2 id="52-primary-storage-technologies-sram-and-dram"><a class="header" href="#52-primary-storage-technologies-sram-and-dram">5.2 Primary Storage Technologies: SRAM and DRAM</a></h2>
+<p>To understand the trade-offs in the memory hierarchy, we must first look at the physical semiconductor technologies used to implement it. There are two primary types of volatile memory used in computer architectures: Static Random Access Memory (SRAM) and Dynamic Random Access Memory (DRAM).</p>
+<h3 id="521-static-ram-sram"><a class="header" href="#521-static-ram-sram">5.2.1 Static RAM (SRAM)</a></h3>
+<p>SRAM is the fastest memory technology available and is utilized primarily for processor caches. A standard SRAM bit cell is constructed from six MOSFET transistors arranged as two cross-coupled inverters (forming a flip-flop) plus two access transistors,. Because the data is actively driven by a continuous feedback loop between the inverters, SRAM retains its state as long as power is applied without any need for external intervention,.</p>
+<p>The flip-flop design provides incredibly low latency, allowing read and write operations to keep pace with high-frequency CPU clocks. Furthermore, reading an SRAM cell is non-destructive. The major downside to SRAM is its size and cost. Because it requires six transistors per bit, an SRAM array consumes a massive amount of silicon die area,. Additionally, the transistors in the cross-coupled inverters continuously leak a small amount of current, resulting in static power dissipation that grows severely as transistor sizes shrink.</p>
+<h3 id="522-dynamic-ram-dram"><a class="header" href="#522-dynamic-ram-dram">5.2.2 Dynamic RAM (DRAM)</a></h3>
+<p>Main memory is almost universally implemented using DRAM. A DRAM bit cell is astonishingly simple: it consists of exactly one transistor and one microscopic capacitor,. A logical 1 or 0 is represented by the presence or absence of an electrical charge on the capacitor. Because it only uses one transistor per bit, DRAM achieves enormous data density, making it vastly cheaper per megabyte than SRAM.</p>
+<p>However, this density comes with severe performance penalties. The capacitor naturally leaks charge over time, meaning the memory will “forget” its data within milliseconds,. To prevent data loss, the memory controller must continually read and rewrite the contents of the entire memory, a process known as <strong>refreshing</strong>,. Furthermore, reading a DRAM cell requires the bit-line to share charge with the microscopic capacitor, a delicate analog process that takes significant time and actually destroys the charge in the capacitor,. As a result, every DRAM read must be immediately followed by a hardware rewrite to restore the data. To manage this, DRAM chips use a multiplexed addressing scheme where a row (page) is activated first, followed by column accesses. This multi-step process makes DRAM latency hundreds of times slower than SRAM,.</p>
+<h2 id="53-cache-memory-fundamentals"><a class="header" href="#53-cache-memory-fundamentals">5.3 Cache Memory Fundamentals</a></h2>
+<p>Because SRAM is too large and expensive to serve as main memory, architects insert small SRAM caches between the CPU and the DRAM,. The effectiveness of a cache relies entirely on the mathematical probability that a required piece of data is already present in the SRAM. This probability is driven by two empirical principles of software behavior known as <strong>locality of reference</strong>:</p>
+<ol>
+<li><strong>Temporal Locality:</strong> If a memory location is accessed, it is highly likely to be accessed again in the near future,,. A software engineer iterating a counter variable inside a <code>for</code> loop is demonstrating temporal locality. The cache exploits this by keeping a copy of recently accessed data.</li>
+<li><strong>Spatial Locality:</strong> If a memory location is accessed, memory locations with nearby addresses are likely to be accessed soon,,. A software engineer traversing an array of integers demonstrates spatial locality. The cache exploits this by never fetching just a single byte from main memory; instead, it fetches an entire contiguous <strong>cache line</strong> (or cache block), typically 32 or 64 bytes wide,.</li>
+</ol>
+<p>When the processor requests data, it searches the cache. If the data is found, a <strong>cache hit</strong> occurs, and the data is served at SRAM speeds,. If the data is absent, a <strong>cache miss</strong> occurs, and the processor pipeline must stall while the hardware fetches the entire cache line from the slower main memory,.</p>
+<p>The overall efficiency of the memory hierarchy is quantified by the <strong>Average Memory Access Time (AMAT)</strong>:
+$$AMAT = Hit_Time + (Miss_Rate \times Miss_Penalty)$$
+To reduce AMAT, modern SoCs utilize multiple levels of cache. The <strong>Level 1 (L1)</strong> cache is tightly coupled to the processor pipeline, incredibly fast (often 1-3 cycles), but very small (e.g., 32 KB),. It is usually split into an L1 Instruction Cache (I-cache) and L1 Data Cache (D-cache) to prevent structural hazards and enable simultaneous instruction fetches and data loads—a hallmark of the Harvard architecture,. Below the L1 is the <strong>Level 2 (L2)</strong> cache, which is larger (e.g., 256 KB to 1 MB), somewhat slower, and usually unified (holding both instructions and data),. Many high-performance systems add a massive <strong>Level 3 (L3)</strong> cache shared among multiple processor cores,.</p>
+<h2 id="54-cache-organization-and-placement-policies"><a class="header" href="#54-cache-organization-and-placement-policies">5.4 Cache Organization and Placement Policies</a></h2>
+<p>When a cache fetches a 64-byte block from main memory, it must decide exactly where in its internal SRAM array to place it. Because the main memory is gigabytes in size and the cache is only kilobytes, countless memory blocks must map to the same cache slots. The hardware rules governing this mapping dictate the cache’s placement policy.</p>
+<h3 id="541-direct-mapped-caches"><a class="header" href="#541-direct-mapped-caches">5.4.1 Direct-Mapped Caches</a></h3>
+<p>A direct-mapped cache is the simplest organization. The cache is divided into a one-dimensional array of “sets,” where each set can hold exactly one cache line,. A physical memory address is mapped to a specific set using a hardwired modulo operation,.</p>
+<p>To look up data, the cache controller splits the memory address into three fields:</p>
+<ul>
+<li><strong>Byte Offset:</strong> The lowest bits specify which exact byte within the 64-byte cache line is requested.</li>
+<li><strong>Index (Set):</strong> The middle bits determine which specific set in the cache array to check,.</li>
+<li><strong>Tag:</strong> The uppermost bits identify the exact main memory block currently residing in that set,.</li>
+</ul>
+<p>Because each memory address maps to exactly one set, finding data is fast; the cache checks the set’s Tag against the address’s Tag. If they match, and the “Valid” bit is set, it is a hit,.</p>
+<p>However, direct-mapped caches suffer from severe <strong>conflict misses</strong>. If a program actively bounces between two different memory addresses that happen to map to the exact same cache set (e.g., array elements spaced exactly by a multiple of the cache size), the cache will continually evict and reload the same set,. This pathological condition, known as thrashing, destroys performance.</p>
+<h3 id="542-fully-associative-caches"><a class="header" href="#542-fully-associative-caches">5.4.2 Fully Associative Caches</a></h3>
+<p>To eliminate conflict misses entirely, a cache can be made <strong>fully associative</strong>. In this design, a memory block can be placed in <em>any</em> available slot in the cache. The address is only split into a Tag and a Byte Offset; there is no Index.</p>
+<p>While this prevents arbitrary collisions, looking up data becomes a hardware nightmare. The cache controller must compare the requested Tag against the Tags of <em>every single line in the entire cache simultaneously</em>. This requires massive amounts of comparator logic (AND-gates and OR-gates), which consumes excessive die area and power, making it entirely impractical for large L1 or L2 caches,,.</p>
+<h3 id="543-n-way-set-associative-caches"><a class="header" href="#543-n-way-set-associative-caches">5.4.3 N-Way Set-Associative Caches</a></h3>
+<p>Modern processor caches strike a compromise using <strong>set-associative</strong> mapping. The cache is divided into sets, but each set contains $N$ separate slots (or “ways”),. For example, in an 8-way set-associative cache, a memory address still hashes to one specific set, but the cache line can be placed into any of the 8 available ways within that set.</p>
+<p>During a lookup, the hardware reads all $N$ tags in the indexed set in parallel and compares them to the requested address,. This effectively mitigates the “birthday paradox” of cache collisions without requiring the massive hardware overhead of a fully associative search. Most L1 caches today are 4-way or 8-way set-associative, offering an optimal balance between hit rate, hardware complexity, and access latency.</p>
+<h2 id="55-cache-replacement-and-write-policies"><a class="header" href="#55-cache-replacement-and-write-policies">5.5 Cache Replacement and Write Policies</a></h2>
+<p>When a set-associative cache experiences a miss and all $N$ ways in the target set are currently full, the cache controller must choose one existing line to evict.</p>
+<p>The gold standard for eviction is the <strong>Least Recently Used (LRU)</strong> policy,. LRU relies on the principle of temporal locality, assuming that the cache line which has gone the longest without being accessed is the safest to discard,. True LRU is easy to implement for 2-way caches but becomes exponentially complex for 8-way or 16-way caches. Therefore, modern processors often use <strong>Pseudo-LRU</strong> (using a tree of binary flags to approximate age) or a simple Not-Recently-Used (NRU) clock algorithm,.</p>
+<p>Handling memory stores (writes) introduces further complexity. If the CPU updates a variable, it modifies the copy in the cache. The cache and main memory are now out of sync. There are two primary write policies to resolve this:</p>
+<ul>
+<li><strong>Write-Through:</strong> Every write to the cache is simultaneously propagated out to the main memory,,. This ensures memory is always perfectly up-to-date, making recovery easy. However, it severely wastes memory bus bandwidth. If a program increments a counter 1,000 times, write-through initiates 1,000 slow DRAM transactions.</li>
+<li><strong>Write-Back:</strong> Writes only update the cache,,. A special metadata flag called the <strong>dirty bit</strong> is flipped to indicate the cache line contains modified data,. The line is only written back to DRAM when it is eventually evicted. This technique, called write coalescing, drastically improves performance by absorbing thousands of intermediate writes,.</li>
+</ul>
+<p>Furthermore, if a CPU attempts to write to an address that is <em>not</em> currently in the cache, it must decide whether to fetch the block first. Modern processors usually employ a <strong>write-allocate</strong> policy, dragging the missing cache line from DRAM into the cache before modifying it, assuming the software will likely write to adjacent variables in the same block shortly,.</p>
+<h2 id="56-cache-coherence-in-multicore-systems"><a class="header" href="#56-cache-coherence-in-multicore-systems">5.6 Cache Coherence in Multicore Systems</a></h2>
+<p>As discussed in Chapter 4, to increase throughput, modern architectures place multiple processor cores on a single silicon die (Symmetric Multiprocessing or SMP). Each core possesses its own private L1 cache. If we utilize a high-performance write-back policy, we inevitably trigger the <strong>cache coherence problem</strong>,,.</p>
+<p>Suppose Core A and Core B both load a shared memory variable $X$ (currently 0) into their respective L1 caches. Core A executes <code>X = 5</code>. Because Core A uses a write-back cache, the new value <code>5</code> is stored only in Core A’s L1 cache; main memory remains <code>0</code>, and Core B’s cache remains <code>0</code>,. If Core B subsequently reads $X$, it will see stale, invalid data. This violates the sequential consistency expected by software engineers writing multithreaded applications.</p>
+<p>To prevent this, the hardware implements a <strong>cache coherence protocol</strong>. In smaller SMP systems, this is achieved via <strong>snooping</strong>,. All cache controllers constantly monitor (snoop) the shared memory bus,. When a core wishes to write to a shared variable, it broadcasts a signal.</p>
+<p>The baseline snooping protocol is <strong>MSI</strong>, which assigns one of three states to every cache line:</p>
+<ol>
+<li><strong>Modified (M):</strong> The line is dirty. This core owns the only valid copy in the system.</li>
+<li><strong>Shared (S):</strong> The line is clean. Multiple cores may have copies. The core can read it, but cannot write to it without asking permission.</li>
+<li><strong>Invalid (I):</strong> The line contains garbage.</li>
+</ol>
+<p>If a line is Shared, and Core A wants to write to it, Core A must broadcast an “Invalidate” message on the bus (BusRdX). Core B hears this snoop message and downgrades its copy of $X$ to Invalid. Core A then transitions to Modified and performs the write. If Core B later wants to read $X$, it broadcasts a read request. Core A snoops the request, pauses, flushes its Modified line back to DRAM, and then both cores transition back to Shared.</p>
+<p>Modern processors (like the Core i7) use the extended <strong>MESI</strong> protocol, which adds an <strong>Exclusive (E)</strong> state. Exclusive indicates the line is clean, but this core is the <em>only</em> one holding it. If the core decides to write, it can transition from E to M silently, without broadcasting an expensive invalidate message on the bus.</p>
+<p>Advanced ARM processors use the <strong>MOESI</strong> protocol, which adds an <strong>Owned (O)</strong> state,. The Owned state solves a major inefficiency: if Core A has a Modified line and Core B wants to read it, standard MESI forces Core A to flush the line to slow DRAM before Core B can read it. Under MOESI, Core A simply transmits the dirty data directly to Core B over the fast internal bus. Core A becomes the “Owner” (responsible for eventually writing it back to DRAM), and Core B enters the Shared state. This peer-to-peer cache transfer entirely bypasses the main memory bottleneck.</p>
+<p>For enormous systems with hundreds of cores where broadcast snooping would saturate the bus, architects use <strong>directory-based coherence</strong>,. A centralized directory tracks exactly which cores hold which cache lines, allowing point-to-point invalidation messages rather than global broadcasts,.</p>
+<h2 id="57-virtual-memory"><a class="header" href="#57-virtual-memory">5.7 Virtual Memory</a></h2>
+<p>In the early days of computing, software ran directly on physical memory. If an application needed 64 MB of RAM but the machine only had 32 MB, the programmer had to manually chop the program into “overlays,” shuttling segments of code back and forth from the disk—a tremendously tedious process.</p>
+<p>To solve this, architects introduced <strong>Virtual Memory</strong>. The operating system and hardware conspire to give each running process the illusion of an immense, private, contiguous address space (e.g., 4 GB on a 32-bit system or 256 TB on a 64-bit system), regardless of how much physical RAM is actually installed,.</p>
+<p>This illusion is sustained via <strong>paging</strong>. The vast virtual address space is sliced into fixed-size blocks called <strong>virtual pages</strong> (typically 4 KB),. The physical RAM is similarly sliced into 4 KB chunks called <strong>page frames</strong>. At any given time, only the actively used virtual pages (the “working set”) reside in physical page frames. The rest are parked on the incredibly slow secondary storage (the hard disk or SSD), in an area known as the swap file.</p>
+<p>If the CPU attempts to read a virtual address whose corresponding page is currently on disk, the hardware triggers an exception called a <strong>page fault</strong>,. The operating system traps the fault, pauses the program, evicts an old physical page frame (often using the Clock or LRU algorithm), fetches the requested 4 KB page from the hard drive, and then restarts the instruction,. From the software engineer’s perspective, the memory read simply took a very long time; the underlying mechanics are entirely transparent.</p>
+<p>Beyond giving the illusion of infinite memory, paging provides strict <strong>memory protection</strong>. Because each process has its own isolated mapping, Process A cannot physically formulate an address that maps to Process B’s page frames. The MMU simply forbids it, throwing an access violation exception if attempted,.</p>
+<h2 id="58-address-translation-and-the-mmu"><a class="header" href="#58-address-translation-and-the-mmu">5.8 Address Translation and the MMU</a></h2>
+<p>The translation of a programmer’s virtual address into a hardware physical address is performed by the <strong>Memory Management Unit (MMU)</strong>.</p>
+<p>For a 32-bit system using 4 KB ($2^{12}$ bytes) pages, a virtual address is mathematically divided into two parts:</p>
+<ul>
+<li><strong>Page Offset:</strong> The lowest 12 bits. This defines the exact byte within the 4 KB page. Because the page size and frame size are identical, the offset requires absolutely no translation. It passes directly to the physical address,.</li>
+<li><strong>Virtual Page Number (VPN):</strong> The upper 20 bits. The MMU uses the VPN as an index into a <strong>Page Table</strong> to find the corresponding Physical Page Number (PPN),.</li>
+</ul>
+<p>The Page Table is a data structure maintained by the Operating System residing in physical memory. Each Page Table Entry (PTE) contains the mapped Physical Page Number, alongside metadata bits: a Valid bit (is it in RAM or on disk?), a Dirty bit (has it been modified?), and protection bits (Read/Write/Execute permissions),.</p>
+<p>A flat page table mapping 4 GB of space requires $2^{20}$ (over 1 million) entries per process. To avoid wasting megabytes of contiguous RAM just for mapping tables, modern architectures use <strong>multilevel page tables</strong>,. The 20-bit VPN is split again (e.g., into a 10-bit Page Directory Index and a 10-bit Page Table Index),. The CPU first looks up the Page Directory, which points to a secondary Page Table, which finally points to the physical frame. This allows sparse allocation, where page tables for unused memory regions do not need to be instantiated,.</p>
+<h2 id="59-the-translation-lookaside-buffer-tlb"><a class="header" href="#59-the-translation-lookaside-buffer-tlb">5.9 The Translation Lookaside Buffer (TLB)</a></h2>
+<p>Hierarchical page tables solve the memory footprint issue but introduce a catastrophic performance problem. Because the page tables are stored in main memory, translating a single virtual address requires two separate physical memory reads (one for the page directory, one for the page table) <em>before</em> the CPU can even attempt to read the actual data,. This would triple the execution time of every instruction.</p>
+<p>To bypass this penalty, the MMU relies on a specialized cache called the <strong>Translation Lookaside Buffer (TLB)</strong>,,. The TLB is an ultra-fast, fully associative cache placed directly inside the MMU that stores the most recently used Virtual-to-Physical translations,.</p>
+<p>When the CPU generates a virtual address, the MMU first blasts the Virtual Page Number into the TLB,. If a TLB Hit occurs (which happens &gt;99% of the time due to spatial and temporal locality), the MMU instantly retrieves the Physical Page Number and synthesizes the physical address in a single clock cycle, completely skipping the page table walk,.</p>
+<p>If a <strong>TLB Miss</strong> occurs, the hardware (or a microcode software trap, depending on the architecture) must perform the expensive “page walk” through the hierarchical tables in DRAM, locate the translation, and load it into the TLB, evicting an older entry,. Because a TLB is fully associative to maximize hit rates and minimize conflict misses, it is hardware-intensive and usually quite small (holding only 64 to 512 entries),.</p>
+<p>For a software engineer, understanding the TLB is critical for high-performance code. If a program randomly accesses memory across thousands of distinct 4 KB pages (e.g., traversing a poorly constructed linked list spread across a large heap), it will cause “TLB thrashing.” The TLB will constantly miss, forcing the hardware to perform page table walks, reducing the CPU’s throughput to a crawl even if the data itself resides comfortably in the L2 cache.</p>
+<h2 id="510-virtmcu-homework-memory-access-profiling"><a class="header" href="#510-virtmcu-homework-memory-access-profiling">5.10 VirtMCU Homework: Memory Access Profiling</a></h2>
+<p>In standard software development on a host operating system, observing the exact microarchitectural penalties of cache misses and TLB thrashing is incredibly difficult. The host OS scheduler interrupts your process randomly, and background tasks continually pollute the L1/L2 caches and TLB, injecting massive amounts of wall-clock jitter into any performance measurement.</p>
+<p>For this chapter’s homework, you will bypass these abstractions using <strong>VirtMCU FirmwareStudio</strong>. You will analyze memory hierarchy latency utilizing VirtMCU’s deterministic <code>slaved-icount</code> mode, which guarantees exact, jitter-free cycle counts.</p>
+<ol>
+<li><strong>Cache Thrashing:</strong> You will be provided with a C program that performs matrix multiplication. You will write two versions of the inner loop: one that iterates through the matrices in row-major order (respecting spatial locality) and one that iterates in column-major order (violating spatial locality).</li>
+<li><strong>TLB Miss Measurement:</strong> You will write a second program that initializes a large array of structs. One version of your code will traverse the structs sequentially. The second version will traverse the structs using a randomized stride that deliberately jumps across 4 KB page boundaries on every access, intentionally exceeding the TLB’s 64-entry capacity.</li>
+<li><strong>Deterministic Cycle Profiling:</strong> You will compile these binaries for bare-metal ARM execution and load them into VirtMCU. By reading the virtual hardware timers in <code>slaved-icount</code> mode before and after your execution loops, you will measure the exact nanosecond penalty introduced by cache line fetches and page-table walks. You will document the performance divergence, proving empirically how software data structures interact with physical cache associativity and MMU translation buffers.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_04.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_06.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_04.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_06.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

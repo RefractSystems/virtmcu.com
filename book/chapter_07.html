@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-a4a8c921.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-86b32607.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Foundations of Computer Architecture and Cyber-Physical Systems 2.0</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/RefractSystems/virtmcu.com" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <p>Welcome to Part III of our course: The Hardware-Software Interface. We have spent the first half of this textbook exploring the digital logic that forms a processor, the microarchitecture that executes instructions, and the complex memory and interconnect hierarchies that move data across the silicon. We now reach a pivotal transition. Hardware without software is merely a space heater; to create a functional Cyber-Physical System (CPS), we must write software that commands the silicon.</p>
+<p>Because our target audience consists of graduate students transitioning from high-level software engineering, you are likely accustomed to writing applications that run on top of a sophisticated operating system (OS) like Linux or Windows. In those environments, the OS provides a comfortable, abstracted virtual machine. If you want to read from a file or send data over a network, you invoke a system call, and the OS handles the complex, messy interactions with the physical hardware.</p>
+<p>However, in the world of embedded systems and CPS, you are often programming “bare-metal.” There is no operating system hiding the hardware from you; your code executes directly on the processor, meaning you are responsible for everything from the moment power is applied to the chip. This chapter bridges the gap between hardware and software by exploring how a processor boots, how it handles unexpected events through the exception model, how it interacts with peripherals via interrupts, and how it isolates trusted code using privilege levels.</p>
+<p>Here is the complete text for Chapter 7, formatted in Markdown.</p>
+<hr>
+<h1 id="chapter-7-interrupts-exceptions-and-bare-metal-execution"><a class="header" href="#chapter-7-interrupts-exceptions-and-bare-metal-execution">Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution</a></h1>
+<h2 id="71-introduction-the-bare-metal-environment"><a class="header" href="#71-introduction-the-bare-metal-environment">7.1 Introduction: The Bare-Metal Environment</a></h2>
+<p>In a high-level programming environment, a software engineer rarely concerns themselves with the physical state of the machine at power-on. When a user runs a C program, the OS allocates virtual memory, sets up the execution environment, and smoothly transfers control to the <code>main()</code> function.</p>
+<p>In bare-metal programming, however, <code>main()</code> does not execute by magic. The hardware strictly defines what happens the instant power is applied to the processor. A system must undergo a highly choreographed sequence of hardware and software initializations—collectively known as the boot process—to prepare the environment for high-level language execution.</p>
+<p>Furthermore, once the application is running, it must interact with the continuous-time physical world. In Chapter 6, we introduced the concept of programmed I/O, or polling, where the CPU continuously loops to check the status of a peripheral. Polling is incredibly inefficient because it wastes thousands or millions of clock cycles spinning in a tight loop, preventing the CPU from performing useful computation or dropping into low-power sleep states. To create responsive, real-time Cyber-Physical Systems, we must abandon polling in favor of asynchronous, interrupt-driven event handling, where the hardware forcibly alerts the software that an event has occurred.</p>
+<h2 id="72-booting-what-happens-at-power-on"><a class="header" href="#72-booting-what-happens-at-power-on">7.2 Booting: What Happens at Power-On</a></h2>
+<p>When an embedded processor is first powered up, or when a hardware reset button is pressed, the physical reset signal (often an active-low signal denoted as <code>nRST</code> or <code>RST#</code>) is asserted. This forces the processor’s internal state machine into a known, rigid initial state.</p>
+<p>But where does the processor find its first instruction? It cannot rely on the main memory (DRAM) because volatile memory contains garbage data at power-on. Instead, the processor is hardwired to look at a highly specific, predefined address in a non-volatile memory region, such as an on-chip Flash memory or a Boot ROM.</p>
+<h3 id="721-the-vector-table"><a class="header" href="#721-the-vector-table">7.2.1 The Vector Table</a></h3>
+<p>Rather than placing the raw executable code directly at the boot address, modern architectures typically place a data structure known as the <strong>Vector Table</strong> at this location. The vector table is an array of addresses (pointers) that dictate where the processor should jump to handle specific hardware events.</p>
+<p>For example, in the ARM Cortex-M architecture, the vector table is located at the very beginning of memory. The hardware expects the first two entries of this table to contain the most critical information needed to boot the system:</p>
+<ol>
+<li><strong>Initial Stack Pointer (Offset 0x00):</strong> The first 32-bit entry is not an instruction; it is the physical memory address of the top of the stack. When the CPU powers on, it immediately reads this value and loads it directly into the hardware Stack Pointer (SP) register. This is a brilliant architectural optimization, as it guarantees that a valid stack exists before the processor executes a single line of code, allowing the boot code to safely make function calls.</li>
+<li><strong>Reset Vector (Offset 0x04):</strong> The second entry contains the memory address of the <strong>Reset Handler</strong>. The hardware automatically loads this address into the Program Counter (PC) and begins fetching instructions.</li>
+</ol>
+<p>Because the vector table is typically stored in read-only, non-volatile memory, its contents are established at compile-time. In some advanced implementations, the base address of the vector table can be dynamically relocated by software later in the execution cycle by writing to a specific control register, allowing the operating system to install its own set of handlers.</p>
+<h3 id="722-the-c-runtime-initialization-crt0"><a class="header" href="#722-the-c-runtime-initialization-crt0">7.2.2 The C Runtime Initialization (CRT0)</a></h3>
+<p>The Reset Handler is a small, specialized block of assembly code—often called the startup code or <code>crt0</code> (C runtime zero)—responsible for preparing the environment so that C/C++ code can run safely.</p>
+<p>Software engineers are used to writing C code containing global variables with initial values (e.g., <code>int x = 5;</code>). However, non-volatile Flash memory cannot be modified at runtime, and volatile RAM contains random garbage at power-on. To solve this, the linker organizes the compiled program into distinct segments:</p>
+<ul>
+<li><strong>.text:</strong> Contains the executable machine instructions.</li>
+<li><strong>.data:</strong> Contains initialized global and static variables.</li>
+<li><strong>.bss:</strong> Contains uninitialized global and static variables (which the C standard dictates must default to zero).</li>
+</ul>
+<p>During the boot process, the startup code must physically copy the initial values for the <code>.data</code> segment from the non-volatile ROM into the volatile RAM. Next, it must loop through the entire <code>.bss</code> segment in RAM and write zeros to every memory location. Finally, the startup code configures the start and limit addresses for the heap memory (used for dynamic allocations like <code>malloc</code>), and only then does it execute a branch instruction to transfer control to the user’s <code>main()</code> function.</p>
+<h2 id="73-the-exception-model"><a class="header" href="#73-the-exception-model">7.3 The Exception Model</a></h2>
+<p>In the normal course of execution, the processor fetches instructions sequentially, occasionally altering the Program Counter (PC) due to software branch instructions. However, the processor must possess mechanisms to handle unplanned, asynchronous events that demand immediate attention. This mechanism is known as the <strong>Exception Model</strong>.</p>
+<p>An exception is conceptually similar to an unscheduled, forced function call. Exceptions can be broadly divided into two categories based on their origin: hardware and software.</p>
+<h3 id="731-hardware-interrupts"><a class="header" href="#731-hardware-interrupts">7.3.1 Hardware Interrupts</a></h3>
+<p>A hardware exception, commonly referred to as an <strong>interrupt</strong>, is triggered by physical events external to the CPU execution pipeline. Examples include a user pressing a key on a keyboard, a timer reaching zero, or a network interface controller receiving a packet.</p>
+<p>When a peripheral requires attention, it asserts a physical interrupt request (IRQ) line wired to the processor. Because these events happen independently of the software’s execution flow, they are asynchronous. The processor must finish executing the current instruction, halt its normal sequence, and jump to an <strong>Interrupt Service Routine (ISR)</strong> to handle the device.</p>
+<h3 id="732-software-exceptions-traps-and-faults"><a class="header" href="#732-software-exceptions-traps-and-faults">7.3.2 Software Exceptions (Traps and Faults)</a></h3>
+<p>Software exceptions are synchronous events generated directly by the execution of a specific instruction within the pipeline.</p>
+<ul>
+<li><strong>Faults:</strong> Occur when the processor encounters an error condition it cannot resolve natively. Examples include attempting to execute an undefined or illegal instruction opcode, attempting to divide a number by zero, arithmetic overflow, or an MMU page fault (attempting to access virtual memory that is not currently mapped to physical RAM).</li>
+<li><strong>Traps:</strong> Are intentional, scheduled exceptions triggered by specific assembly instructions (such as <code>SVC</code> or <code>SWI</code> in ARM, or <code>SYS</code> / <code>TRAP</code> in other architectures). Traps are the fundamental mechanism used by user-space applications to request services from the operating system, a concept we will explore further when discussing privilege levels.</li>
+</ul>
+<h2 id="74-handling-exceptions-the-hardware-perspective"><a class="header" href="#74-handling-exceptions-the-hardware-perspective">7.4 Handling Exceptions: The Hardware Perspective</a></h2>
+<p>When an exception occurs, the processor hardware must perform several immediate, automated steps before any software handler can run.</p>
+<h3 id="741-recording-the-exception-state"><a class="header" href="#741-recording-the-exception-state">7.4.1 Recording the Exception State</a></h3>
+<p>To handle the exception and eventually return to the interrupted program, the hardware must save the state of the machine. At a minimum, this involves saving the current Program Counter (so the CPU knows where to return) and a code indicating the reason for the exception.</p>
+<p>Architectures handle this differently. In the MIPS architecture, for example, the processor utilizes a dedicated set of system management registers known as <strong>Coprocessor 0</strong>. When an exception fires, the hardware automatically copies the current PC into the <strong>Exception Program Counter (EPC)</strong> register and writes an identification code into the <strong>Cause</strong> register. The processor then forces the PC to jump to a hardcoded global exception handler address (e.g., <code>0x80000180</code>), where the OS must read the Cause register to determine what actually happened.</p>
+<p>In contrast, the ARM architecture utilizes a vectored approach via the Nested Vectored Interrupt Controller (NVIC). Each specific type of exception or peripheral interrupt is assigned a unique index number. The hardware uses this index to directly look up the specific handler address in the Vector Table we discussed earlier, branching immediately to the correct software routine without requiring a massive, centralized <code>switch/case</code> statement to decode the cause.</p>
+<h3 id="742-precise-interrupts-and-pipeline-flushing"><a class="header" href="#742-precise-interrupts-and-pipeline-flushing">7.4.2 Precise Interrupts and Pipeline Flushing</a></h3>
+<p>Handling exceptions becomes incredibly complex in modern microarchitectures featuring deep pipelines, superscalar issue, and out-of-order execution.</p>
+<p>If a processor is executing five instructions simultaneously in a pipeline and an external interrupt fires, the processor cannot simply stop instantly. A fundamental requirement of modern systems is the <strong>precise interrupt</strong>. For an interrupt to be precise, the hardware must guarantee that:</p>
+<ol>
+<li>All instructions appearing in the program code <em>before</em> the interrupted instruction have fully completed and retired their results to the architectural state.</li>
+<li>All instructions appearing <em>after</em> the interrupted instruction have completely discarded any partial computations, leaving no trace in the architectural state.</li>
+</ol>
+<p>To achieve this in an out-of-order processor like the Intel Core i7, instructions write their intermediate results to hidden physical registers, but they only commit their results to the visible architectural registers (a process called retirement) in strict, sequential program order. If a fault or interrupt occurs, the Retirement Unit halts, preserving the precise state of the machine up to that exact instruction, and the pipeline is flushed of all subsequent speculative instructions. This ensures that when the ISR finishes, the program resumes exactly where it left off, oblivious to the fact that it was ever interrupted.</p>
+<h2 id="75-the-interrupt-service-routine-isr"><a class="header" href="#75-the-interrupt-service-routine-isr">7.5 The Interrupt Service Routine (ISR)</a></h2>
+<p>Once the hardware has verified the precise state and branched to the correct address in the vector table, the software <strong>Interrupt Service Routine (ISR)</strong> takes over. Writing an ISR requires extreme discipline, as the routine is hijacking the CPU from an active thread.</p>
+<p>As outlined in fundamental operating systems theory, a robust ISR must perform the following distinct software actions:</p>
+<ol>
+<li><strong>Context Save:</strong> The very first action the ISR must take is to save the contents of all general-purpose registers it intends to use. If the ISR modifies a register (like <code>X0</code> or <code>R1</code>) without saving it, it will corrupt the mathematical calculations of the interrupted background program. Registers are typically pushed onto the current stack. <em>(Note to students: While the specific ARM AArch64 assembly instructions for context switching are standard industry practice and draw on our knowledge from outside the provided foundational texts, you are encouraged to independently verify the exact syntax in the ARM Architecture Reference Manual. Typically, this involves using the <code>STP</code> (Store Pair) instruction to push registers to the stack).</em></li>
+<li><strong>Acknowledge and Clear:</strong> The ISR must communicate with the hardware peripheral (e.g., the UART or Timer) that triggered the interrupt, reading its status registers to identify the specific sub-event, and explicitly writing a command to clear the hardware interrupt flag. If the flag is not cleared, the CPU will immediately re-trigger the interrupt the moment the ISR returns, resulting in an infinite loop.</li>
+<li><strong>Process the Data:</strong> The ISR executes its specific logic—such as copying a received byte from a UART data register into an in-memory ring buffer, or decrementing a counter.</li>
+<li><strong>Context Restore:</strong> Once the work is complete, the ISR pops the saved values off the stack, restoring the general-purpose registers to their exact state prior to the interrupt.</li>
+<li><strong>Return:</strong> The ISR executes a special machine instruction (often called <code>RTI</code>, <code>IRET</code>, or a specific branch return in ARM) that atomically restores the processor’s status flags from the hardware exception registers and copies the Exception Program Counter back into the active Program Counter, resuming the background task.</li>
+</ol>
+<h3 id="751-interrupt-priorities-and-nesting"><a class="header" href="#751-interrupt-priorities-and-nesting">7.5.1 Interrupt Priorities and Nesting</a></h3>
+<p>In a complex system, multiple peripherals may attempt to interrupt the CPU simultaneously. Furthermore, a high-priority event (like an emergency motor shutoff) might occur while the CPU is already in the middle of executing a low-priority ISR (like a keyboard press).</p>
+<p>If an ISR disables all other interrupts during its execution to prevent race conditions, the system becomes completely sequential, risking the loss of time-critical data if the first ISR takes too long. To resolve this, modern architectures assign strict mathematical priorities to different interrupts.</p>
+<p>When an interrupt fires, the CPU elevates its current execution priority. If a new interrupt arrives with a <em>lower</em> priority, it is held in a pending state until the current ISR finishes. However, if an interrupt arrives with a <em>higher</em> priority, the CPU immediately preempts the active ISR, pushes its state to the stack, and services the more critical event—a concept known as <strong>Nested Interrupts</strong>. The ARM Nested Vectored Interrupt Controller (NVIC) handles these complex priority evaluations entirely in hardware, significantly reducing software latency.</p>
+<h2 id="76-privilege-levels-and-protection"><a class="header" href="#76-privilege-levels-and-protection">7.6 Privilege Levels and Protection</a></h2>
+<p>Interrupts and exceptions are not only used for handling hardware events; they form the absolute foundation of system security and operating system architecture.</p>
+<p>Modern processors implement multiple hardware privilege levels, or execution modes. The Intel Core i7, for instance, supports four privilege rings (Ring 0 to Ring 3), though typical operating systems like Linux and Windows only utilize two: Ring 0 (Kernel Mode) and Ring 3 (User Mode).</p>
+<p>When the processor is in User Mode, the hardware Memory Management Unit (MMU) strictly restricts what the software can do. User Mode code is absolutely prohibited from executing privileged machine instructions (like disabling hardware interrupts) or accessing memory-mapped I/O peripheral registers. If a User Mode application attempts to directly modify a hardware timer, the MMU intervenes, throwing a synchronous fault exception that terminates the offending program.</p>
+<p>But if a user program cannot access hardware, how does it ever print to the screen or save a file? It must ask the highly trusted Operating System to do the work on its behalf.</p>
+<h3 id="761-the-system-call"><a class="header" href="#761-the-system-call">7.6.1 The System Call</a></h3>
+<p>Because User Mode code cannot simply execute a <code>CALL</code> instruction to branch directly into the Kernel’s memory space (which is protected by the MMU), it must use a controlled hardware gateway.</p>
+<p>To request a service, the user program loads a specific service number into a general-purpose register and executes a software trap instruction (e.g., <code>SYS</code> or <code>SVC</code>). This instruction intentionally causes a hardware exception. The processor instantly elevates its privilege level to Kernel Mode and forces the PC to jump to a highly secured, predetermined vector address containing the OS System Call Handler.</p>
+<p>The OS examines the requested service number, securely validates any passed pointers, performs the privileged hardware I/O operation, and then executes a return-from-exception instruction to demote the processor back to User Mode and resume the application. This strict separation ensures that buggy or malicious user software cannot crash or compromise the underlying Cyber-Physical System.</p>
+<h2 id="77-context-switching-and-parallel-processing"><a class="header" href="#77-context-switching-and-parallel-processing">7.7 Context Switching and Parallel Processing</a></h2>
+<p>By combining hardware timer interrupts with the privilege and exception model, operating systems can create the illusion of true parallel processing on a single CPU core.</p>
+<p>If multiple programs (processes or threads) reside in memory, an RTOS (Real-Time Operating System) configures a hardware timer peripheral to generate a high-priority interrupt at a fixed interval (e.g., every 1 millisecond).</p>
+<ol>
+<li>The CPU is running Task A.</li>
+<li>The timer fires, preempting Task A and forcing a jump to the OS Scheduler ISR.</li>
+<li>The OS saves the exact register state of Task A onto Task A’s private stack.</li>
+<li>The OS changes the CPU’s hardware Stack Pointer to point to Task B’s private stack.</li>
+<li>The OS pops Task B’s previously saved registers off Task B’s stack.</li>
+<li>The OS executes the return-from-exception instruction, which restores Task B’s Program Counter.</li>
+<li>The CPU resumes executing Task B.</li>
+</ol>
+<p>This incredibly rapid process is known as a <strong>Context Switch</strong>. Because it relies entirely on the precise interrupt mechanism preserving and restoring architectural state, neither Task A nor Task B is aware that it was paused and swapped out of the execution pipeline.</p>
+<h2 id="78-virtmcu-homework-building-a-deterministic-interrupt-handler"><a class="header" href="#78-virtmcu-homework-building-a-deterministic-interrupt-handler">7.8 VirtMCU Homework: Building a Deterministic Interrupt Handler</a></h2>
+<p>In a standard embedded systems curriculum, writing bare-metal interrupt handlers introduces massive frustration. If a student configures a timer interrupt in a standard software emulator (like a vanilla QEMU instance), the emulator relies on the host operating system’s wall-clock to trigger the event. Because the host OS (Linux/Windows) introduces unpredictable scheduling delays, context switches, and network latencies, the simulated timer interrupt suffers from immense <strong>wall-clock jitter</strong>,.</p>
+<p>This jitter makes it impossible to reliably debug precise hardware timing dependencies, a fatal flaw when designing Cyber-Physical Systems where missing a control deadline by microseconds can crash a drone.</p>
+<p>To solve this, your homework relies on the <strong>VirtMCU FirmwareStudio</strong>. VirtMCU completely abandons the host OS wall-clock. Instead, it utilizes a dynamic QOM plugin architecture to enforce the <strong>Big QEMU Lock (BQL)</strong> constraints and implements strict cooperative time slaving.</p>
+<ol>
+<li><strong>Architecture Review:</strong> You will begin by reviewing the VirtMCU design rationale in <code>docs/architecture/01-system-overview.md</code> to understand how the five implementation pillars guarantee cycle-accurate deterministic execution regardless of host computer speed.</li>
+<li><strong>Writing the Handler:</strong> You will be provided with a bare-metal C framework containing an uninitialized vector table. You must write an assembly language Interrupt Service Routine (ISR) that adheres to the strict context save/restore requirements discussed in Section 7.5.</li>
+<li><strong>Peripheral Interfacing:</strong> Using the <code>hw/rust/common/rust-dummy/</code> module as a template, you will instantiate a simulated push-button peripheral that triggers an IRQ line mapped to the NVIC.</li>
+<li><strong>Execution:</strong> You will compile your binary and run it within VirtMCU in <code>slaved-icount</code> mode. Because VirtMCU strictly lock-steps the virtual clock to the exact number of retired instructions (bypassing host OS jitter), you will use the <code>gdb</code> debugger to step through your ISR cycle-by-cycle. You will empirically verify that your interrupt fires at the exact same deterministic virtual nanosecond across multiple simulation runs, proving the stability necessary for rigorous CPS 2.0 design.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_06.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_08.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_06.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_08.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

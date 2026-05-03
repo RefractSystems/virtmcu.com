@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 10: Co-Simulation and Virtual Time - Foundations of Computer Architecture and Cyber-Physical Systems 2.0</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-a4a8c921.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-86b32607.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Foundations of Computer Architecture and Cyber-Physical Systems 2.0</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+                        <a href="https://github.com/RefractSystems/virtmcu.com" title="Git repository" aria-label="Git repository">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="chapter-10-co-simulation-and-virtual-time"><a class="header" href="#chapter-10-co-simulation-and-virtual-time">Chapter 10: Co-Simulation and Virtual Time</a></h1>
+<h2 id="101-introduction-the-illusion-of-time-in-computing"><a class="header" href="#101-introduction-the-illusion-of-time-in-computing">10.1 Introduction: The Illusion of Time in Computing</a></h2>
+<p>In the first nine chapters of this book, we constructed a comprehensive understanding of computing nodes from the digital logic level up to the Real-Time Operating System (RTOS) and the overarching architecture of Cyber-Physical Systems (CPS 2.0). We established that in a true CPS, time is not merely a performance metric—it is a strict criterion for logical correctness. If an autonomous vehicle’s braking controller computes the mathematically perfect stopping force but delivers it 50 milliseconds too late, the result is catastrophic physical failure.</p>
+<p>However, a fundamental impedance mismatch exists between the cyber and physical domains regarding the concept of time. In the physical world, time is a continuous, monotonically advancing variable governed by differential equations and the laws of physics. Physical components—such as masses, springs, induction motors, and fluids—react instantly and continuously to applied forces.</p>
+<p>Conversely, the cyber domain is entirely discrete. Software engineers generally view time as a sequence of logically ordered events. A program executes line one, then line two, then line three. The exact wall-clock time it takes to transition between these lines is abstracted away by the hardware pipeline, the memory hierarchy, and the operating system scheduler. When software is tested in standard development environments, it runs as fast as the host processor allows, completely decoupled from the real-world timeline.</p>
+<p>When designing a CPS 2.0 architecture, we cannot test the cyber algorithms and the physical mechanics in isolation. We must evaluate them together to observe their interactions. This requirement introduces the discipline of <strong>co-simulation</strong>, which fuses a discrete-event software simulator with a continuous-time physics engine. To achieve this without introducing massive timing errors, we must strip the concept of “time” away from the host computer’s operating system and replace it with a mathematically rigorous, deterministic <strong>virtual time</strong> clock. This chapter explores the theory of discrete-event simulation, the implementation of Transaction Level Modeling (TLM), and the mechanisms VirtMCU uses to achieve deterministic co-simulation for CPS.</p>
+<h2 id="102-the-problem-with-standard-emulation"><a class="header" href="#102-the-problem-with-standard-emulation">10.2 The Problem with Standard Emulation</a></h2>
+<p>To test embedded firmware before physical hardware is manufactured, engineers have traditionally relied on software emulators, the most famous being QEMU (Quick Emulator). QEMU utilizes Dynamic Binary Translation (DBT) to convert blocks of guest instruction set architecture (e.g., ARM AArch64) into the host instruction set architecture (e.g., x86_64) on the fly. This provides incredibly fast execution, allowing developers to boot entire guest operating systems in seconds.</p>
+<p>However, standard emulation environments are built for functional software testing, not for Cyber-Physical System validation. They suffer from a critical flaw: <strong>wall-clock scheduling jitter</strong>.</p>
+<p>In a standard QEMU setup, the simulated processor’s timer peripherals and interrupt controllers are tied to the host operating system’s real-time clock. When the guest firmware configures a hardware timer to fire an interrupt every 10 milliseconds, QEMU asks the Linux or Windows host OS to set a software timer.
+The host OS is a general-purpose, multitasking system. It is simultaneously managing disk I/O, network traffic, background services, and graphical user interfaces. If the host OS scheduler decides to preempt the QEMU process to handle an incoming gigabit network packet, the emulator is physically paused.</p>
+<p>When QEMU is eventually rescheduled and resumes execution, it checks the host clock, realizes that 15 milliseconds have passed, and immediately fires the guest’s 10ms timer interrupt. From the perspective of the guest firmware, the hardware timer took 15 milliseconds to count to 10 milliseconds. This timing violation propagates through the guest’s RTOS scheduler, delaying the execution of critical control loops.</p>
+<p>If this emulator is loosely coupled to a physics engine simulating a drone, the physics engine will continue to advance its continuous-time dynamics while the emulator is paused. When the emulator finally sends its delayed actuator command, the drone’s physical state has already degraded, causing the simulated drone to crash. The drone crashed not because the student’s Proportional-Integral-Derivative (PID) control math was incorrect, but because the host OS injected scheduling jitter into the simulation. This lack of reproducibility renders standard emulators useless for hard real-time CPS verification.</p>
+<h2 id="103-principles-of-discrete-event-de-simulation"><a class="header" href="#103-principles-of-discrete-event-de-simulation">10.3 Principles of Discrete-Event (DE) Simulation</a></h2>
+<p>To build a simulation environment devoid of wall-clock jitter, we must formalize how digital hardware simulates time. At the system level, hardware is typically modeled using <strong>Discrete-Event (DE) Simulation</strong> semantics. SystemC, the industry standard C++ library for hardware modeling, utilizes a specialized DE simulation kernel.</p>
+<p>Unlike continuous-time physics, where variables change constantly, digital hardware state changes only at discrete points in time, typically triggered by clock edges or signal transitions. A Discrete-Event kernel models this by maintaining a centralized <strong>Event Queue</strong> ordered strictly by virtual timestamps.</p>
+<p>The simulation does not execute continuously; it jumps from one event timestamp to the next. The DE simulation semantics rely heavily on a two-phase execution model known as the <strong>Evaluate-Update paradigm</strong>. This paradigm is designed to accurately simulate the parallel nature of hardware on a sequential host CPU.</p>
+<ol>
+<li><strong>Evaluate Phase:</strong> The simulation kernel selects all processes (threads or methods) that are sensitive to the current timestamp or triggered by events at this exact virtual time. The kernel executes these processes one by one. Crucially, during this phase, any assignments made to hardware signals <em>do not immediately update the signal’s value</em>. Instead, the new values are scheduled to be updated in the future.</li>
+<li><strong>Update Phase:</strong> Once all runnable processes have finished evaluating, the kernel applies all the scheduled signal updates simultaneously.</li>
+</ol>
+<p>This two-phase approach guarantees deterministic behavior. If Process A and Process B both read Signal X and write to Signal Y at the exact same virtual nanosecond, the Evaluate-Update paradigm ensures that both processes read the old value of X before either can update Y. The order in which the host CPU executes Process A and Process B during the Evaluate phase becomes completely irrelevant, ensuring reproducibility.</p>
+<h3 id="1031-delta-cycles"><a class="header" href="#1031-delta-cycles">10.3.1 Delta Cycles</a></h3>
+<p>A unique artifact of the DE simulation kernel is the <strong>delta cycle</strong>. A delta cycle represents an infinitesimal step in virtual time. If the Update phase alters a signal, that alteration might trigger a <em>new</em> event that is scheduled to occur at the <em>exact same virtual timestamp</em> (zero-delay).</p>
+<p>When this happens, the simulation kernel does not advance the virtual clock. Instead, it initiates a new Evaluate phase followed by a new Update phase, all within the same virtual nanosecond. This loop of Evaluate-Update stages at a constant virtual time is called a delta cycle. Delta cycles allow the simulator to resolve zero-delay combinational logic paths (such as a cascade of logic gates) in a causally correct sequence without advancing physical time. Only when the event queue contains no more zero-delay events does the kernel advance the virtual clock to the timestamp of the next scheduled event.</p>
+<h2 id="104-transaction-level-modeling-tlm-and-time"><a class="header" href="#104-transaction-level-modeling-tlm-and-time">10.4 Transaction Level Modeling (TLM) and Time</a></h2>
+<p>While cycle-accurate DE simulation is highly precise, simulating every individual clock edge, pin transition, and delta cycle for a massive System-on-Chip (SoC) interconnect is incredibly slow. To achieve the simulation speeds necessary to boot an RTOS and run complex CPS software, architects rely on <strong>Transaction Level Modeling (TLM)</strong>.</p>
+<p>TLM abstracts away the low-level physical pins and wires of the SoC interconnect (such as AMBA AXI or APB). Instead of simulating the clock-by-clock toggling of <code>VALID</code> and <code>READY</code> signals, TLM uses object-oriented method calls (like C++ functions) to transfer data between initiators (e.g., CPUs, DMA controllers) and targets (e.g., memories, UARTs).</p>
+<p>In the widely adopted OSCI TLM 2.0 standard, these interactions are modeled as transactions containing a payload (the data, address, and command). TLM provides multiple levels of timing abstraction:</p>
+<ul>
+<li><strong>Untimed (UT):</strong> Used for pure functional software development. Transactions execute instantly in zero virtual time. There is no concept of bus contention or propagation delay.</li>
+<li><strong>Loosely Timed (LT):</strong> Used for RTOS and driver development. Transactions are annotated with estimated delays, but the simulation relies on <strong>temporal decoupling</strong>. In LT, the CPU is allowed to run ahead of the global virtual clock for a specific “quantum” of time. It accumulates its own local time and only synchronizes with the rest of the system when its quantum expires. This provides immense simulation speedups by avoiding constant context switching with the DE kernel.</li>
+<li><strong>Approximately Timed (AT):</strong> Used for architectural exploration. This model breaks transactions into multiple phases to accurately simulate bus contention, pipelining, and backpressure. For example, a write transaction is modeled using a four-phase protocol: <em>Begin Request</em>, <em>End Request</em>, <em>Begin Response</em>, and <em>End Response</em>. The AT model interacts heavily with the DE kernel’s event queue to enforce these timing boundaries, resulting in highly accurate but slower simulations.</li>
+</ul>
+<p>For VirtMCU and CPS co-simulation, we must strike a careful balance. We need the speed of Loosely Timed TLM to execute millions of instructions, but we require strict timing boundaries to interact with continuous-time physics.</p>
+<h2 id="105-co-simulation-bridging-the-cyber-and-physical"><a class="header" href="#105-co-simulation-bridging-the-cyber-and-physical">10.5 Co-Simulation: Bridging the Cyber and Physical</a></h2>
+<p>Co-simulation in CPS 2.0 is the simultaneous execution of two fundamentally different simulation domains: the discrete-event cyber simulator (e.g., VirtMCU/QEMU executing firmware) and the continuous-time physical simulator (e.g., a MuJoCo physics engine simulating kinematics).</p>
+<p>Because these two engines possess entirely different mathematical foundations and concepts of time, they cannot run asynchronously. They must be coupled through an <strong>External Clock Authority</strong>.</p>
+<p>In a co-simulation environment, time is quantized into strictly bounded <strong>macro-steps</strong> (e.g., 1 millisecond).</p>
+<ol>
+<li>The External Clock Authority grants permission for the physics engine to integrate its differential equations forward by 1ms.</li>
+<li>Simultaneously, it grants the cyber simulator permission to execute exactly 1ms worth of virtual CPU instructions and timer ticks.</li>
+<li>At the end of the 1ms macro-step, both simulators pause.</li>
+<li>The physical domain samples its state (e.g., joint angles, velocities) and maps these continuous values to discrete sensor registers (the Sensor Abstraction Layer, SAL).</li>
+<li>The cyber domain samples its memory-mapped output registers (the Actuator Abstraction Layer, AAL) and maps these discrete commands (e.g., PWM duty cycles) into physical forces.</li>
+<li>The state variables are exchanged via zero-copy shared memory, and the External Clock Authority issues the command to begin the next 1ms macro-step.</li>
+</ol>
+<p>This lock-step synchronization guarantees strict causality. The software cannot run ahead of the physics, and the physics cannot outpace the software. However, enforcing this macro-step boundary on a fast binary-translating emulator like QEMU requires aggressive structural modifications to how the emulator manages its internal execution loop.</p>
+<h2 id="106-virtmcu-clock-slaving"><a class="header" href="#106-virtmcu-clock-slaving">10.6 VirtMCU Clock Slaving</a></h2>
+<p>VirtMCU solves the emulator timing problem by entirely overriding QEMU’s internal clock infrastructure. Instead of querying the host OS wall-clock to manage guest timers, VirtMCU utilizes a dynamic QOM (QEMU Object Model) plugin architecture to enforce deterministic virtual time via the <code>hw/rust/backbone/clock</code> module.</p>
+<p>VirtMCU implements a concept known as <strong>Cooperative Time Slaving</strong>. Under this architecture, the virtual CPU execution loop is subordinated to an external synchronizer. VirtMCU provides two primary modes of operation to achieve this determinism: <code>slaved-suspend</code> and <code>slaved-icount</code>.</p>
+<h3 id="1061-slaved-suspend-mode"><a class="header" href="#1061-slaved-suspend-mode">10.6.1 Slaved-Suspend Mode</a></h3>
+<p>In <code>slaved-suspend</code> mode, VirtMCU is designed for high-throughput temporal decoupling. The CPU executes instructions as fast as the host hardware allows. However, the <code>hw/rust/backbone/clock</code> module intercepts the QEMU main loop and enforces a strict barrier at the macro-step boundary. If the external physics engine dictates a 1ms step, the CPU is allowed to execute instructions until its accumulated internal virtual time reaches 1ms. Once it hits this exact boundary, the virtual CPU thread is physically suspended (blocked) by the VirtMCU backbone. It will remain suspended indefinitely until the external physics engine completes its own 1ms integration and sends an IPC (Inter-Process Communication) signal to resume for the next step.</p>
+<h3 id="1062-slaved-icount-mode"><a class="header" href="#1062-slaved-icount-mode">10.6.2 Slaved-Icount Mode</a></h3>
+<p>While <code>slaved-suspend</code> forces alignment at the macro-step, the virtual time within that step might still be somewhat abstracted. For cycle-accurate, microsecond-precision validation, VirtMCU utilizes <code>slaved-icount</code> mode.</p>
+<p>In <code>slaved-icount</code> (Instruction Count) mode, virtual time is completely decoupled from any concept of physical time or host execution speed. Instead, time advances purely as a strict mathematical function of the number of retired instructions. If the simulated embedded processor is defined to run at 100 MHz, the execution of exactly one machine instruction advances the global virtual clock by precisely 10 nanoseconds.</p>
+<p>Because the <code>icount</code> virtual clock is the absolute source of truth for the entire SoC, all internal hardware timers, watchdogs, and peripheral baud-rate generators are driven directly by this instruction-derived clock. If the firmware configures a 10ms hardware timer, the VirtMCU backbone calculates that exactly 1,000,000 instructions must retire before the interrupt can fire. The execution loop will execute exactly 1,000,000 instructions, stop, inject the hardware IRQ into the NVIC, and then execute the first instruction of the ISR.</p>
+<p>This creates a perfectly deterministic, 100% reproducible execution trace. If you run the simulation on a massive server, it might finish in two seconds. If you run it on a slow, 10-year-old laptop, it might take five minutes. However, in both scenarios, the simulated control loop will execute the exact same number of instructions, and the hardware timer will fire on the exact same instruction boundary.</p>
+<h2 id="107-determinism-and-reproducibility-in-cps-validation"><a class="header" href="#107-determinism-and-reproducibility-in-cps-validation">10.7 Determinism and Reproducibility in CPS Validation</a></h2>
+<p>Why go to such extreme lengths to eliminate jitter? In the context of Cyber-Physical Systems, non-deterministic timing behaviors can easily mask fatal architectural flaws.</p>
+<p>Consider the operational dynamics of a Cyber-Physical Virtual Power Plant (VPP), which coordinates hundreds of Distributed Energy Resources (DERs) via complex communication networks. To maintain grid stability during an emergency frequency support event, a centralized VPP must issue precision demand response commands to isolated loads and energy storage systems. The timing of these command deliveries is critical. If a command packet to a storage inverter is delayed by communication jitter or processing stalls, the response power changes unexpectedly.</p>
+<p>As highlighted in distributed system literature, due to the heterogeneity of the information transmitted, changes in the information arrival state result in unequal covariate coefficients in the system’s economic and stability models. If a response command to DER A is delayed, it might cause a system cost increment of $30, whereas delaying a command to DER B might only cost $10. If the validation environment suffers from wall-clock scheduling jitter, the simulations will produce different economic and physical stability profiles on every single run. It becomes impossible to mathematically verify the control algorithms or optimize the communication scheduling policies because the baseline data is corrupted by simulation noise.</p>
+<p>By deploying VirtMCU’s deterministic clock slaving, engineers can create a multi-node simulation where the network delays, interrupt latencies, and RTOS context switches are absolutely rigid. If a priority inversion bug exists in the RTOS that causes a 50-microsecond delay in the VPP frequency response task, VirtMCU guarantees that this 50-microsecond delay will appear consistently in every simulation, allowing the engineer to attach a debugger, halt time, and inspect the exact state of the pipeline and memory map.</p>
+<h2 id="108-virtmcu-homework-control-loop-simulation"><a class="header" href="#108-virtmcu-homework-control-loop-simulation">10.8 VirtMCU Homework: Control Loop Simulation</a></h2>
+<p>Understanding the theoretical impact of simulation jitter is different from observing it directly in an active execution pipeline. To fully internalize the difference between traditional software emulation and strict co-simulation, this chapter’s homework requires you to deploy a real-time control loop within the VirtMCU environment.</p>
+<ol>
+<li><strong>Firmware Implementation:</strong> You will be provided with a bare-metal C framework. You must write an Interrupt Service Routine (ISR) that is triggered by a hardware timer configured to fire exactly every 10.00 milliseconds. Inside the ISR, you will increment a global volatile counter and read the current value of a free-running microsecond hardware counter to measure the elapsed time since the last invocation.</li>
+<li><strong>Execution under Jitter:</strong> First, compile the firmware and load it into a standard, unmodified QEMU ARM emulator running on your host OS. To simulate a noisy industrial environment, you will concurrently run a heavy, multi-threaded CPU stress test in the background of your host OS. You will print the delta between hardware timer invocations. You will observe significant variance (jitter) as the host OS scheduler randomly preempts the emulator to service the stress test.</li>
+<li><strong>Deterministic <code>slaved-icount</code> Execution:</strong> Next, load the exact same compiled binary into the VirtMCU framework configured in <code>slaved-icount</code> mode. Launch the same background CPU stress test on your host OS.</li>
+<li><strong>Analysis:</strong> You will observe that regardless of the immense load on your physical host machine, the delta between ISR invocations in VirtMCU will remain mathematically perfect. Because the virtual clock is slaved exclusively to the instruction count and not the wall clock, the VirtMCU environment completely isolates the cyber-physical state from external computing noise. You must submit a brief report containing the histogram of your timing measurements, proving empirically the necessity of virtual time in CPS 2.0 design.</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_09.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="chapter_11.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_09.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="chapter_11.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
