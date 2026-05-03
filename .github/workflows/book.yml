@@ -1,0 +1,66 @@
+name: Build and Deploy Book
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'book/**'
+      - 'scripts/build_book.sh'
+      - '.github/workflows/book.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install mdbook
+        run: |
+          mkdir -p ~/.cargo/bin
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.12.0/mdbook-v0.12.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C ~/.cargo/bin
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install mdbook-pdf
+        run: |
+          curl -sSL https://github.com/HollowMan6/mdbook-pdf/releases/download/v0.1.8/mdbook-pdf-v0.1.8-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C ~/.cargo/bin
+
+      - name: Install Google Chrome (for mdbook-pdf)
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Make Script Executable
+        run: chmod +x ./scripts/build_book.sh
+
+      - name: Build Book and PDF
+        run: ./scripts/build_book.sh
+
+      - name: Upload Book Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdbook-artifacts
+          path: |
+            book/book/html/
+            book/book/pdf/
+          
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book/book/html
+          destination_dir: book

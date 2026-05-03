@@ -1,0 +1,11 @@
+# Epilogue: The Future of Cyber-Physical Systems
+
+We have traversed the entire vertical stack of modern computing—from the physics of semiconductor transistors, up through the microarchitecture and instruction sets of ARM and RISC-V processors, into the memory hierarchies and interconnect fabrics that shuffle our data, and finally into the software layers of real-time operating systems and distributed Cyber-Physical Systems (CPS). 
+
+The computing landscape you are entering as a graduate engineer is fundamentally different from the one that existed just a decade ago. For over fifty years, the industry relied on Moore’s Law and Dennard scaling to reliably double transistor density and performance while maintaining constant power densities. Today, those physical scaling laws have effectively collapsed. We have hit the "power wall," meaning we can no longer simply increase clock frequencies without melting the silicon. 
+
+To continue achieving performance gains, the future of CPS architecture lies in **Domain-Specific Architectures (DSAs)** and hardware-software co-design. General-purpose processors will increasingly serve as traffic cops, delegating heavy mathematics to specialized Neural Processing Units (NPUs), Tensor Processing Units (TPUs), and custom Field Programmable Gate Arrays (FPGAs) operating at the edge. 
+
+Furthermore, as our physical infrastructure—power grids, medical devices, and autonomous transportation—becomes inextricably linked to cloud networks, **security and resilience** must be treated as first-class architectural constraints, not software afterthoughts. Designing systems that can autonomously withstand, isolate, and recover from cyber-physical attacks using distributed machine learning and robust optimization is the grand challenge of your generation. 
+
+The tools you have used in this text, from bare-metal debuggers to the deterministic VirtMCU co-simulation framework, are designed to give you absolute control over both the logical correctness and the continuous-time physical realities of your designs. 

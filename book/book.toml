@@ -1,0 +1,13 @@
+[book]
+authors = ["Refract Systems"]
+language = "en"
+src = "src"
+title = "Foundations of Computer Architecture and Cyber-Physical Systems 2.0"
+
+[output.html]
+git-repository-url = "https://github.com/RefractSystems/virtmcu.com"
+
+[output.pdf]
+optional = true
+# Configuration for mdbook-pdf plugin.
+# It uses headless chromium to render the book as a PDF.

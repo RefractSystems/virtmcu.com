@@ -48,3 +48,6 @@ playwright-report/
 test-results/
 
 temp/
+
+# mdbook generated output
+book/book/

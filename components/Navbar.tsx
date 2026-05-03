@@ -42,10 +42,21 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
             Features
           </Link>
           <Link
-            href="https://book.virtmcu.com/"
+            href="https://refractsystems.github.io/virtmcu.com/book/"
             onClick={closeMenu}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Book
+          </Link>
+          <Link
+            href="https://refractsystems.github.io/virtmcu.com/book/book.pdf"
+            className="pdf-link"
+            onClick={closeMenu}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            PDF
           </Link>
           <Link
             href="/docs"
