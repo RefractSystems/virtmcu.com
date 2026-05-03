@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a4a8c921.js";
+            window.path_to_searchindex_js = "searchindex-6fd6f906.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-86b32607.js"></script>
@@ -177,150 +177,54 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <p>Here is Chapter 3 of the textbook. I have meticulously expanded the explanations, provided concrete assembly language examples, and thoroughly explored the ARM64 Application Binary Interface (ABI) and call stack to ensure the text provides the necessary academic depth for your graduate students while strictly meeting your length constraints.</p>
-<hr>
-<h1 id="chapter-3-instruction-set-architecture-isa-and-arm-aarch64"><a class="header" href="#chapter-3-instruction-set-architecture-isa-and-arm-aarch64">Chapter 3: Instruction Set Architecture (ISA) and ARM AArch64</a></h1>
-<h2 id="31-introduction-to-the-instruction-set-architecture"><a class="header" href="#31-introduction-to-the-instruction-set-architecture">3.1 Introduction to the Instruction Set Architecture</a></h2>
-<p>In the preceding chapters, we explored how continuous voltages are abstracted into discrete digital logic and how those digital states are grouped into bytes and words to represent meaningful data. However, data without manipulation is inert. To perform computation, a computer must be commanded by a sequence of instructions. The vocabulary of commands understood by a specific microprocessor is known as its <strong>Instruction Set Architecture (ISA)</strong>.</p>
-<p>The ISA serves as the critical contract between the hardware engineers who design the silicon and the software engineers who write the compilers and applications. From the programmer’s perspective, the ISA defines the architectural state of the processor: the memory model, the available registers, the data types supported, and the specific binary encodings required to force the hardware to perform operations such as addition, branching, and data movement. Because the ISA abstracts away the underlying microarchitecture—the physical arrangement of logic gates, pipelines, and caches—software written for a specific ISA can run unmodified on entirely different hardware implementations, provided both adhere to the same ISA standard.</p>
-<p>Historically, ISAs fall into two primary design philosophies: <strong>Complex Instruction Set Computer (CISC)</strong> and <strong>Reduced Instruction Set Computer (RISC)</strong>. CISC architectures, most notably the x86 and x64 families that dominate personal computers, provide a vast, complex vocabulary of variable-length instructions. A single CISC instruction might fetch data from memory, perform a mathematical operation, and write the result back to memory. While this approach produces compact program code, the variable-length nature of the instructions requires highly complex silicon to decode and execute.</p>
-<p>In contrast, <strong>RISC</strong> architectures, such as ARM and RISC-V, were designed from a clean slate to execute instructions as rapidly and simply as possible. RISC architectures follow a strict <strong>load/store model</strong>. Computational instructions operate strictly on data already held within the processor’s internal registers. Accessing system memory is isolated entirely to explicit load and store instructions. Although a RISC processor requires more total instructions to perform a memory-to-memory calculation, the instructions themselves are of a fixed length (typically 32 bits), allowing the hardware decoder to be significantly simpler, the clock frequencies to be higher, and the execution pipelines to be deeper and more efficient.</p>
-<h2 id="32-the-evolution-of-arm-and-aarch64"><a class="header" href="#32-the-evolution-of-arm-and-aarch64">3.2 The Evolution of ARM and AArch64</a></h2>
-<p>The ARM architecture, originally standing for Acorn RISC Machine, was first developed in 1983. Over the subsequent decades, ARM processors became the dominant architecture in embedded systems, mobile phones, and tablets due to their exceptional balance of high performance, low power consumption, and small physical footprint.</p>
-<p>For most of its history, ARM was a 32-bit architecture. However, as mobile and computing workloads evolved to require processing massive datasets and accessing more than 4 Gigabytes of memory, the 32-bit address space became a critical bottleneck. In 2011, ARM announced the ARMv8-A architecture, introducing a full 64-bit architecture known as <strong>AArch64</strong>.</p>
-<p>The AArch64 execution state provides a 64-bit virtual address space and introduces a completely new instruction set named <strong>A64</strong>. Unlike previous transitions in other architectures (such as x86 to x64) where the new architecture was merely an extension of the old, the A64 instruction set was designed as a distinct, modern 64-bit ISA. While modern ARMv8-A and later processors maintain backward compatibility by supporting an AArch32 execution state for legacy 32-bit code, the two instruction sets are fundamentally incompatible; you cannot mix A64 and 32-bit ARM instructions in the same execution stream. Because modern high-performance computing, deep learning, and advanced Cyber-Physical Systems require the vast memory and throughput capabilities of 64-bit systems, this book focuses exclusively on the AArch64 state and the A64 instruction set.</p>
+                        <h1 id="chapter-3-the-instruction-set-architecture-isa---arm-aarch64"><a class="header" href="#chapter-3-the-instruction-set-architecture-isa---arm-aarch64">Chapter 3: The Instruction Set Architecture (ISA) - ARM AArch64</a></h1>
+<h2 id="31-introduction-the-hardware-software-interface"><a class="header" href="#31-introduction-the-hardware-software-interface">3.1 Introduction: The Hardware-Software Interface</a></h2>
+<p>In the previous chapters, we examined the digital logic that physically processes binary signals. We now move up the hierarchy to the <strong>Instruction Set Architecture (ISA) level</strong>. The ISA is the formal boundary between the hardware and the software. It encompasses the complete set of machine instructions, the programmer-visible register set, the memory addressing modes, and the data types understood by a specific microprocessor. For software engineers and compiler writers, the ISA level is what is typically thought of as “machine language”.</p>
+<p>An architecture is completely defined by its instruction set and architectural state. While different microarchitectural implementations can vary wildly in cost, performance, and complexity (e.g., adding deeper pipelines or out-of-order execution), they must all successfully execute the same binary programs if they share the same ISA. In this chapter, we will explore the 64-bit ARM architecture (AArch64) as our primary educational ISA and introduce the fundamentals of assembly language programming.</p>
+<h2 id="32-instruction-set-design-risc-vs-cisc"><a class="header" href="#32-instruction-set-design-risc-vs-cisc">3.2 Instruction Set Design: RISC vs. CISC</a></h2>
+<p>When designing an instruction set, computer architects must decide how to encode the operations (opcodes) and their operands. Architectures generally fall into two broad philosophies: Complex Instruction Set Computers (CISC) and Reduced Instruction Set Computers (RISC).</p>
+<p>CISC processors, such as the Intel x86 family, provide highly complex instructions that can span varying lengths (up to 17 bytes) and can often perform arithmetic operations directly on memory addresses. RISC processors, such as ARM and MIPS, prioritize simplicity and regularity. To simplify hardware decoding, RISC architectures typically encode all instructions in a fixed 32-bit width format.</p>
+<p>A defining feature of RISC architectures like the ARM is their use of a <strong>load/store architecture</strong>. All computational activity strictly takes place within the processor’s general-purpose registers; the only instructions permitted to interact directly with main memory are those that explicitly load a value from memory or store a value into memory. Furthermore, RISC processors typically employ a three-address machine format for data processing, where an arithmetic instruction explicitly specifies two source registers and one destination register.</p>
 <h2 id="33-the-aarch64-programmers-model"><a class="header" href="#33-the-aarch64-programmers-model">3.3 The AArch64 Programmer’s Model</a></h2>
-<p>Software engineers accustomed to high-level languages like C or Python are used to declaring an arbitrary number of variables. At the ISA level, however, the processor provides only a small, fixed number of ultra-fast memory locations directly on the silicon core. These are known as <strong>registers</strong>. Because AArch64 relies on a load/store architecture, registers act as the middleman for almost every calculation. Understanding the layout and purpose of these registers is the first step in mastering the programmer’s model.</p>
-<h3 id="331-general-purpose-registers-x0-x30-w0-w30"><a class="header" href="#331-general-purpose-registers-x0-x30-w0-w30">3.3.1 General-Purpose Registers (X0-X30, W0-W30)</a></h3>
-<p>The AArch64 architecture provides thirty-one general-purpose 64-bit registers, accessible in assembly language as <strong>X0 through X30</strong>. These registers can be used for arithmetic, logical operations, and memory address calculation.</p>
-<p>To efficiently handle 32-bit data types (such as standard <code>int</code> variables in C), the architecture allows programmers to access the lower 32 bits of any X register by using the <strong>W0 through W30</strong> aliases. The X and W registers physically map to the exact same silicon. If an assembly instruction modifies a 32-bit W register, the processor automatically zero-extends the result, clearing the upper 32 bits of the corresponding 64-bit X register to zero. For example, writing the 32-bit value <code>0xFFFFFFFF</code> into W0 automatically forces X0 to become <code>0x00000000FFFFFFFF</code>.</p>
-<h3 id="332-special-purpose-registers-sp-lr-fp-pc-pstate"><a class="header" href="#332-special-purpose-registers-sp-lr-fp-pc-pstate">3.3.2 Special-Purpose Registers (SP, LR, FP, PC, PSTATE)</a></h3>
-<p>In addition to the general-purpose registers, the ARM CPU tracks its execution state using a set of dedicated special-purpose registers:</p>
+<p>To write assembly language for the ARM processor, a programmer must understand its architectural state. The 64-bit ARM architecture (AArch64) provides many general-purpose registers for data manipulation. These registers are 64 bits wide and are named <strong>X0</strong> through <strong>X30</strong>. The lower 32 bits of these registers can be accessed independently using the names <strong>W0</strong> through <strong>W30</strong>.</p>
+<p>While the CPU hardware treats most of these registers as functionally interchangeable, the software Application Binary Interface (ABI) imposes strict rules on how they are used. Certain registers are dedicated to special purposes:</p>
 <ul>
-<li><strong>Stack Pointer (SP / X31):</strong> The processor maintains a hardware stack in memory to track function calls and local variables. The 64-bit SP register points to the top of this active stack. Interestingly, the AArch64 architecture multiplexes the register index 31. Depending on the specific instruction context, referring to register 31 either accesses the Stack Pointer (SP) or acts as a dedicated Zero Register (<strong>XZR</strong> for 64-bit, <strong>WZR</strong> for 32-bit) which always reads as zero and discards any writes.</li>
-<li><strong>Program Counter (PC):</strong> The 64-bit PC register contains the absolute memory address of the instruction currently being executed. Because A64 instructions are uniformly 32 bits (4 bytes) wide, the hardware automatically increments the PC by 4 upon the completion of each sequential instruction. Unlike in the 32-bit ARM architecture, user code cannot write directly to the PC register to cause a jump; it must use dedicated branch instructions.</li>
-<li><strong>Link Register (LR / X30):</strong> When the processor executes a function call, it must remember the address to return to once the function finishes. The AArch64 architecture dedicates X30 as the Link Register (LR) for this purpose.</li>
-<li><strong>Frame Pointer (FP / X29):</strong> Complex functions establish “stack frames” or activation records in memory. X29 is conventionally reserved as the Frame Pointer (FP) to serve as a reliable base address for accessing local variables and parameters allocated on the stack.</li>
-<li><strong>Process State Register (PSTATE):</strong> The PSTATE register holds various system configurations and the highly critical <strong>Condition Code Flags</strong>. The flags indicate the results of the most recently executed arithmetic or logical instruction. The four primary flags are:
-<ul>
-<li><strong>N (Negative):</strong> Set to 1 if the result of an operation is mathematically negative (i.e., the most significant bit is 1).</li>
-<li><strong>Z (Zero):</strong> Set to 1 if the result of the operation is exactly zero.</li>
-<li><strong>C (Carry):</strong> Set to 1 if an unsigned addition results in a carry-out, or an unsigned subtraction does not require a borrow.</li>
-<li><strong>V (Overflow):</strong> Set to 1 if a signed arithmetic operation produces a result too large (or too negative) to fit in the destination register.</li>
+<li><strong>The Link Register (LR / X30):</strong> The ARM processor reserves this register to hold the return address during subroutine and function calls. When a program executes a branch and link (<code>bl</code>) instruction, the CPU automatically saves the address of the next sequential instruction into the LR.</li>
+<li><strong>The Stack Pointer (SP):</strong> Used to maintain the call stack in memory, the SP points to the current top of the stack and is heavily utilized for pushing and popping variables, preserving volatile registers, and saving return addresses during nested function calls,.</li>
+<li><strong>The Program Counter (PC):</strong> The PC maintains the memory address of the instruction currently being executed by the processor.</li>
 </ul>
-</li>
-</ul>
-<h2 id="34-assembly-language-and-loadstore-mechanics"><a class="header" href="#34-assembly-language-and-loadstore-mechanics">3.4 Assembly Language and Load/Store Mechanics</a></h2>
-<p>High-level variables must be transferred between the processor’s registers and main memory. AArch64 utilizes the <code>ldr</code> (Load Register) and <code>str</code> (Store Register) instructions for this task.</p>
+<h2 id="34-memory-addressing-and-endianness"><a class="header" href="#34-memory-addressing-and-endianness">3.4 Memory Addressing and Endianness</a></h2>
+<p>Modern processors utilize byte-addressable memory, meaning each byte in memory is assigned a unique address. When the CPU needs to access a multibyte data type (such as a 32-bit word or a 64-bit doubleword), it must be aware of the system’s <strong>endianness</strong>.</p>
+<p>In a <strong>little-endian</strong> memory organization, the lowest-order byte of a multibyte value is stored at the lowest memory address,. Conversely, a <strong>big-endian</strong> architecture stores the highest-order byte at the lowest memory address. The ARM architecture actually supports selecting between big- or little-endian modes under software control—a feature known as bi-endianness—though most modern operating systems execute in little-endian mode by default.</p>
 <h3 id="341-addressing-modes"><a class="header" href="#341-addressing-modes">3.4.1 Addressing Modes</a></h3>
-<p>To access memory, the hardware calculates an <strong>Effective Address</strong> using various addressing modes.</p>
+<p>To load data from memory into a register (or store data from a register to memory), the processor must compute the target memory address. ARM supports several addressing modes:</p>
 <ul>
-<li><strong>Register-Indirect:</strong> The simplest addressing mode fetches data using an absolute memory address held in a 64-bit register.
-<code>ldr x0, [x1]</code> loads the 64-bit value located at the address held in X1 into the destination register X0.</li>
-<li><strong>Indirect-Plus-Offset:</strong> It is incredibly common to access data sequentially, such as in an array. This mode adds a fixed offset to the base register.
-<code>ldr w0, [x1, #4]</code> calculates the effective address as X1 + 4 bytes, loading the resulting 32-bit word into W0.</li>
-<li><strong>Pre-indexed:</strong> This mode adds an offset to the base register, accesses the memory, and then <em>permanently updates</em> the base register with the new address. This is denoted by an exclamation mark <code>!</code>.
-<code>str x0, [sp, #-16]!</code> drops the stack pointer by 16 bytes and then stores X0 at that new memory location. This is the fundamental mechanism for pushing data onto the stack.</li>
-<li><strong>Post-indexed:</strong> This mode accesses the memory at the base register’s <em>current</em> address, and only updates the base register with the offset <em>after</em> the access completes.
-<code>ldr x0, [sp], #16</code> reads 64 bits from the top of the stack into X0, and subsequently raises the stack pointer by 16 bytes. This is the fundamental mechanism for popping data off the stack.</li>
+<li><strong>PC-Relative:</strong> Computes the address as an offset relative to the current Program Counter. The <code>adr</code> and <code>adrp</code> instructions use this mode to securely obtain the address of labels and constants located nearby in the program’s code section.</li>
+<li><strong>Register Indirect:</strong> The memory address is provided directly inside a base register (e.g., <code>ldr r0, [r1]</code>).</li>
+<li><strong>Register Indirect with Offset:</strong> An offset is added to the base register to compute the address. This offset can be an immediate numerical constant (e.g., <code>ldr r0, [r1, #32]</code>) or the value of another register.</li>
+<li><strong>Pre-increment and Post-increment:</strong> These modes automatically update the base register after computing the address, making them exceptionally useful for iterating through arrays or implementing push and pop stack operations,. For example, <code>ldr x0, [sp], #16</code> pops data off the stack and subsequently adds 16 to the stack pointer. Conversely, <code>str lr, [sp, #-16]!</code> pushes data by first subtracting 16 from the stack pointer and then storing the Link Register at that new address.</li>
 </ul>
-<h3 id="342-arithmetic-and-data-movement"><a class="header" href="#342-arithmetic-and-data-movement">3.4.2 Arithmetic and Data Movement</a></h3>
-<p>To copy data between registers, or to load a small constant into a register, AArch64 provides the <code>mov</code> instruction:
-<code>mov x1, x0</code> (Copies X0 to X1)
-<code>mov x2, #10</code> (Loads the immediate constant 10 into X2).</p>
-<p>For mathematics, the <code>add</code> and <code>sub</code> instructions perform addition and subtraction. By default, these operations <em>do not</em> affect the PSTATE condition flags. This is a deliberate RISC design choice, allowing the compiler to reorder instructions without accidentally destroying flag states needed by subsequent branches. To force the hardware to update the N, Z, C, and V flags, the software must append an <code>s</code> suffix to the instruction mnemonic, utilizing <code>adds</code> or <code>subs</code>.</p>
-<h2 id="35-translating-high-level-flow-control"><a class="header" href="#35-translating-high-level-flow-control">3.5 Translating High-Level Flow Control</a></h2>
-<p>Computers derive their power from the ability to make decisions. In high-level languages like C, this is achieved via <code>if/else</code> statements and <code>while</code> or <code>for</code> loops. In AArch64 assembly, all control flow boils down to comparing values and conditionally altering the Program Counter (PC) to branch to new memory addresses.</p>
-<h3 id="351-the-compare-and-branch-instructions"><a class="header" href="#351-the-compare-and-branch-instructions">3.5.1 The Compare and Branch Instructions</a></h3>
-<p>Decision-making requires two steps: evaluating a condition, and branching based on the result.
-The <strong><code>cmp</code> (Compare)</strong> instruction subtracts its right operand from its left operand, discards the mathematical result, and updates the PSTATE flags (N, Z, C, V). For example, <code>cmp x0, x1</code> performs X0 - X1. If X0 exactly equals X1, the subtraction yields 0, and the Z (Zero) flag is set to 1.</p>
-<p>Following the <code>cmp</code>, the program uses a <strong>Conditional Branch</strong> instruction to test the flags and potentially jump to a new statement label. Common conditional branches include:</p>
+<h2 id="35-arm-assembly-language-basics"><a class="header" href="#35-arm-assembly-language-basics">3.5 ARM Assembly Language Basics</a></h2>
+<p>Assembly language programs use <strong>directives</strong> (or pseudo-instructions) to instruct the assembler on how to organize the program in memory. A typical program is divided into multiple distinct sections:</p>
 <ul>
-<li><code>beq</code> (Branch if Equal): Jumps if the Z flag is 1.</li>
-<li><code>bne</code> (Branch if Not Equal): Jumps if the Z flag is 0.</li>
-<li><code>bgt</code> (Branch if Greater Than): Jumps if signed greater than (evaluates N and V flags).</li>
-<li><code>blt</code> (Branch if Less Than): Jumps if signed less than.</li>
-<li><code>bhi</code> / <code>blo</code> (Branch if Higher / Lower): Jumps based on unsigned comparisons.</li>
-<li><code>b</code> or <code>b.al</code> (Branch Unconditional): Forces a jump regardless of flags, equivalent to a <code>goto</code> statement.</li>
+<li><strong>The <code>.text</code> section:</strong> This section contains the actual executable machine instructions. For security, operating systems typically map the <code>.text</code> section into memory pages that are marked as read-only and executable, meaning any attempt to store data here will result in a segmentation fault,.</li>
+<li><strong>The <code>.data</code> section:</strong> Used to declare initialized static variables and embed lists of data.</li>
+<li><strong>The <code>.rodata</code> section:</strong> Used specifically for read-only constant data, such as fixed string sequences.</li>
+<li><strong>The <code>.bss</code> section:</strong> Reserved for uninitialized global variables. Variables placed in the <code>.bss</code> section are zeroed out at startup and consume very little disk space within the compiled executable file.</li>
 </ul>
-<h3 id="352-simulating-if-then-else"><a class="header" href="#352-simulating-if-then-else">3.5.2 Simulating If-Then-Else</a></h3>
-<p>Consider a standard C block:</p>
-<pre><code class="language-c">if (x == y) {
-    c = d;
-} else {
-    c = 0;
-}
-</code></pre>
-<p>At the machine level, the compiler generates assembly language that evaluates the opposite condition to skip blocks of code. Assuming <code>x</code> is in X0, <code>y</code> is in X1, <code>c</code> is in X2, and <code>d</code> is in X3, the equivalent AArch64 code is:</p>
-<pre><code class="language-assembly">    cmp x0, x1         // Compare x and y
-    bne else_block     // If x != y, jump directly to the else block
-    mov x2, x3         // THEN block: c = d
-    b end_if           // Unconditionally jump over the else block
-else_block:
-    mov x2, xzr        // ELSE block: c = 0 (using the Zero Register)
-end_if:
-</code></pre>
-<p>Software engineers translating complex compound booleans (e.g., <code>if (x == y &amp;&amp; z &lt; t)</code>) rely on <strong>short-circuit evaluation</strong>. Once the first condition <code>x == y</code> is proven false, the program immediately jumps to the <code>else</code> block without wasting CPU cycles evaluating the <code>z &lt; t</code> condition. The AArch64 architecture also provides a highly advanced <code>ccmp</code> (Conditional Compare) instruction designed specifically to chain Boolean evaluations natively in hardware, minimizing expensive branch operations.</p>
-<h3 id="353-loops-and-optimization"><a class="header" href="#353-loops-and-optimization">3.5.3 Loops and Optimization</a></h3>
-<p>Loops execute a block of code repeatedly. A <code>while</code> loop checks a termination condition at the beginning of the block. If the condition is false, it branches past the loop body. If true, it executes the body and uses an unconditional branch <code>b</code> to jump back to the test.</p>
-<p>However, computer architects and compiler writers employ strict optimization techniques to increase pipeline efficiency. The most common optimization is <strong>moving the termination condition to the end of the loop</strong>. A <code>do-while</code> (or <code>repeat-until</code>) loop evaluates its condition at the bottom. By compiling standard <code>for</code> and <code>while</code> loops to behave like <code>do-while</code> loops (preceded by a single initial check to ensure the loop should execute at least once), the compiler eliminates one unconditional branch instruction per iteration.</p>
-<p>Furthermore, loops counting downward to zero are inherently faster than loops counting upward. Executing <code>subs x0, x0, #1</code> inherently sets the PSTATE flags, allowing a subsequent <code>bne</code> (Branch if Not Equal) to evaluate the loop termination without requiring an explicit <code>cmp</code> instruction against a target boundary. Understanding these hardware-level behaviors allows software engineers to write highly performant C code that maps gracefully to ISA optimizations.</p>
-<h2 id="36-the-application-binary-interface-abi"><a class="header" href="#36-the-application-binary-interface-abi">3.6 The Application Binary Interface (ABI)</a></h2>
-<p>As software engineering modularized, the ability to write a function in C and reliably call a function written in C++, Assembly, or Rust became mandatory. For this interoperability to exist, there must be strict, universally agreed-upon rules governing how functions interact at the hardware level. This contract is the <strong>Application Binary Interface (ABI)</strong>.</p>
-<p>While the ISA dictates how the silicon executes instructions, the ABI dictates how software uses the registers and memory. If a caller routine and a callee routine do not agree on where parameters are stored, the program will instantly crash or corrupt memory.</p>
-<h3 id="361-parameter-passing-and-return-values"><a class="header" href="#361-parameter-passing-and-return-values">3.6.1 Parameter Passing and Return Values</a></h3>
-<p>The ARM64 ABI mandates that the first eight arguments of a function call are passed in the general-purpose registers <strong>X0 through X7</strong>. Passing parameters in registers is tremendously fast because it bypasses the slower main memory completely. If a function requires more than eight arguments, or the arguments are too large to fit in 64-bit registers (such as large C <code>struct</code>s), the additional parameters must be pushed onto the hardware stack in memory.</p>
-<p>When the callee function finishes its work, the ABI dictates that integer and pointer return values must be placed in the <strong>X0</strong> register.</p>
-<h3 id="362-volatile-vs-nonvolatile-registers"><a class="header" href="#362-volatile-vs-nonvolatile-registers">3.6.2 Volatile vs. Nonvolatile Registers</a></h3>
-<p>When Function A calls Function B, Function A might have critical calculations currently held in its registers. If Function B overwrites those registers, Function A’s logic is destroyed upon return. The ABI solves this by classifying registers as either <strong>volatile</strong> (caller-saved) or <strong>nonvolatile</strong> (callee-saved).</p>
+<p>Because the Memory Management Unit (MMU) controls access permissions (like read/write vs. read-only) with page-level granularity, the linker ensures that each of these sections begins on a new MMU page boundary.</p>
+<p>Data processing in AArch64 centers around a core group of instructions. Data is transferred between registers and memory using <code>ldr</code> (load register) and <code>str</code> (store register), or between registers using <code>mov</code>,. Basic arithmetic is handled by instructions such as <code>add</code>, <code>sub</code>, and <code>mul</code>,. Bitwise logical instructions, including <code>and</code>, <code>orr</code> (OR), and <code>eor</code> (Exclusive-OR), are provided to manipulate specific bits within a word.</p>
+<h2 id="36-low-level-control-flow"><a class="header" href="#36-low-level-control-flow">3.6 Low-Level Control Flow</a></h2>
+<p>To emulate the control flow structures found in High-Level Languages (HLLs)—such as <code>if...then...else</code> blocks, <code>switch</code> statements, and <code>while</code> loops—assembly language relies heavily on conditional branches and indirect jumps.</p>
+<p>This process begins with the <strong>compare instruction (<code>cmp</code>)</strong>. The <code>cmp</code> instruction evaluates two operands by effectively subtracting the second operand from the first. However, rather than saving the mathematical result into a destination register, it uses the result solely to update the processor’s status flags. These flags record whether the result was Zero, whether it generated a Carry, whether it was Negative, or whether it caused an Overflow.</p>
+<p>Once the flags are updated, a <strong>conditional branch instruction</strong> is used to transfer control depending on the specific states of those flags.</p>
 <ul>
-<li><strong>Volatile Registers (X0-X15):</strong> The ABI states that these registers are completely disposable across function calls. Function B is free to overwrite X0-X15 at any time. If Function A needs the data in X0-X15 to survive the function call, Function A must push those registers to the stack <em>before</em> calling Function B, and pop them back off afterward.</li>
-<li><strong>Nonvolatile Registers (X19-X28):</strong> The ABI dictates that Function B <em>must not</em> destroy the values in these registers. If Function B wishes to use X19 for its own mathematics, Function B must push the original value of X19 to the stack upon entry, use the register, and pop the original value back into X19 before returning to Function A.</li>
+<li><code>beq</code> (Branch if Equal) and <code>bne</code> (Branch if Not Equal) evaluate the Zero flag to jump if the operands were identical or different.</li>
+<li><code>blo</code> (Branch if Lower) and <code>bhi</code> (Branch if Higher) are used to branch based on unsigned magnitude comparisons.</li>
 </ul>
-<h2 id="37-the-call-stack-and-stack-frames"><a class="header" href="#37-the-call-stack-and-stack-frames">3.7 The Call Stack and Stack Frames</a></h2>
-<p>With the ABI rules established, we can examine the mechanics of invoking a function. A procedure call alters the flow of control, but unlike a standard branch, it must return to the exact instruction immediately following the call once it completes.</p>
-<h3 id="371-branch-with-link-bl-and-return-ret"><a class="header" href="#371-branch-with-link-bl-and-return-ret">3.7.1 Branch with Link (<code>bl</code>) and Return (<code>ret</code>)</a></h3>
-<p>In AArch64, a function call is initiated via the <strong><code>bl</code> (Branch with Link)</strong> instruction. When the CPU executes <code>bl my_function</code>, it does two things simultaneously:</p>
-<ol>
-<li>It jumps the Program Counter (PC) to the first instruction of <code>my_function</code>.</li>
-<li>It copies the address of the <em>next</em> sequential instruction (the return address) directly into the <strong>Link Register (LR / X30)</strong>.</li>
-</ol>
-<p>Once <code>my_function</code> completes its task, it executes the <strong><code>ret</code> (Return)</strong> instruction. The <code>ret</code> instruction seamlessly copies the 64-bit address held in the Link Register back into the Program Counter, instantly returning execution to the caller.</p>
-<p>However, this creates a major architectural challenge. Because the processor only has one Link Register, what happens if Function A calls Function B, and Function B needs to call Function C? When Function B executes its <code>bl</code> instruction, the hardware will overwrite the Link Register with the new return address for C, permanently obliterating the return address for A. If Function B then attempts to <code>ret</code>, it will enter an infinite loop or crash the system.</p>
-<h3 id="372-building-the-activation-record"><a class="header" href="#372-building-the-activation-record">3.7.2 Building the Activation Record</a></h3>
-<p>To solve the destroyed Link Register problem, and to allocate memory for localized variables, functions must build an <strong>Activation Record</strong>, more commonly known as a <strong>Stack Frame</strong>, in main memory. The stack frame isolates the execution state of the current function from all other functions in the system.</p>
-<p>Upon entry, an ABI-compliant function executes a “prologue” sequence. The most critical step is preserving both the Frame Pointer (FP) and the Link Register (LR) by pushing them to the stack. Because the ARM architecture strictly demands that the Stack Pointer (SP) remains aligned on a <strong>16-byte boundary</strong> at all times, pushing the 8-byte FP and the 8-byte LR simultaneously is highly efficient.</p>
-<p>The standard AArch64 stack frame prologue looks like this:</p>
-<pre><code class="language-assembly">my_function:
-    // 1. Push FP and LR to the stack, decrementing SP by 16 bytes
-    stp fp, lr, [sp, #-16]! 
-    
-    // 2. Set the Frame Pointer to the bottom of the new frame
-    mov fp, sp
-    
-    // 3. Allocate N bytes of space for local variables (N must be a multiple of 16)
-    sub sp, sp, #32 
-</code></pre>
-<p>With this stack frame established, the function can freely use the <code>bl</code> instruction to call other subroutines, knowing its original return address is safely preserved in RAM. It can also use the Frame Pointer (<code>fp</code>) to reliably access its local variables (e.g., <code>ldr w0, [fp, #16]</code>).</p>
-<p>When the function finishes, it executes an “epilogue” sequence to deallocate the stack frame, pop the original Frame Pointer and Link Register back into the CPU registers, and return:</p>
-<pre><code class="language-assembly">    // 1. Deallocate local variables
-    mov sp, fp
-    
-    // 2. Pop FP and LR from the stack, incrementing SP by 16 bytes
-    ldp fp, lr, [sp], #16
-    
-    // 3. Return to caller using the restored LR
-    ret
-</code></pre>
-<p>The stack frame discipline enables the most critical concept in computer science: <strong>recursion</strong>. Because each function invocation generates an entirely new, isolated stack frame in memory containing its own local variables and specific return address, a function can call itself infinitely (until physical memory is exhausted) without overwriting its previous state.</p>
-<h2 id="38-virtmcu-homework-stack-tracing-and-deterministic-execution"><a class="header" href="#38-virtmcu-homework-stack-tracing-and-deterministic-execution">3.8 VirtMCU Homework: Stack Tracing and Deterministic Execution</a></h2>
-<p>In traditional operating systems, inspecting stack frames and observing execution state at the instruction level is obfuscated by OS schedulers and virtual memory mapping. To bridge this gap, you will utilize the <strong>VirtMCU</strong> framework for your Chapter 3 homework.</p>
-<p>VirtMCU instantiates dynamic ARM machines relying on QEMU, utilizing dynamic QOM plugins to bypass standard emulation limits. Because VirtMCU implements <em>Cooperative Time Slaving</em>, the emulated processor executes deterministically.</p>
-<ol>
-<li><strong>Translating C to AArch64:</strong> You will be provided with a recursive C function that computes the factorial of an integer. Your first task is to manually translate this C code into strict AArch64 assembly, adhering completely to the ARM64 ABI. You must properly classify registers as volatile or nonvolatile, handle parameter passing via X0, and manually construct and destruct the stack frame (<code>stp fp, lr, [sp, #-16]!</code>) to preserve the Link Register during recursion.</li>
-<li><strong>Deterministic Step Execution:</strong> You will compile your bare-metal binary and load it into a VirtMCU instance running in <code>slaved-icount</code> mode. Because this mode provides exact nanosecond virtual time and locks the execution loop, you will be able to attach <code>gdb</code> and step through the binary cycle-by-cycle without any background host OS jitter interfering with the execution timing.</li>
-<li><strong>Stack Frame Inspection:</strong> As your recursive function calls itself, you will use the <code>gdb</code> memory inspection tools (introduced in Chapter 2) to manually dump the stack memory. You will trace the 16-byte alignments, identify where the <code>stp</code> instruction has written the sequential Link Register return addresses, and empirically verify the isolated local variables residing at fixed offsets from the Frame Pointer (<code>x29</code>).</li>
-</ol>
+<p>To emulate an <code>if...then...else...endif</code> statement in assembly language, the programmer uses a <code>cmp</code> instruction followed by a conditional branch that evaluates the <em>opposite</em> of the high-level condition. If the condition evaluates to false, the CPU branches <em>over</em> the <code>then</code> block instructions directly into the <code>else</code> block. An unconditional branch (<code>b</code> or <code>b.al</code>) is placed at the end of the <code>then</code> block to jump over the <code>else</code> statements so that both blocks are not executed sequentially,.</p>
+<p>For <code>switch...case</code> statements with many potential paths, assembly programmers often use <strong>jump tables</strong>. Instead of writing a long chain of <code>cmp</code> and <code>beq</code> instructions, the program calculates an index, loads an execution address from an array of addresses in memory, and uses an indirect branch (like <code>br</code>) to jump instantly to the appropriate case handler.</p>
+<p>Finally, for transferring control to a subroutine or function, the CPU uses the <strong><code>bl</code> (Branch and Link)</strong> instruction, which jumps to the target label while simultaneously saving the return address into the Link Register (LR). When the subroutine finishes its execution, it issues a <strong><code>ret</code> (Return)</strong> instruction, which unconditionally copies the address held in the LR back into the Program Counter, safely returning control to the caller,.</p>
 
                     </main>
 

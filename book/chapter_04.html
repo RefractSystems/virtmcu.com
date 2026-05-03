@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a4a8c921.js";
+            window.path_to_searchindex_js = "searchindex-6fd6f906.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-86b32607.js"></script>
@@ -177,11 +177,7 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <p>Welcome back to class. In our previous lectures, we established the digital foundations of our hardware and explored the Instruction Set Architecture (ISA)—specifically ARM AArch64—which serves as the contract between software and hardware. Today, we cross the boundary from what the hardware <em>promises</em> to do, to how the hardware <em>actually does it</em>.</p>
-<p>We are now entering Part II of our course: Modern System-on-Chip (SoC) Architecture. In Chapter 4, we will look inside the black box of the processor. We will design a processor microarchitecture from the ground up, starting with a simple single-cycle datapath, evolving it into a pipelined architecture, and finally examining the advanced superscalar and out-of-order execution engines that power modern high-performance computational nodes.</p>
-<p>Here is the complete text for Chapter 4, prepared in Markdown format.</p>
-<hr>
-<h1 id="chapter-4-processor-microarchitecture"><a class="header" href="#chapter-4-processor-microarchitecture">Chapter 4: Processor Microarchitecture</a></h1>
+                        <h1 id="chapter-4-processor-microarchitecture"><a class="header" href="#chapter-4-processor-microarchitecture">Chapter 4: Processor Microarchitecture</a></h1>
 <h2 id="41-introduction-architecture-vs-microarchitecture"><a class="header" href="#41-introduction-architecture-vs-microarchitecture">4.1 Introduction: Architecture vs. Microarchitecture</a></h2>
 <p>To a software engineer, the Instruction Set Architecture (ISA) defines the entirety of the processor. The ISA specifies the registers, the memory model, and the instructions available to the programmer. However, the ISA does not dictate how those instructions are physically executed.</p>
 <p>The specific physical arrangement of registers, memories, Arithmetic Logic Units (ALUs), and multiplexers used to implement an ISA is known as the <strong>microarchitecture</strong>. A single architecture, such as ARMv8, can be implemented by many different microarchitectures. One microarchitecture might be optimized for ultra-low power consumption in a battery-operated cyber-physical system, while another might be optimized for massive throughput in a cloud server. Though they share the same ISA and run the exact same compiled C code, their internal hardware designs differ vastly.</p>

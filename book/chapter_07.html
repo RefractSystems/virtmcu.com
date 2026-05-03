@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-a4a8c921.js";
+            window.path_to_searchindex_js = "searchindex-6fd6f906.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-86b32607.js"></script>
@@ -177,12 +177,7 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <p>Welcome to Part III of our course: The Hardware-Software Interface. We have spent the first half of this textbook exploring the digital logic that forms a processor, the microarchitecture that executes instructions, and the complex memory and interconnect hierarchies that move data across the silicon. We now reach a pivotal transition. Hardware without software is merely a space heater; to create a functional Cyber-Physical System (CPS), we must write software that commands the silicon.</p>
-<p>Because our target audience consists of graduate students transitioning from high-level software engineering, you are likely accustomed to writing applications that run on top of a sophisticated operating system (OS) like Linux or Windows. In those environments, the OS provides a comfortable, abstracted virtual machine. If you want to read from a file or send data over a network, you invoke a system call, and the OS handles the complex, messy interactions with the physical hardware.</p>
-<p>However, in the world of embedded systems and CPS, you are often programming “bare-metal.” There is no operating system hiding the hardware from you; your code executes directly on the processor, meaning you are responsible for everything from the moment power is applied to the chip. This chapter bridges the gap between hardware and software by exploring how a processor boots, how it handles unexpected events through the exception model, how it interacts with peripherals via interrupts, and how it isolates trusted code using privilege levels.</p>
-<p>Here is the complete text for Chapter 7, formatted in Markdown.</p>
-<hr>
-<h1 id="chapter-7-interrupts-exceptions-and-bare-metal-execution"><a class="header" href="#chapter-7-interrupts-exceptions-and-bare-metal-execution">Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution</a></h1>
+                        <h1 id="chapter-7-interrupts-exceptions-and-bare-metal-execution"><a class="header" href="#chapter-7-interrupts-exceptions-and-bare-metal-execution">Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution</a></h1>
 <h2 id="71-introduction-the-bare-metal-environment"><a class="header" href="#71-introduction-the-bare-metal-environment">7.1 Introduction: The Bare-Metal Environment</a></h2>
 <p>In a high-level programming environment, a software engineer rarely concerns themselves with the physical state of the machine at power-on. When a user runs a C program, the OS allocates virtual memory, sets up the execution environment, and smoothly transfers control to the <code>main()</code> function.</p>
 <p>In bare-metal programming, however, <code>main()</code> does not execute by magic. The hardware strictly defines what happens the instant power is applied to the processor. A system must undergo a highly choreographed sequence of hardware and software initializations—collectively known as the boot process—to prepare the environment for high-level language execution.</p>
