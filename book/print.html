@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-6fd6f906.js";
+            window.path_to_searchindex_js = "searchindex-97c5bb2f.js";
         </script>
 
         <!-- Custom JS scripts for mdbook-pdf PDF generation -->
@@ -204,131 +204,11 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <p>Welcome to the blueprint for our new graduate-level textbook and course structure. Designing this curriculum requires us to bridge a significant gap: taking graduate students who are highly proficient in software engineering and grounding them in the realities of hardware, computer architecture, and the continuous-time physical world.</p>
-<p>To achieve this, we will use <strong>VirtMCU</strong> as our core pedagogical tool, allowing students to build deterministic, multi-node digital twins without the scheduling jitter or physical hardware limitations that traditionally plague CPS education.</p>
-<p>Below is the comprehensive structural plan for the textbook, formatted natively in <code>.md</code> (Markdown). It is designed to cover 28 lectures across 14 chapters.</p>
-<hr>
-<h1 id="book-title-foundations-of-computer-architecture-and-cyber-physical-systems-20-a-deterministic-approach-using-virtmcu"><a class="header" href="#book-title-foundations-of-computer-architecture-and-cyber-physical-systems-20-a-deterministic-approach-using-virtmcu">Book Title: Foundations of Computer Architecture and Cyber-Physical Systems 2.0: A Deterministic Approach Using VirtMCU</a></h1>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>c0b52d0</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<p><strong>Version:</strong> 1.0.0 (Commit: <code>f14d70c</code>)</p>
-<h2 id="book-metadata-and-author-directives"><a class="header" href="#book-metadata-and-author-directives">Book Metadata and Author Directives</a></h2>
-<ul>
-<li><strong>Target Audience:</strong> Graduate students with a software background transitioning into Computer Architecture and Cyber-Physical Systems (CPS).</li>
-<li><strong>Format:</strong> Markdown (<code>.md</code>).</li>
-<li><strong>Length Constraints:</strong> Total size $\ge$ 180 pages. Each of the 14 chapters will be strictly $\ge$ 8 pages and contain a minimum of 2,500 words.</li>
-<li><strong>Course Mapping:</strong> 14 Chapters, designed to be taught over 28 lectures (2 lectures per chapter).</li>
-<li><strong>Pedagogical Tool:</strong> <strong>VirtMCU</strong> (FirmwareStudio). The book leverages VirtMCU’s deterministic QEMU-based simulation, Sensor/Actuator Abstraction Layer (SAL/AAL), and MuJoCo physics engine lock-stepping to provide hands-on homework.</li>
-</ul>
-<hr>
-<h2 id="part-i-hardware-foundations-for-software-engineers-lectures-16"><a class="header" href="#part-i-hardware-foundations-for-software-engineers-lectures-16">Part I: Hardware Foundations for Software Engineers (Lectures 1–6)</a></h2>
-<p><em>Objective: Strip away the software abstractions and teach the students how electrons become 1s and 0s, and how 1s and 0s become instructions.</em></p>
-<h3 id="chapter-1-the-digital-abstraction-and-logic-design"><a class="header" href="#chapter-1-the-digital-abstraction-and-logic-design">Chapter 1: The Digital Abstraction and Logic Design</a></h3>
-<ul>
-<li><strong>Lecture 1:</strong> From Transistors to Logic Gates. We begin at the lowest level of abstraction: the physics of semiconductors, CMOS transistors, and logic gates (AND, OR, NOT).</li>
-<li><strong>Lecture 2:</strong> Combinational and Sequential Logic. Students learn how gates are combined to create multiplexers, adders, and ALUs. We introduce sequential logic—latches, flip-flops, and clocks—explaining how circuits maintain state and memory.</li>
-<li><strong>VirtMCU Homework:</strong> Introduction to the VirtMCU environment. Students compile a basic C program into a bare-metal binary and observe simulated clock cycles.</li>
-</ul>
-<h3 id="chapter-2-data-representation-and-machine-organization"><a class="header" href="#chapter-2-data-representation-and-machine-organization">Chapter 2: Data Representation and Machine Organization</a></h3>
-<ul>
-<li><strong>Lecture 3:</strong> Data Storage and Number Systems. Binary, hexadecimal, signed/unsigned integers, two’s complement, and IEEE 754 floating-point formats.</li>
-<li><strong>Lecture 4:</strong> Memory and Machine Organization. Big-endian vs. little-endian byte ordering, memory addresses, and the von Neumann vs. Harvard architectures.</li>
-<li><strong>VirtMCU Homework:</strong> Memory inspection. Students use <code>gdb</code> connected to the VirtMCU QEMU instance to step through memory and observe byte ordering and data representation live.</li>
-</ul>
-<h3 id="chapter-3-instruction-set-architecture-isa-and-arm-aarch64"><a class="header" href="#chapter-3-instruction-set-architecture-isa-and-arm-aarch64">Chapter 3: Instruction Set Architecture (ISA) and ARM AArch64</a></h3>
-<ul>
-<li><strong>Lecture 5:</strong> The AArch64 Programmer’s Model. Introduction to the 64-bit ARM architecture. We cover the 32 general-purpose registers (X0-X30, W0-W30), the program counter, and the stack pointer.</li>
-<li><strong>Lecture 6:</strong> Assembly Language and the Call Stack. Translating high-level C flow control (if/else, loops) into ARM assembly. We dive deep into function calls, the ARM Application Binary Interface (ABI), parameter passing, and stack frame discipline.</li>
-<li><strong>VirtMCU Homework:</strong> Students rewrite a simple C function in AArch64 assembly, load it into VirtMCU, and trace the register modifications and stack allocations.</li>
-</ul>
-<hr>
-<h2 id="part-ii-modern-system-on-chip-soc-architecture-lectures-712"><a class="header" href="#part-ii-modern-system-on-chip-soc-architecture-lectures-712">Part II: Modern System-on-Chip (SoC) Architecture (Lectures 7–12)</a></h2>
-<p><em>Objective: Build a modern processor and SoC from the ground up, focusing on timing, memory bottlenecks, and interconnects.</em></p>
-<h3 id="chapter-4-processor-microarchitecture"><a class="header" href="#chapter-4-processor-microarchitecture">Chapter 4: Processor Microarchitecture</a></h3>
-<ul>
-<li><strong>Lecture 7:</strong> The Datapath and Control Unit. Designing a single-cycle processor. Instruction fetching, decoding, execution, and write-back phases.</li>
-<li><strong>Lecture 8:</strong> Pipelining and Superscalar Execution. We explore the classic five-stage RISC pipeline, data/control hazards, and branch prediction. We briefly discuss modern out-of-order execution and multi-core simultaneous multithreading.</li>
-<li><strong>VirtMCU Homework:</strong> Analyzing pipeline stalls. Using VirtMCU’s <code>slaved-icount</code> mode (which provides exact nanosecond virtual time), students measure the execution time differences between optimized and unoptimized assembly loops.</li>
-</ul>
-<h3 id="chapter-5-the-memory-hierarchy"><a class="header" href="#chapter-5-the-memory-hierarchy">Chapter 5: The Memory Hierarchy</a></h3>
-<ul>
-<li><strong>Lecture 9:</strong> Caches and Spatial/Temporal Locality. The growing gap between CPU and DRAM speeds. Direct-mapped, set-associative, and fully associative caches. Cache coherency protocols (MOESI).</li>
-<li><strong>Lecture 10:</strong> Virtual Memory and the MMU. Paging, page tables, the Translation Lookaside Buffer (TLB), and how the Memory Management Unit maps virtual addresses to physical addresses.</li>
-<li><strong>VirtMCU Homework:</strong> Memory access profiling. Students write firmware that intentionally causes cache thrashing and TLB misses, observing the latency footprint.</li>
-</ul>
-<h3 id="chapter-6-soc-interconnects-and-peripherals"><a class="header" href="#chapter-6-soc-interconnects-and-peripherals">Chapter 6: SoC Interconnects and Peripherals</a></h3>
-<ul>
-<li><strong>Lecture 11:</strong> Buses and Interconnect Protocols. Advanced Microcontroller Bus Architecture (AMBA). We cover AHB-Lite, APB for low-power peripherals, and AXI for high-speed packet-switched network-on-chip routing.</li>
-<li><strong>Lecture 12:</strong> I/O, UART, and Direct Memory Access (DMA). Memory-mapped I/O (MMIO) versus port-mapped I/O. We cover how peripherals interact with the CPU and how DMA controllers move data without CPU intervention.</li>
-<li><strong>VirtMCU Homework:</strong> Students write a bare-metal UART driver. They utilize VirtMCU’s deterministic multi-node UART (<code>hw/rust/comms/chardev</code>), ensuring their driver respects virtual-timestamped delivery.</li>
-</ul>
-<hr>
-<h2 id="part-iii-the-hardware-software-interface-lectures-1318"><a class="header" href="#part-iii-the-hardware-software-interface-lectures-1318">Part III: The Hardware-Software Interface (Lectures 13–18)</a></h2>
-<p><em>Objective: Transition from hardware design to systems programming, teaching students how software manages hardware events.</em></p>
-<h3 id="chapter-7-interrupts-exceptions-and-bare-metal-execution"><a class="header" href="#chapter-7-interrupts-exceptions-and-bare-metal-execution">Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution</a></h3>
-<ul>
-<li><strong>Lecture 13:</strong> Booting and the Exception Model. What happens at power-on. The vector table, Nested Vector Interrupt Controller (NVIC), and transitioning between privilege levels (User mode vs. Kernel/Supervisor mode).</li>
-<li><strong>Lecture 14:</strong> Interrupt-Driven Programming. Context switching, saving machine state, and the difference between polling and interrupt-driven I/O.</li>
-<li><strong>VirtMCU Homework:</strong> Building an interrupt handler. Students configure VirtMCU to simulate a hardware button press, writing an interrupt service routine (ISR) to handle the event.</li>
-</ul>
-<h3 id="chapter-8-real-time-operating-systems-rtos"><a class="header" href="#chapter-8-real-time-operating-systems-rtos">Chapter 8: Real-Time Operating Systems (RTOS)</a></h3>
-<ul>
-<li><strong>Lecture 15:</strong> RTOS Fundamentals. Soft vs. firm vs. hard real-time systems. The importance of deterministic response times over high average throughput.</li>
-<li><strong>Lecture 16:</strong> Task Scheduling and Synchronization. Priority-based preemption, round-robin scheduling, semaphores, and avoiding priority inversion and deadlocks.</li>
-<li><strong>VirtMCU Homework:</strong> Students port a lightweight RTOS kernel onto their VirtMCU simulated board and schedule two conflicting tasks, measuring exact context-switch jitter.</li>
-</ul>
-<h3 id="chapter-9-introduction-to-cyber-physical-systems-cps-20"><a class="header" href="#chapter-9-introduction-to-cyber-physical-systems-cps-20">Chapter 9: Introduction to Cyber-Physical Systems (CPS 2.0)</a></h3>
-<ul>
-<li><strong>Lecture 17:</strong> The Evolution to CPS 2.0. Transitioning from isolated embedded systems (CPS 1.0) to CPS 2.0. We cover the 3Cs: Computation, Communication, and Control, and how AI, Edge Computing, and SDN are reshaping infrastructure.</li>
-<li><strong>Lecture 18:</strong> Anatomy of a Cyber-Physical System. The feedback loop: sensing the physical world, processing data, and actuating changes.</li>
-<li><strong>VirtMCU Homework:</strong> System architecture design. Students map a physical scenario (e.g., a drone flight controller) to a CPS 2.0 architecture layout.</li>
-</ul>
-<hr>
-<h2 id="part-iv-virtmcu-and-continuous-time-physics-lectures-1924"><a class="header" href="#part-iv-virtmcu-and-continuous-time-physics-lectures-1924">Part IV: VirtMCU and Continuous-Time Physics (Lectures 19–24)</a></h2>
-<p><em>Objective: Integrate software execution with physical mechanics, utilizing VirtMCU’s unique capabilities to bridge the discrete-time cyber and continuous-time physical worlds.</em></p>
-<h3 id="chapter-10-co-simulation-and-virtual-time"><a class="header" href="#chapter-10-co-simulation-and-virtual-time">Chapter 10: Co-Simulation and Virtual Time</a></h3>
-<ul>
-<li><strong>Lecture 19:</strong> The Problem with Standard Emulators. Why standard QEMU fails for CPS. The necessity of deterministic virtual time, external clock authority, and eliminating wall-clock scheduling jitter.</li>
-<li><strong>Lecture 20:</strong> VirtMCU Clock Slaving. Understanding the <code>hw/rust/backbone/clock</code> module. We explore <code>slaved-suspend</code> mode for high throughput and <code>slaved-icount</code> mode for exact microsecond-precision hardware timers.</li>
-<li><strong>VirtMCU Homework:</strong> Students run a firmware simulation that requires strict 10ms control loops. They will compare standard QEMU (where the loop drifts due to host OS jitter) against VirtMCU’s deterministic clock.</li>
-</ul>
-<h3 id="chapter-11-the-sensoractuator-abstraction-layer-salaal"><a class="header" href="#chapter-11-the-sensoractuator-abstraction-layer-salaal">Chapter 11: The Sensor/Actuator Abstraction Layer (SAL/AAL)</a></h3>
-<ul>
-<li><strong>Lecture 21:</strong> Bridging MMIO and Physics. How to translate raw firmware register reads/writes into continuous physical properties (e.g., force, acceleration, angle).</li>
-<li><strong>Lecture 22:</strong> Physics Engine Lock-Stepping. Integrating VirtMCU with the MuJoCo physics engine via zero-copy shared memory. Simulating transfer functions and sensor noise.</li>
-<li><strong>VirtMCU Homework:</strong> Inverted Pendulum Simulation. Students write a firmware controller that reads simulated gyroscope registers (SAL) and writes to motor PWM registers (AAL) to balance a pendulum simulated in MuJoCo.</li>
-</ul>
-<h3 id="chapter-12-distributed-control-and-multi-node-networks"><a class="header" href="#chapter-12-distributed-control-and-multi-node-networks">Chapter 12: Distributed Control and Multi-Node Networks</a></h3>
-<ul>
-<li><strong>Lecture 23:</strong> Deterministic Networking. The challenge of distributed control in large-scale CPS (e.g., Virtual Power Plants). Designing for latency, packet loss, and semantic communication.</li>
-<li><strong>Lecture 24:</strong> VirtMCU Federation Bus. Multi-node simulation using <code>hw/rust/comms/netdev</code>. Students learn how Ethernet frames are buffered and injected into the guest NIC only when virtual time reaches the stamped arrival time, avoiding UDP multicast jitter.</li>
-<li><strong>VirtMCU Homework:</strong> Multi-node Virtual Power Plant. Students spin up two VirtMCU instances representing Distributed Energy Resources (DERs). They communicate over the deterministic bus to balance a simulated power load.</li>
-</ul>
-<hr>
-<h2 id="part-v-advanced-topics-in-cps-architecture-lectures-2528"><a class="header" href="#part-v-advanced-topics-in-cps-architecture-lectures-2528">Part V: Advanced Topics in CPS Architecture (Lectures 25–28)</a></h2>
-<p><em>Objective: Expand the students’ horizons into the modern challenges of security, data processing, and hardware acceleration.</em></p>
-<h3 id="chapter-13-security-and-resilience-in-cps"><a class="header" href="#chapter-13-security-and-resilience-in-cps">Chapter 13: Security and Resilience in CPS</a></h3>
-<ul>
-<li><strong>Lecture 25:</strong> Vulnerabilities in Critical Infrastructure. The impact of cyberattacks on physical safety. Protection strategies for industrial serial networks and transitioning to software-defined networking (SDN) for resilience.</li>
-<li><strong>Lecture 26:</strong> Hardware Security and Firmware Updates. Implementing TrustZone, memory protection units, and secure boot. Strategies for securing Firmware Over-The-Air (FOTA) updates with cryptographic keys and safe rollback mechanisms.</li>
-<li><strong>VirtMCU Homework:</strong> Students implement an MPU policy in their firmware to restrict a malicious payload from accessing the actuator memory-mapped registers.</li>
-</ul>
-<h3 id="chapter-14-hardware-acceleration-and-the-future-of-cps"><a class="header" href="#chapter-14-hardware-acceleration-and-the-future-of-cps">Chapter 14: Hardware Acceleration and the Future of CPS</a></h3>
-<ul>
-<li><strong>Lecture 27:</strong> SIMD, NEON, and DSP. Applying Single Instruction, Multiple Data (SIMD) for parallel processing of sensor arrays. Introduction to ARM NEON registers for vector mathematics and DSP filtering algorithms.</li>
-<li><strong>Lecture 28:</strong> GPUs, Autonomous Vehicles, and the Edge. The architecture of modern self-driving vehicle computers (e.g., Tesla HW3/HW4). Fusing LiDAR, RADAR, and vision via Convolutional Neural Networks (CNNs) processing at the edge.</li>
-<li><strong>VirtMCU Homework:</strong> Vectorized Sensor Processing. Students rewrite a sensor data fusion loop using ARM NEON intrinsics, verifying the execution speedup within the VirtMCU environment.</li>
-</ul>
-<hr>
-<h3 id="summary-of-pedagogical-alignment"><a class="header" href="#summary-of-pedagogical-alignment">Summary of Pedagogical Alignment</a></h3>
-<p>This book structure directly addresses your requirement to write a textbook for software-oriented graduate students. By starting with <strong>Digital Logic (Chapter 1)</strong>, we bridge their software knowledge to the hardware level. We subsequently move through <strong>Architecture (Chapters 4-6)</strong> and the <strong>OS Machine Level (Chapters 7-8)</strong>. Finally, the second half of the book is heavily dedicated to <strong>CPS 2.0 (Chapters 9-14)</strong>, relying completely on the <strong>VirtMCU</strong> framework to provide reproducible, zero-jitter, multi-node homework assignments that interact with continuous-time physics engines.</p>
+                        <h1 id="foundations-of-computer-architecture-and-cyber-physical-systems"><a class="header" href="#foundations-of-computer-architecture-and-cyber-physical-systems">Foundations of Computer Architecture and Cyber-Physical Systems</a></h1>
+<div align="center">
+  <img src="cover.png" alt="Book Cover" style="max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px;" />
+</div>
+
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="preface-how-to-use-this-book"><a class="header" href="#preface-how-to-use-this-book">Preface: How to Use This Book</a></h1>
 <p>The exponential increase in computing power and the pervasive integration of digital systems into the physical world have fundamentally transformed engineering. We are no longer simply designing isolated embedded systems; we are engineering <strong>Cyber-Physical Systems (CPS 2.0)</strong> that require a deep, integrated understanding of both hardware microarchitecture and continuous-time physical dynamics.</p>
@@ -403,7 +283,7 @@
 <p>Computers must not only be fast and efficient; they must also be dependable. Any physical device will eventually fail. Therefore, architecture dictates that dependability is achieved through <strong>redundancy</strong>. If a single component (such as a power supply or a memory chip) is prone to failure, designers must include redundant components that can automatically take over. In modern systems, this ranges from Error-Correcting Codes (ECC) in memory arrays to fully redundant servers in a warehouse-scale datacenter.</p>
 <p>With these foundational rules established, we are ready to venture into the details of digital logic. In Chapter 2, we will explore the mathematical language of computers—Boolean algebra and binary numbering—and demonstrate how physical transistors are combined into the logic gates that perform computation.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-2-data-representation-and-machine-organization-1"><a class="header" href="#chapter-2-data-representation-and-machine-organization-1">Chapter 2: Data Representation and Machine Organization</a></h1>
+<h1 id="chapter-2-data-representation-and-machine-organization"><a class="header" href="#chapter-2-data-representation-and-machine-organization">Chapter 2: Data Representation and Machine Organization</a></h1>
 <h2 id="21-introduction-the-language-of-the-machine"><a class="header" href="#21-introduction-the-language-of-the-machine">2.1 Introduction: The Language of the Machine</a></h2>
 <p>In digital electronics, a circuit is a network that processes discrete-valued variables. While at the lowest level of physics these variables represent continuous electrical voltages, computer architects abstract these continuous signals into just two discrete binary states: 0 and 1. By disciplining ourselves to use only these two states, we can combine simple components into highly reliable and sophisticated systems,.</p>
 <p>Before we can architect a processor capable of executing complex instructions, we must first establish how data is represented mathematically using these binary digits (bits), and how physical transistors are arranged to perform logical computations on those bits. This chapter explores the fundamentals of number systems, combinational logic, and sequential logic, serving as the bridge between raw electricity and organized computation.</p>
@@ -505,7 +385,7 @@
 <p>For <code>switch...case</code> statements with many potential paths, assembly programmers often use <strong>jump tables</strong>. Instead of writing a long chain of <code>cmp</code> and <code>beq</code> instructions, the program calculates an index, loads an execution address from an array of addresses in memory, and uses an indirect branch (like <code>br</code>) to jump instantly to the appropriate case handler.</p>
 <p>Finally, for transferring control to a subroutine or function, the CPU uses the <strong><code>bl</code> (Branch and Link)</strong> instruction, which jumps to the target label while simultaneously saving the return address into the Link Register (LR). When the subroutine finishes its execution, it issues a <strong><code>ret</code> (Return)</strong> instruction, which unconditionally copies the address held in the LR back into the Program Counter, safely returning control to the caller,.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-4-processor-microarchitecture-1"><a class="header" href="#chapter-4-processor-microarchitecture-1">Chapter 4: Processor Microarchitecture</a></h1>
+<h1 id="chapter-4-processor-microarchitecture"><a class="header" href="#chapter-4-processor-microarchitecture">Chapter 4: Processor Microarchitecture</a></h1>
 <h2 id="41-introduction-architecture-vs-microarchitecture"><a class="header" href="#41-introduction-architecture-vs-microarchitecture">4.1 Introduction: Architecture vs. Microarchitecture</a></h2>
 <p>To a software engineer, the Instruction Set Architecture (ISA) defines the entirety of the processor. The ISA specifies the registers, the memory model, and the instructions available to the programmer. However, the ISA does not dictate how those instructions are physically executed.</p>
 <p>The specific physical arrangement of registers, memories, Arithmetic Logic Units (ALUs), and multiplexers used to implement an ISA is known as the <strong>microarchitecture</strong>. A single architecture, such as ARMv8, can be implemented by many different microarchitectures. One microarchitecture might be optimized for ultra-low power consumption in a battery-operated cyber-physical system, while another might be optimized for massive throughput in a cloud server. Though they share the same ISA and run the exact same compiled C code, their internal hardware designs differ vastly.</p>
@@ -607,7 +487,7 @@ add x4, x1, x5   // x4 = x1 + x5
 <li><strong>Pipeline Analysis:</strong> Calculate the empirical CPI of both the unoptimized and optimized assembly loops. You must submit a report identifying the exact assembly instructions where the processor was forced to insert a pipeline bubble due to a Load-Use data hazard, verifying your analysis against the cycle counts retrieved from the VirtMCU deterministic timer.</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-5-the-memory-hierarchy-1"><a class="header" href="#chapter-5-the-memory-hierarchy-1">Chapter 5: The Memory Hierarchy</a></h1>
+<h1 id="chapter-5-the-memory-hierarchy"><a class="header" href="#chapter-5-the-memory-hierarchy">Chapter 5: The Memory Hierarchy</a></h1>
 <h2 id="51-introduction-the-memory-wall"><a class="header" href="#51-introduction-the-memory-wall">5.1 Introduction: The Memory Wall</a></h2>
 <p>In the preceding chapter, we examined the internal microarchitecture of the processor, demonstrating how pipelining, superscalar execution, and out-of-order scheduling can dramatically increase the instruction execution rate. However, a processor can only execute instructions as fast as it can be supplied with code and data. Historically, microprocessor speeds have doubled every two years, whereas the access latency of main memory has decreased at only a fraction of that rate. This ever-expanding divergence between CPU execution speed and memory latency is known as the “memory wall”.</p>
 <p>If a modern processor running at 3 GHz (where one clock cycle takes 0.33 nanoseconds) were forced to access main memory directly for every instruction, it would have to wait hundreds of clock cycles for the data to arrive. The execution pipeline would starve, and the massive throughput gains of the microarchitecture would be entirely wasted.</p>
@@ -701,7 +581,7 @@ To reduce AMAT, modern SoCs utilize multiple levels of cache. The <strong>Level 
 <li><strong>Deterministic Cycle Profiling:</strong> You will compile these binaries for bare-metal ARM execution and load them into VirtMCU. By reading the virtual hardware timers in <code>slaved-icount</code> mode before and after your execution loops, you will measure the exact nanosecond penalty introduced by cache line fetches and page-table walks. You will document the performance divergence, proving empirically how software data structures interact with physical cache associativity and MMU translation buffers.</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-6-soc-interconnects-and-peripherals-1"><a class="header" href="#chapter-6-soc-interconnects-and-peripherals-1">Chapter 6: SoC Interconnects and Peripherals</a></h1>
+<h1 id="chapter-6-soc-interconnects-and-peripherals"><a class="header" href="#chapter-6-soc-interconnects-and-peripherals">Chapter 6: SoC Interconnects and Peripherals</a></h1>
 <h2 id="61-introduction-breaking-out-of-the-core"><a class="header" href="#61-introduction-breaking-out-of-the-core">6.1 Introduction: Breaking Out of the Core</a></h2>
 <p>Welcome back. In our previous chapters, we constructed the processor pipeline and designed a deep memory hierarchy to keep the execution units fed with instructions and data. However, a processor that only talks to its own memory is effectively a brain in a jar; it can compute, but it cannot interact with the universe. For a Cyber-Physical System (CPS), interaction is the entire point. The system must sense physical properties, process them, and actuate mechanical responses.</p>
 <p>To bridge this gap, modern microprocessors are integrated with numerous communication interfaces and hardware controllers onto a single silicon die, creating a System-on-Chip (SoC). A SoC is not merely a collection of isolated parts; it is a complex, distributed network of functional blocks. These blocks, ranging from low-speed sensors to high-speed graphics accelerators, must all communicate flawlessly.</p>
@@ -818,7 +698,7 @@ While trivial to program, polling is highly inefficient. The CPU wastes thousand
 <li><strong>Deterministic Evaluation:</strong> You will launch the VirtMCU instance and connect a simulated serial terminal to the <code>hw/rust/comms/chardev</code> deterministic backend. Because VirtMCU strictly lock-steps the UART baud-rate generation to the exact number of retired instructions in the <code>slaved-icount</code> mode, you will observe flawless character delivery. You will then intentionally configure a baud rate mismatch between your driver and the terminal to observe framing errors, empirically proving how asynchronous protocols fail without precise timing synchronization.</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-7-interrupts-exceptions-and-bare-metal-execution-1"><a class="header" href="#chapter-7-interrupts-exceptions-and-bare-metal-execution-1">Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution</a></h1>
+<h1 id="chapter-7-interrupts-exceptions-and-bare-metal-execution"><a class="header" href="#chapter-7-interrupts-exceptions-and-bare-metal-execution">Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution</a></h1>
 <h2 id="71-introduction-the-bare-metal-environment"><a class="header" href="#71-introduction-the-bare-metal-environment">7.1 Introduction: The Bare-Metal Environment</a></h2>
 <p>In a high-level programming environment, a software engineer rarely concerns themselves with the physical state of the machine at power-on. When a user runs a C program, the OS allocates virtual memory, sets up the execution environment, and smoothly transfers control to the <code>main()</code> function.</p>
 <p>In bare-metal programming, however, <code>main()</code> does not execute by magic. The hardware strictly defines what happens the instant power is applied to the processor. A system must undergo a highly choreographed sequence of hardware and software initializations—collectively known as the boot process—to prepare the environment for high-level language execution.</p>
@@ -916,7 +796,7 @@ While trivial to program, polling is highly inefficient. The CPU wastes thousand
 <li><strong>Execution:</strong> You will compile your binary and run it within VirtMCU in <code>slaved-icount</code> mode. Because VirtMCU strictly lock-steps the virtual clock to the exact number of retired instructions (bypassing host OS jitter), you will use the <code>gdb</code> debugger to step through your ISR cycle-by-cycle. You will empirically verify that your interrupt fires at the exact same deterministic virtual nanosecond across multiple simulation runs, proving the stability necessary for rigorous CPS 2.0 design.</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-8-real-time-operating-systems-rtos-1"><a class="header" href="#chapter-8-real-time-operating-systems-rtos-1">Chapter 8: Real-Time Operating Systems (RTOS)</a></h1>
+<h1 id="chapter-8-real-time-operating-systems-rtos"><a class="header" href="#chapter-8-real-time-operating-systems-rtos">Chapter 8: Real-Time Operating Systems (RTOS)</a></h1>
 <h2 id="81-introduction-beyond-the-super-loop"><a class="header" href="#81-introduction-beyond-the-super-loop">8.1 Introduction: Beyond the Super-Loop</a></h2>
 <p>In Chapter 7, we breached the hardware-software interface, examining how a bare-metal processor boots and how it utilizes the exception model to asynchronously respond to physical events via hardware interrupts. For highly simplistic embedded devices—such as a microwave oven controller—software engineers often rely on a “super-loop” architecture. In a super-loop, the <code>main()</code> function consists of an infinite <code>while(1)</code> loop that continuously polls sensors, computes logic, and writes to actuators, occasionally pausing to service a hardware interrupt.</p>
 <p>However, as we transition into modern Cyber-Physical Systems (CPS)—such as autonomous drone flight controllers, automotive anti-lock braking systems, and interconnected smart manufacturing robotics—the super-loop rapidly collapses under the weight of its own complexity. When a system must simultaneously sample fifty different sensors at varying frequencies, manage an encrypted TCP/IP network stack, and execute complex motor control algorithms, a single execution thread riddled with interrupt service routines (ISRs) becomes impossible to maintain, debug, or verify.</p>
@@ -1008,7 +888,7 @@ Because $0.82 \not\le 0.7798$, this specific set of threads is mathematically <e
 <li><strong>Protocol Verification:</strong> Finally, you will enable the Priority Inheritance Protocol feature in your RTOS configuration. Rerunning the deterministic simulation, you will observe the kernel actively promoting the Low-priority task’s TCB priority field, proving how software mechanisms resolve the hazards of asynchronous CPS concurrency.</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-9-introduction-to-cyber-physical-systems-cps-20-1"><a class="header" href="#chapter-9-introduction-to-cyber-physical-systems-cps-20-1">Chapter 9: Introduction to Cyber-Physical Systems (CPS 2.0)</a></h1>
+<h1 id="chapter-9-introduction-to-cyber-physical-systems-cps-20"><a class="header" href="#chapter-9-introduction-to-cyber-physical-systems-cps-20">Chapter 9: Introduction to Cyber-Physical Systems (CPS 2.0)</a></h1>
 <h2 id="91-introduction-beyond-the-embedded-system"><a class="header" href="#91-introduction-beyond-the-embedded-system">9.1 Introduction: Beyond the Embedded System</a></h2>
 <p>Welcome to Part III of our course. Up to this point, we have focused extensively on the internal architecture of the computing node. We progressed from the physics of transistors to the pipeline of the ARM AArch64 processor, navigated the complexities of the memory hierarchy, and finally, in Chapter 8, deployed a Real-Time Operating System (RTOS) to guarantee deterministic thread scheduling.</p>
 <p>If our curriculum ended here, you would be well-equipped to design a traditional embedded system. However, the modern engineering landscape demands more. We are no longer simply building isolated microcontrollers that blink LEDs or manage singular engines. We are engineering <strong>Cyber-Physical Systems (CPS)</strong>.</p>
@@ -1073,7 +953,7 @@ You are tasked with designing the high-level CPS 2.0 architecture for a multi-ro
 </ol>
 <p>By mapping this architecture into the deterministic confines of VirtMCU, you will transition your understanding from isolated software algorithms to holistic, continuous-time control-computing codesign.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-10-co-simulation-and-virtual-time-1"><a class="header" href="#chapter-10-co-simulation-and-virtual-time-1">Chapter 10: Co-Simulation and Virtual Time</a></h1>
+<h1 id="chapter-10-co-simulation-and-virtual-time"><a class="header" href="#chapter-10-co-simulation-and-virtual-time">Chapter 10: Co-Simulation and Virtual Time</a></h1>
 <h2 id="101-introduction-the-illusion-of-time-in-computing"><a class="header" href="#101-introduction-the-illusion-of-time-in-computing">10.1 Introduction: The Illusion of Time in Computing</a></h2>
 <p>In the first nine chapters of this book, we constructed a comprehensive understanding of computing nodes from the digital logic level up to the Real-Time Operating System (RTOS) and the overarching architecture of Cyber-Physical Systems (CPS 2.0). We established that in a true CPS, time is not merely a performance metric—it is a strict criterion for logical correctness. If an autonomous vehicle’s braking controller computes the mathematically perfect stopping force but delivers it 50 milliseconds too late, the result is catastrophic physical failure.</p>
 <p>However, a fundamental impedance mismatch exists between the cyber and physical domains regarding the concept of time. In the physical world, time is a continuous, monotonically advancing variable governed by differential equations and the laws of physics. Physical components—such as masses, springs, induction motors, and fluids—react instantly and continuously to applied forces.</p>
@@ -1145,7 +1025,7 @@ The host OS is a general-purpose, multitasking system. It is simultaneously mana
 <li><strong>Analysis:</strong> You will observe that regardless of the immense load on your physical host machine, the delta between ISR invocations in VirtMCU will remain mathematically perfect. Because the virtual clock is slaved exclusively to the instruction count and not the wall clock, the VirtMCU environment completely isolates the cyber-physical state from external computing noise. You must submit a brief report containing the histogram of your timing measurements, proving empirically the necessity of virtual time in CPS 2.0 design.</li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="chapter-11-the-sensoractuator-abstraction-layer-salaal-1"><a class="header" href="#chapter-11-the-sensoractuator-abstraction-layer-salaal-1">Chapter 11: The Sensor/Actuator Abstraction Layer (SAL/AAL)</a></h1>
+<h1 id="chapter-11-the-sensoractuator-abstraction-layer-salaal"><a class="header" href="#chapter-11-the-sensoractuator-abstraction-layer-salaal">Chapter 11: The Sensor/Actuator Abstraction Layer (SAL/AAL)</a></h1>
 <h2 id="111-introduction-the-cyber-physical-boundary"><a class="header" href="#111-introduction-the-cyber-physical-boundary">11.1 Introduction: The Cyber-Physical Boundary</a></h2>
 <p>In Chapter 10, we established the temporal foundation required for Cyber-Physical System (CPS) co-simulation. We demonstrated that standard software emulators fail to provide the rigorous timing guarantees required for CPS validation due to host operating system scheduling jitter. By implementing Cooperative Time Slaving and deterministic <code>slaved-icount</code> execution in VirtMCU, we successfully lock-stepped the discrete-time cyber domain (the processor) with the continuous-time physical domain (the physics engine).</p>
 <p>However, synchronizing time is only half of the co-simulation equation. Even if the virtual processor and the physics engine advance their clocks in perfect harmony, they do not speak the same language. A physics engine like MuJoCo calculates the state of the world using continuous floating-point variables representing Newtonian mechanics—positions, velocities, accelerations, and forces. Conversely, the microcontroller firmware operates purely in the discrete digital domain, reading and writing binary integers to memory-mapped I/O (MMIO) registers.</p>
