@@ -10,10 +10,14 @@ COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 
 echo "Preparing to build book version $VERSION (commit $COMMIT)..."
 
-# Inject version and commit hash into index.md
-# We'll look for the main header and append it there.
-sed -i.bak "s/# Book Title:.*/&\n\n**Version:** $VERSION (Commit: \`$COMMIT\`)/" book/src/index.md
-rm -f book/src/index.md.bak
+# Inject version and commit hash into the cover page
+if grep -q "\*\*Version:\*\*" book/src/cover.md; then
+    sed -i.bak "s/.*\*\*Version:\*\*.*/\*\*Version:\*\* $VERSION (Commit: \`$COMMIT\`)/" book/src/cover.md
+else
+    echo "" >> book/src/cover.md
+    echo "**Version:** $VERSION (Commit: \`$COMMIT\`)" >> book/src/cover.md
+fi
+rm -f book/src/cover.md.bak
 
 echo "Building mdbook..."
 cd book

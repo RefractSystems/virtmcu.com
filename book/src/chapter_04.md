@@ -1,138 +1,172 @@
-# Chapter 4: Processor Microarchitecture
+# Chapter 4: Peripherals and the Real World
 
-## 4.1 Introduction: Architecture vs. Microarchitecture
-To a software engineer, the Instruction Set Architecture (ISA) defines the entirety of the processor. The ISA specifies the registers, the memory model, and the instructions available to the programmer. However, the ISA does not dictate how those instructions are physically executed. 
+If you want to read a sensor, spin a motor, or print a debugging message to a console, your CPU needs to talk to the physical world. In the old days of desktop motherboards, engineers routed massive parallel buses—sometimes 32 or 64 physical copper traces—to move data between components. 
 
-The specific physical arrangement of registers, memories, Arithmetic Logic Units (ALUs), and multiplexers used to implement an ISA is known as the **microarchitecture**. A single architecture, such as ARMv8, can be implemented by many different microarchitectures. One microarchitecture might be optimized for ultra-low power consumption in a battery-operated cyber-physical system, while another might be optimized for massive throughput in a cloud server. Though they share the same ISA and run the exact same compiled C code, their internal hardware designs differ vastly.
+In the embedded Cyber-Physical System (CPS) world, pins and board space are your most precious commodities. You simply cannot afford to run 32 wires to a temperature sensor. Instead, we use **serial communication**. By transmitting data sequentially, one bit at a time, we drastically reduce the physical footprint of the hardware. 
 
-At the microarchitecture level, a processor is fundamentally a highly complex synchronous sequential digital circuit—essentially a giant finite state machine. The processor's job is to read instructions and data, compute results, and update the architectural state on the rising edge of the system clock. 
+In this chapter, we will dissect the three most ubiquitous serial protocols in embedded architecture: UART, SPI, and I2C. Then, we are going to roll up our sleeves and write a production-grade, bare-metal UART driver in C.
 
-## 4.2 The Physics of Performance
-Before designing our processor, we must define how we measure its performance. The execution time of a program is determined by the following fundamental performance equation:
+## 4.1 Serial Protocols: UART, SPI, and I2C
 
-$$Execution Time = Instructions \times CPI \times T_c$$
+When choosing a serial protocol, hardware engineers balance three competing needs: wire count, speed, and whether the communication is point-to-point or a shared network.
 
-1.  **Instructions:** The total number of instructions executed by the program. This is determined by the compiler and the ISA. 
-2.  **CPI (Cycles Per Instruction):** The average number of clock cycles required to execute each instruction.
-3.  **$T_c$ (Clock Period):** The duration of a single clock cycle (in seconds), which is the inverse of the clock frequency.
+### UART: The Universal Asynchronous Receiver-Transmitter
+The UART is the absolute workhorse of the embedded world. If you plug a USB-to-serial cable into a Raspberry Pi or an automotive Engine Control Unit (ECU) to view its console, you are talking to a UART. 
 
-The challenge of the microarchitect is to choose a design that minimizes the overall execution time. As we will see, this is a delicate balancing act. Making the hardware simpler might decrease the Clock Period ($T_c$) but increase the CPI. Conversely, adding complex hardware to execute multiple instructions simultaneously will decrease the CPI, but the added logic delay might require a longer Clock Period. 
+UARTs are **asynchronous**, meaning there is no shared clock wire between the sender and receiver. Because they don't share a clock, both devices must be configured in software to transmit and receive at the exact same speed, known as the **baud rate**. 
 
-## 4.3 The Single-Cycle Datapath and Control Unit
-The simplest way to build a processor is to design a microarchitecture that executes one entire instruction in a single clock cycle. This is known as a single-cycle processor. To build it, we separate the design into two interacting parts: the **datapath**, which contains the structural components that hold and manipulate data, and the **control unit**, which decodes the instruction and commands the datapath.
+A standard UART connection uses just three wires: Transmit (TX), Receive (RX), and Ground. The protocol frames each byte of data with synchronization bits:
+1. **The Idle State:** The line is held at a high voltage (logic 1).
+2. **The Start Bit:** The transmitter pulls the line low (logic 0) to grab the receiver's attention and start its internal sampling timer.
+3. **The Data Payload:** The 8 bits of the payload are transmitted sequentially.
+4. **The Stop Bit:** The transmitter pulls the line high (logic 1) for at least one bit duration to cleanly finish the frame.
 
-### 4.3.1 The Fetch-Decode-Execute Cycle
-The execution of any instruction on a von Neumann architecture universally follows a sequence of discrete steps known as the fetch-decode-execute cycle:
-1.  **Fetch:** The processor uses the Program Counter (PC) to fetch the 32-bit instruction from the instruction memory,. Simultaneously, the processor calculates the address of the next instruction (typically PC + 4).
-2.  **Decode:** The processor parses the instruction bits to determine the operation type. Simultaneously, it reads the required source operands from the register file. 
-3.  **Execute:** The Arithmetic Logic Unit (ALU) performs the requested operation, such as addition, subtraction, or logical AND, on the operands. For load/store instructions, the ALU adds the base register value to a sign-extended immediate offset to calculate the effective memory address.
-4.  **Memory:** If the instruction is a load or a store, the processor reads from or writes to the data memory at the address computed by the ALU.
-5.  **Write-back:** The result of the ALU computation or the data read from memory is written back to the destination register in the register file.
+Because the RX and TX lines are independent, a UART is **full-duplex**—it can send and receive data simultaneously. 
 
-### 4.3.2 The Single-Cycle Control Unit
-The datapath contains multiple interconnected hardware blocks, and multiplexers are used to route data between them. The control unit acts as the "brain," driving the select lines of these multiplexers. 
+### SPI: The Serial Peripheral Interface
+While UART is great for consoles, it tops out around a few megabits per second. If you need to quickly stream data to a high-resolution LCD screen or read an SD card, you need **SPI**. 
 
-The control unit is purely combinational logic. It receives the opcode and function fields of the fetched instruction and instantly generates the necessary control signals. For example, if the instruction is a memory store (`sw`), the control unit will assert the `MemWrite` signal to enable writing to the RAM, but it will de-assert `RegWrite` because a store instruction does not update the processor's registers. If the instruction is a conditional branch (`beq`), the control unit commands the ALU to subtract the two source registers. If the ALU outputs a `Zero` flag (indicating the registers are equal), the control unit switches a multiplexer to load the PC with the computed branch target address instead of the standard PC + 4.
+Developed by Motorola in the 1980s, SPI is **synchronous**, meaning it uses a dedicated clock wire to keep the sender and receiver in perfect lockstep. SPI typically requires four wires:
+*   **SCK (Serial Clock):** Generated by the Master.
+*   **MOSI (Master Out, Slave In):** Data flowing from the CPU to the peripheral.
+*   **MISO (Master In, Slave Out):** Data flowing from the peripheral to the CPU.
+*   **CS/SS (Chip Select / Slave Select):** Pulled low by the Master to wake up a specific peripheral.
 
-### 4.3.3 The Single-Cycle Timing Bottleneck
-In a single-cycle microarchitecture, the architectural state (the PC, the register file, and memory) is updated strictly on the rising edge of the clock. This means that the clock period ($T_c$) must be long enough to allow electrical signals to propagate through the entire datapath.
+SPI is essentially a massive, distributed shift register. On every tick of the SCK clock, the Master shifts one bit out on the MOSI line, and simultaneously reads one bit in on the MISO line. 
 
-The critical path—the longest and slowest sequence of logic—typically occurs during a memory load instruction. The signal must travel through the PC, into the instruction memory, through the register file, through the ALU to calculate the address, into the data memory to fetch the value, through a multiplexer, and finally back to the setup pins of the register file. 
+> **WARNING: The Full-Duplex Trap**
+> SPI is always full-duplex. If you only want to *read* data from an SPI sensor, you cannot just sit back and listen. Because the Master generates the clock, you **must** transmit dummy bytes (usually `0x00` or `0xFF`) out of the MOSI pin just to keep the clock ticking so the sensor can send its data back to you on the MISO pin. 
 
-Because the clock cycle must be stretched to accommodate the slowest possible instruction, all other, faster instructions (like a simple addition) are artificially delayed. In modern deep sub-micron silicon, this makes the single-cycle processor incredibly inefficient, limiting the maximum clock speed to a few tens of megahertz,.
+### I2C: The Inter-Integrated Circuit
+SPI is fast, but it requires a dedicated Chip Select wire for every single peripheral you add to the bus. If you have 10 sensors, you need 13 wires. **I2C** solves this by putting multiple devices on a shared two-wire network.
 
-## 4.4 Pipelining: Increasing Throughput
-To overcome the bottleneck of the single-cycle design, computer architects employ **pipelining**. Pipelining divides the instruction execution process into a sequence of smaller, faster stages.
+I2C uses:
+*   **SCL (Serial Clock):** Driven by the Master.
+*   **SDA (Serial Data):** A bidirectional data line.
 
-Consider the analogy of an automobile assembly line. If a team of mechanics builds one entire car from start to finish before beginning the next, the factory produces one car per day. However, if the factory is divided into stations—chassis, engine, doors, wheels, paint—multiple cars can be assembled simultaneously. A finished car rolls off the line every hour, even though any individual car still takes a full day to build. 
+To avoid electrical short circuits when multiple devices try to talk at once, I2C uses an **open-drain** architecture. The silicon chips can only actively pull the wires *low* (to 0 volts). When they want to transmit a logic 1, they simply let go of the wire, and external pull-up resistors passively float the voltage back to high.
 
-### 4.4.1 The Classic Five-Stage RISC Pipeline
-Modern processors slice the datapath into multiple stages separated by hardware registers known as pipeline registers. The classic RISC pipeline consists of five stages,:
-1.  **Fetch (IF):** Read the instruction from the L1 Instruction Cache.
-2.  **Decode (ID):** Decode the instruction, resolve register addresses, and read operands from the Register File.
-3.  **Execute (EX):** The ALU performs the computation or address calculation.
-4.  **Memory (MEM):** Access the L1 Data Cache for load/store operations.
-5.  **Write-back (WB):** Write the final result back to the Register File,.
+Because there are no Chip Select wires, the Master begins communication by broadcasting a 7-bit address over the SDA wire. Every device on the bus listens, but only the hardware matching that specific address responds by pulling the SDA line low for one clock cycle to signal an Acknowledge (ACK). Because SDA is bidirectional, I2C is strictly **half-duplex**—devices must take turns talking.
 
-Because the pipeline registers isolate the stages, five different instructions can be in flight simultaneously. 
+***
 
-### 4.4.2 Latency vs. Throughput
-It is critical to understand that pipelining *does not* reduce the execution time of an individual instruction; in fact, the addition of pipeline registers introduces a slight propagation delay that actually increases the latency of a single instruction. 
+## 4.2 Writing a Bare-Metal UART Driver
 
-However, microprocessors process billions of instructions per second, so we prioritize **throughput** over single-instruction latency. In a perfectly balanced 5-stage pipeline, the clock frequency can be increased to nearly five times that of a single-cycle processor, because the clock period is now determined only by the delay of the single slowest pipeline stage, rather than the sum of all stages. Ideally, one instruction completes and retires every single clock cycle, achieving an ideal CPI of 1.
+Now that we understand the hardware, let's write a driver. We are going to target the **ARM PL011 UART**, which is the standard serial port found on Raspberry Pis and in QEMU `virt` machine emulators. 
 
-## 4.5 Pipeline Hazards and Mitigation
-In reality, the CPI of a pipelined processor is always greater than 1. This is because instructions in a program are rarely completely independent. When one instruction depends on the result of a previous instruction that is still in the pipeline, a **hazard** occurs. 
+To use the UART, we can't just throw data at it. We have to properly compute the timing divisor to hit our target baud rate, configure the line control registers (8 data bits, no parity), and monitor the hardware FIFOs.
 
-### 4.5.1 Data Hazards and Forwarding
-A **data hazard** occurs when an instruction attempts to read a register that has not yet been written back to the register file by a preceding instruction. The most common data hazard is the Read-After-Write (RAW) dependency,. 
+### 4.2.1 The Register Map
 
-Consider this sequence:
-```assembly
-add x1, x2, x3   // x1 = x2 + x3
-and x4, x1, x5   // x4 = x1 AND x5
+Based on the ARM peripheral documentation, our PL011 UART lives at the physical base address `0x09000000` (on QEMU) and exposes several 32-bit Memory-Mapped I/O (MMIO) registers. Here are the ones we care about:
+
+*   `UARTDR` (Data Register - Offset `0x00`): Read/Write this to receive/send data.
+*   `UARTFR` (Flag Register - Offset `0x18`): Read-only status flags (e.g., is the FIFO full?).
+*   `UARTIBRD` (Integer Baud Rate Divisor - Offset `0x24`): The whole number part of the clock divider.
+*   `UARTFBRD` (Fractional Baud Rate Divisor - Offset `0x28`): The fractional part of the clock divider.
+*   `UARTLCR_H` (Line Control Register - Offset `0x2C`): Sets data frame size, parity, and enables FIFOs.
+*   `UARTCR` (Control Register - Offset `0x30`): Master switch to enable the UART, TX, and RX modules.
+
+### 4.2.2 The Baud Rate Math
+
+UARTs operate by dividing the main system clock down to the target baud rate. The PL011 uses a fractional baud rate generator. The formula provided by ARM hardware manuals is:
+
+$$ \text{Divisor} = \frac{\text{System Clock Frequency}}{16 \times \text{Target Baud Rate}} $$
+
+Assume our system clock runs at **48 MHz (48,000,000 Hz)** and we want a standard console baud rate of **115,200**.
+
+1. **Calculate the exact divisor:** `48,000,000 / (16 * 115,200) = 26.041666...`
+2. **Extract the Integer part (IBRD):** `26`
+3. **Calculate the Fractional part (FBRD):** We take the fractional remainder (`0.041666...`), multiply it by 64, and round to the nearest integer. `0.041666... * 64 = 2.666...` which rounds to `3`.
+
+We will program `26` into the `UARTIBRD` register and `3` into the `UARTFBRD` register.
+
+### 4.2.3 The Driver Code
+
+Here is the complete C code for initializing the UART, putting characters into the transmit FIFO, and polling the receive FIFO for input.
+
+```c
+#include <stdint.h>
+
+// 1. Define the physical base address of the UART
+#define UART_BASE 0x09000000
+
+// 2. Map the register offsets to volatile pointers
+#define UART_DR     (*(volatile uint32_t *)(UART_BASE + 0x00))
+#define UART_FR     (*(volatile uint32_t *)(UART_BASE + 0x18))
+#define UART_IBRD   (*(volatile uint32_t *)(UART_BASE + 0x24))
+#define UART_FBRD   (*(volatile uint32_t *)(UART_BASE + 0x28))
+#define UART_LCR_H  (*(volatile uint32_t *)(UART_BASE + 0x2C))
+#define UART_CR     (*(volatile uint32_t *)(UART_BASE + 0x30))
+
+// 3. Define the bit-masks for the Flag Register (FR)
+#define FR_TXFF (1 << 5) // Transmit FIFO Full
+#define FR_RXFE (1 << 4) // Receive FIFO Empty
+
+// 4. Initialize the UART hardware
+void uart_init(void) {
+    // Step A: Disable the UART before making configuration changes
+    UART_CR = 0;
+
+    // Step B: Set the baud rate to 115200 (assuming a 48 MHz clock)
+    // Divisor = 48MHz / (16 * 115200) = 26.041666...
+    UART_IBRD = 26; 
+    UART_FBRD = 3;  // 0.041666 * 64 = 2.666 -> 3
+
+    // Step C: Configure Line Control (8 data bits, 1 stop bit, no parity)
+    // Bit 5 & 6 (0b11 << 5) = 8-bit word length
+    // Bit 4 (1 << 4) = Enable the hardware FIFOs
+    UART_LCR_H = (3 << 5) | (1 << 4);
+
+    // Step D: Enable the UART, Transmit (TXE = bit 8), and Receive (RXE = bit 9)
+    // Master Enable (UARTEN) = bit 0
+    UART_CR = (1 << 9) | (1 << 8) | (1 << 0);
+}
+
+// 5. Send a single character out of the serial port
+void uart_putc(char c) {
+    // Spin-wait while the Transmit FIFO is Full
+    while (UART_FR & FR_TXFF) {
+        // CPU burns cycles here waiting for hardware to catch up
+    }
+    // Shove the character into the Data Register
+    UART_DR = c;
+}
+
+// 6. Receive a single character from the serial port
+char uart_getc(void) {
+    // Spin-wait while the Receive FIFO is Empty
+    while (UART_FR & FR_RXFE) {
+        // CPU waits here for the user to hit a key
+    }
+    // Pull the character out of the Data Register (masking off status bits)
+    return (char)(UART_DR & 0xFF);
+}
+
+// 7. Helper function to print a whole string
+void uart_puts(const char *str) {
+    while (*str) {
+        uart_putc(*str++);
+    }
+}
 ```
-The `add` instruction calculates the result in the EX stage, but it does not write the value into `x1` until the WB stage. The subsequent `and` instruction attempts to read `x1` during its ID stage. If we allow the pipeline to proceed normally, the `and` instruction will read the stale, outdated value of `x1` from the register file, causing catastrophic computational failure.
 
-To resolve this, modern processors use **forwarding** (or bypassing),. The processor adds a Hazard Detection Unit that monitors the pipeline. If it detects that an instruction in the EX stage needs a value currently held in the MEM or WB pipeline registers, it activates multiplexers that intercept the data and route it directly into the ALU input, bypassing the register file entirely,. 
+### 4.2.4 Line-by-Line Breakdown
 
-### 4.5.2 Load-Use Stalls (Bubbles)
-Forwarding solves most data hazards, but it cannot solve all of them. Consider a **Load-Use hazard**:
-```assembly
-ldr x1, [x2]     // Load memory at x2 into x1
-add x4, x1, x5   // x4 = x1 + x5
-```
-The `ldr` instruction does not actually retrieve the data from memory until the end of the MEM stage. However, the subsequent `add` instruction requires that data at the beginning of the EX stage. Because the data physically does not exist inside the processor yet, it is impossible to forward it back in time.
+Let's look at exactly how this interacts with the silicon:
 
-In this scenario, the hardware must physically **stall** the pipeline. The Hazard Detection Unit forces the `add` instruction to wait in the Decode stage for an extra clock cycle. To prevent the Execute stage from executing garbage, the control unit zeroes out the control signals, inserting a "bubble" (a hardware No-Operation) into the pipeline. Stalls degrade performance, increasing the CPI above 1,.
+**Step 2: The `volatile` Pointers**
+Just as we discussed in Chapter 1, memory-mapped I/O requires the `volatile` keyword. Notice how we cast the raw hexadecimal address `0x09000000 + 0x18` to a `(volatile uint32_t *)`, and then immediately dereference it with the leading `*`. This turns `UART_FR` into a macro that behaves exactly like a standard C variable, but strictly forces the compiler to generate raw load/store instructions directly over the AXI bus to the peripheral. 
 
-### 4.5.3 Control Hazards and Branch Prediction
-The most severe threat to pipeline performance is the **control hazard**. When the processor fetches a conditional branch instruction (like `beq`), it does not actually know if the branch will be taken until the ALU evaluates the condition in the Execute stage. But by that time, the processor has already fetched two subsequent instructions into the pipeline. 
+**Step 4: The Initialization Sequence (`uart_init`)**
+You cannot change the tires on a car while it's driving. If you attempt to change the Baud Rate Divisors while the UART is actively transmitting, you will send corrupt glitch data down the wire. **Step A** forcefully disables the peripheral by writing `0` to the Control Register (`UART_CR`). After writing the computed baud dividers in **Step B**, we set up the Line Control Register (`UART_LCR_H`) in **Step C**. By writing `(3 << 5)`, we set the Word Length to 8 bits. We also explicitly enable the 16-byte hardware FIFOs. Finally, in **Step D**, we flip the master power switch, the TX enable, and the RX enable bits back on. 
 
-If the pipeline simply pauses to wait for the branch to resolve, it would suffer massive delays. If it guesses the branch is not taken and fetches sequentially, it will execute the wrong code if the branch is actually taken. When this happens, the processor must **flush** the pipeline, throwing away the mistakenly fetched instructions and converting them into bubbles,. The cycles wasted fetching the wrong instructions are called the branch misprediction penalty.
+**Step 5: Handling the Transmit FIFO (`uart_putc`)**
+Because the CPU operates at gigahertz speeds, and the UART transmits at kilohertz speeds, the CPU can instantly overwhelm the UART. The UART has a 16-byte Transmit FIFO hardware buffer to absorb this. However, if we dump 17 characters into the UART, the buffer fills up. The hardware asserts the `FR_TXFF` (Transmit FIFO Full) bit in the Flag Register. 
+Our `while (UART_FR & FR_TXFF)` loop is known as **polling** or **spin-waiting**. The processor halts its progress, constantly reading the Flag Register over the memory bus, waiting for the hardware to shift a bit over the physical TX wire and free up a slot in the FIFO buffer. Only when the full flag clears does the CPU write the next character into `UART_DR`.
 
-To mitigate this, processors utilize complex **Branch Predictors**. A dynamic branch predictor utilizes a Branch Target Buffer (BTB) to cache the destination addresses of recent branches, alongside a state machine that tracks the history of the branch. A common design uses a 2-bit finite state machine for each branch. The FSM transitions between "Strongly Not Taken", "Weakly Not Taken", "Weakly Taken", and "Strongly Taken". This hysteresis ensures that a loop that executes 100 times will only mispredict on the very last iteration when the loop finally exits. Modern branch predictors achieve accuracy rates exceeding 90%.
+**Step 6: Handling the Receive FIFO (`uart_getc`)**
+Receiving data is the exact inverse. If the CPU wants to read user input, but the user hasn't pressed a key yet, the Receive FIFO is empty. The hardware holds the `FR_RXFE` (Receive FIFO Empty) bit high. The `while (UART_FR & FR_RXFE)` loop blocks the program, burning CPU cycles until the UART hardware detects a Start Bit, deserializes an entire 8-bit frame, and drops it into the RX FIFO. Once the empty flag drops, we read `UART_DR`. We apply an `& 0xFF` bitwise mask because the PL011 uses the upper bits of the Data Register to report physical line errors (like framing or parity errors); masking ensures we only return the clean 8-bit ASCII character.
 
-## 4.6 Advanced Microarchitecture: Superscalar and Out-of-Order Execution
-The 5-stage pipeline represents a scalar processor, meaning it issues exactly one instruction per clock cycle. The absolute maximum throughput of a scalar processor is an IPC (Instructions Per Cycle) of 1. To achieve greater performance, engineers exploit **Instruction-Level Parallelism (ILP)**, executing entirely independent instructions simultaneously,.
-
-### 4.6.1 Superscalar Issue
-A **superscalar** microarchitecture duplicates the internal datapath hardware to fetch, decode, and issue multiple instructions in a single clock cycle,. A modern high-performance processor (such as the ARM Cortex-A series or Intel Core architectures) might fetch up to four or six instructions per cycle. 
-
-To support this, the execution unit is populated with multiple ALUs, Floating-Point Units (FPUs), and load/store units,. Superscalar processors boast an ideal IPC greater than 1 (or a CPI of a fraction of a cycle),. 
-
-### 4.6.2 Out-of-Order (OoO) Execution
-In a strictly in-order pipeline, if an instruction stalls due to a cache miss, every single instruction behind it in the program is blocked, even if those subsequent instructions have their operands ready and are completely independent,.
-
-**Out-of-Order (OoO)** execution allows the processor to look ahead across a vast "instruction window". When a micro-operation is decoded, it is dispatched to a queue known as a Reservation Station. The scheduler monitors the reservation stations and dispatches instructions to the ALUs the exact moment their data operands are ready, regardless of their original sequence in the compiled program code,. 
-
-Because instructions finish in a chaotic order, the processor utilizes a **Reorder Buffer (ROB)**. Instructions are retired from the ROB strictly in their original program order. This ensures that if a hardware exception or interrupt occurs, the architectural state of the machine remains perfectly precise and easily recoverable,,.
-
-### 4.6.3 Register Renaming
-Out-of-order execution introduces new hazards known as Write-After-Write (WAW) and Write-After-Read (WAR) dependencies. These are "false" dependencies caused by the compiler reusing a limited number of architectural registers (like `x0` through `x30` in ARM). 
-
-To eliminate these false dependencies, OoO processors implement **Register Renaming**. The processor contains a massive pool of hidden, internal physical registers. When an instruction decodes, a hardware mapping table dynamically assigns the architectural destination register (e.g., `x1`) to an unused physical register. This allows multiple instructions to write to `x1` simultaneously in the pipeline without corrupting each other's data, allowing true ILP to flourish,.
-
-## 4.7 Multithreading and Multi-core Architectures
-There is a hard physical limit to how much ILP exists in a single program thread. Even with massively wide superscalar execution and deep OoO windows, processors eventually run out of independent instructions to schedule, leaving expensive functional units completely idle,. 
-
-### 4.7.1 Hardware Multithreading
-To keep the execution units saturated, microarchitects implemented **hardware multithreading**, allowing a single physical processor core to present the illusion of multiple logical processors to the operating system. The processor duplicates the Program Counter (PC) and the Register File for each thread, but shares the heavy execution hardware (the ALUs and memory buses),.
-
-*   **Coarse-grained Multithreading:** The processor runs one thread until it suffers a major stall (like an L2 cache miss), at which point it instantly switches context to a second thread to hide the memory latency,.
-*   **Fine-grained Multithreading:** The processor switches between threads every single clock cycle in a round-robin fashion, inherently masking data and control hazards.
-*   **Simultaneous Multithreading (SMT):** Found in almost all modern high-performance cores, SMT allows the superscalar scheduler to issue instructions from multiple independent threads into the execution units during the *exact same clock cycle*,.
-
-As thermal dissipation limits (the "power wall") prevented further increases in single-core clock frequencies, the industry transitioned to **multi-core** architectures, placing multiple independent CPU cores onto a single silicon die. Modern SoCs utilize a combination of multicore chips, superscalar pipelines, and SMT to achieve vast computational throughput.
-
-## 4.8 VirtMCU Homework: Analyzing Pipeline Stalls and Deterministic Execution
-The advanced microarchitectural optimizations we just discussed—deep pipelining, out-of-order execution, branch prediction, and multi-level caching—are brilliant for increasing average throughput. However, for Cyber-Physical Systems (CPS), these features create a nightmare scenario: **timing unpredictability**. 
-
-When controlling an aircraft actuator or a robotic joint, missing a control loop deadline by a few microseconds can cause catastrophic physical failure. In a standard OS running on a modern OoO core, it is virtually impossible to guarantee exact microsecond execution bounds due to the dynamic nature of branch mispredictions and cache misses.
-
-In this homework, you will use the **VirtMCU FirmwareStudio** to analyze instruction latency at the bare-metal microarchitectural level.
-
-1.  **Code Profiling:** You will be provided with two versions of a C array-processing loop. The first is an unoptimized sequence containing severe Read-After-Write (RAW) Load-Use data hazards. The second version utilizes loop unrolling and instruction scheduling to place independent math instructions between the `ldr` and data consumption, eliminating the pipeline stall.
-2.  **Simulation under Jitter:** First, compile the unoptimized binary and run it in a standard, free-running QEMU emulator. Observe how the host operating system's scheduler creates wall-clock jitter, making it difficult to measure the exact nanosecond penalty of the data hazards.
-3.  **Deterministic `slaved-icount` Execution:** You will then load the binaries into VirtMCU configured in `slaved-icount` mode. Because VirtMCU strictly lock-steps the virtual clock to the exact number of retired instructions (bypassing host OS jitter), you will use the emulated hardware timer registers to measure the exact cycle count of the execution loops.
-4.  **Pipeline Analysis:** Calculate the empirical CPI of both the unoptimized and optimized assembly loops. You must submit a report identifying the exact assembly instructions where the processor was forced to insert a pipeline bubble due to a Load-Use data hazard, verifying your analysis against the cycle counts retrieved from the VirtMCU deterministic timer.
+> **TIP: The Cost of Polling**
+> Spin-waiting on the `UART_FR` register works perfectly for a simple console or a bootloader. But as we'll see in the next chapter, trapping your CPU in an infinite loop while waiting for a 115200 baud serial connection is catastrophically inefficient. A true RTOS will configure the UART to fire a hardware interrupt when the FIFO is ready, allowing the CPU to go to sleep or execute other threads in the meantime!
