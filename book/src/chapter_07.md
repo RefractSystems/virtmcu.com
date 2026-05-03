@@ -1,13 +1,3 @@
-Welcome to Part III of our course: The Hardware-Software Interface. We have spent the first half of this textbook exploring the digital logic that forms a processor, the microarchitecture that executes instructions, and the complex memory and interconnect hierarchies that move data across the silicon. We now reach a pivotal transition. Hardware without software is merely a space heater; to create a functional Cyber-Physical System (CPS), we must write software that commands the silicon.
-
-Because our target audience consists of graduate students transitioning from high-level software engineering, you are likely accustomed to writing applications that run on top of a sophisticated operating system (OS) like Linux or Windows. In those environments, the OS provides a comfortable, abstracted virtual machine. If you want to read from a file or send data over a network, you invoke a system call, and the OS handles the complex, messy interactions with the physical hardware. 
-
-However, in the world of embedded systems and CPS, you are often programming "bare-metal." There is no operating system hiding the hardware from you; your code executes directly on the processor, meaning you are responsible for everything from the moment power is applied to the chip. This chapter bridges the gap between hardware and software by exploring how a processor boots, how it handles unexpected events through the exception model, how it interacts with peripherals via interrupts, and how it isolates trusted code using privilege levels.
-
-Here is the complete text for Chapter 7, formatted in Markdown.
-
-***
-
 # Chapter 7: Interrupts, Exceptions, and Bare-Metal Execution
 
 ## 7.1 Introduction: The Bare-Metal Environment

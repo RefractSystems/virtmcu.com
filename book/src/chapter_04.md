@@ -1,11 +1,3 @@
-Welcome back to class. In our previous lectures, we established the digital foundations of our hardware and explored the Instruction Set Architecture (ISA)—specifically ARM AArch64—which serves as the contract between software and hardware. Today, we cross the boundary from what the hardware *promises* to do, to how the hardware *actually does it*. 
-
-We are now entering Part II of our course: Modern System-on-Chip (SoC) Architecture. In Chapter 4, we will look inside the black box of the processor. We will design a processor microarchitecture from the ground up, starting with a simple single-cycle datapath, evolving it into a pipelined architecture, and finally examining the advanced superscalar and out-of-order execution engines that power modern high-performance computational nodes. 
-
-Here is the complete text for Chapter 4, prepared in Markdown format.
-
-***
-
 # Chapter 4: Processor Microarchitecture
 
 ## 4.1 Introduction: Architecture vs. Microarchitecture

@@ -41,23 +41,41 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
           >
             Features
           </Link>
-          <Link
-            href="https://refractsystems.github.io/virtmcu.com/book/"
-            onClick={closeMenu}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Book
-          </Link>
-          <Link
-            href="https://refractsystems.github.io/virtmcu.com/book/book.pdf"
-            className="pdf-link"
-            onClick={closeMenu}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            PDF
-          </Link>
+          <div className="nav-dropdown">
+            <button className="nav-dropdown-btn">
+              Book
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div className="nav-dropdown-content">
+              <Link
+                href="https://refractsystems.github.io/virtmcu.com/book/"
+                onClick={closeMenu}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Online Version
+              </Link>
+              <Link
+                href="https://refractsystems.github.io/virtmcu.com/book/book.pdf"
+                onClick={closeMenu}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                PDF Download
+              </Link>
+            </div>
+          </div>
           <Link
             href="/docs"
             className={activeSection === 'docs' ? 'active' : ''}

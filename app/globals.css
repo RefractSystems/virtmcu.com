@@ -165,6 +165,66 @@ button,
   color: var(--accent-blue);
 }
 
+/* ── Dropdown ────────────────────────────────── */
+.nav-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-dropdown-btn {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+}
+
+.nav-dropdown-btn:hover {
+  color: var(--accent-blue);
+}
+
+.nav-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: var(--surface-card);
+  min-width: 180px;
+  box-shadow: var(--shadow-lg);
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1001;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.nav-dropdown-content a {
+  padding: 12px 24px;
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.nav-dropdown-content a:hover {
+  background-color: var(--bg-deep);
+  color: var(--accent-blue);
+}
+
 .btn-cta {
   background: var(--accent-blue);
   color: white !important;
