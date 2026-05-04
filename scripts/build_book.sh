@@ -7,14 +7,20 @@ cd "$(dirname "$0")/.."
 # Extract version from package.json and commit hash
 VERSION=$(node -p "require('./package.json').version")
 COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BUILD_DATE=$(date +"%B %d, %Y")
 
 echo "Preparing to build book version $VERSION (commit $COMMIT)..."
 
-# Inject version and commit hash into the cover page
+# Inject date, version and commit hash into the cover page
+if grep -q "\*\*Date:\*\*" book/src/cover.md; then
+    sed -i.bak "s/.*\*\*Date:\*\*.*/\*\*Date:\*\* $BUILD_DATE  /" book/src/cover.md
+else
+    echo "**Date:** $BUILD_DATE  " >> book/src/cover.md
+fi
+
 if grep -q "\*\*Version:\*\*" book/src/cover.md; then
     sed -i.bak "s/.*\*\*Version:\*\*.*/\*\*Version:\*\* $VERSION (Commit: \`$COMMIT\`)/" book/src/cover.md
 else
-    echo "" >> book/src/cover.md
     echo "**Version:** $VERSION (Commit: \`$COMMIT\`)" >> book/src/cover.md
 fi
 rm -f book/src/cover.md.bak
