@@ -208,14 +208,14 @@ export default function Home() {
             Binary-Compatible Deterministic Simulation for Distributed Systems.
           </h1>
           <p className="reveal" ref={addToRefs} style={{ fontSize: '1.25rem', maxWidth: '900px', margin: '0 auto 2rem' }}>
-            Globally deterministic, lockstep simulation at scale. Boot thousands of microcontrollers, wire them via virtual buses, and synchronize them with 3D physics engines. Run the exact same firmware binaries you deploy to real hardware. Zero jitter. Bit-for-bit reproducible.
+            Boot thousands of microcontrollers, wire them via virtual buses, and synchronize with 3D physics engines. Perfect lockstep. Zero jitter. Bit-for-bit reproducible.
           </p>
           <div className="hero-btns reveal" ref={addToRefs}>
             <Link href="https://github.com/RefractSystems/virtmcu" className="btn btn-cta">
-              Get Started &rarr;
+              ⭐ Star on GitHub
             </Link>
-            <Link href="/docs" className="btn btn-outline">
-              Read The Masterclass
+            <Link href="#updates" className="btn btn-outline">
+              Subscribe for Updates
             </Link>
           </div>
 
