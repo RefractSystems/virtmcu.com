@@ -59,7 +59,7 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
             </button>
             <div className="nav-dropdown-content">
               <Link
-                href="https://refractsystems.github.io/virtmcu.com/book/"
+                href="https://refractsystems.github.io/virtmcu/html/"
                 onClick={closeMenu}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -67,7 +67,7 @@ export default function Navbar({ activeSection }: { activeSection?: string }) {
                 Online Version
               </Link>
               <Link
-                href="https://refractsystems.github.io/virtmcu.com/book/book.pdf"
+                href="https://refractsystems.github.io/virtmcu/pdf/virtmcu_book.pdf"
                 onClick={closeMenu}
                 target="_blank"
                 rel="noopener noreferrer"
