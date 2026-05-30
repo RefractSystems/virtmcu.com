@@ -35,6 +35,11 @@ export default function Footer() {
                 Architecture
               </Link>
             </li>
+            <li>
+              <Link href="/talks/2026-06-01-fss">
+                Slides: FSS 2026
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="footer-col">
